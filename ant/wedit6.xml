@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="windows-1251"?>
+
+<!--
+Запуск руками:
+ ant -buildfile wedit6.xml deploy.linux.common
+
+
+-->
+<project name="WEdit_6" basedir="." default="compile">
+
+    <property name="project" value="wedit" />
+    <property name="deploy" value="../../deploy" />
+    <property name="version" value="6.0" />
+    <property name="docdir" value="${deploy}/javadoc" />
+    <property name="src" value="../src" />
+    <property name="classes" value="${deploy}/classes" />
+    <property name="lib" value="../lib" />
+    <property name="bin" value="../bin" />
+    <property name="jar" value="${deploy}/jar" />
+    <property name="deploy.common.path" value="/usr/lib/wedit6" />
+
+
+    <!-- Создать рабочую директорию и скопировать туда библ jar, стартовые скрипты -->
+    <property name="programmPath" value="/home/svj/programm/my/wedit6" />
+    
+    <path id="project.class.path">
+        <!--pathelement location="./"/-->
+        <!--pathelement path="%classpath%"/-->
+        <!--pathelement path="${classes}"/-->
+        <fileset dir="${lib}" includes="**/*.jar, **/*.zip" />
+    </path>
+
+    <!--
+    <classpath>
+      <pathelement location="./"/>
+      <pathelement path="${classpath}"/>
+      <pathelement path="${deploy}/classes"/>
+      <fileset dir="lib">
+        <include name="**/*.jar, **/*.zip" />
+      </fileset>
+    </classpath>
+    -->
+
+    <target name="init">
+        <!-- Vkl mode - auto inc for build number. This create file 'build.number' -->
+        <buildnumber />
+        <tstamp />
+        <mkdir dir="${deploy}" />
+        <mkdir dir="${classes}" />
+        <mkdir dir="${jar}" />
+        <mkdir dir="${docdir}" />
+        <echo message="ANT  : ${ant.version}" />
+        <echo message="JAVA : ${ant.java.version}" />
+    </target>
+
+
+    <target name="compile" depends="init">
+        <echo message="Compiling ${project}" />
+
+        <javac srcdir="${src}"
+               destdir="${classes}"
+               debug="on"
+               optimize="off"
+               deprecation="false">
+            <!--
+                           compiler="jikes"
+                           compiler="classic"
+            -->
+            <compilerarg line="-encoding UTF-8"/>
+            <classpath refid="project.class.path" />
+        </javac>
+
+    </target>
+
+
+    <target name="jar" depends="init,compile">
+
+        <echo message="Create JAR" />
+
+        <jar jarfile="${jar}/${project}.jar"
+             compress="true"
+             index="false"
+             basedir="${classes}">
+
+            <manifest>
+                <attribute name="Built-By" value="Zhiganov Sergey" />
+                <attribute name="Main-Class" value="svj.wedit.v6.WEdit6" />
+                <attribute name="Class-Path" value="${project}.jar log4j-api-2.0-beta9.jar
+                 log4j-core-2.0-beta9.jar itext-2.0.6.jar dom4j-2.0.0-RC1.jar
+                 poi/poi-3.14-20160307.jar
+                 poi/poi-ooxml-3.14-20160307.jar poi/poi-scratchpad-3.14-20160307.jar
+                 poi/xmlbeans-2.6.0.jar  poi/poi-ooxml-schemas-3.14-20160307.jar
+                " />
+                <attribute name="Implementation-Version" value="${version}-b${build.number}"/>
+
+                <section name="common">
+                    <attribute name="Specification-Title" value="${project}" />
+                    <attribute name="Specification-Version" value="${version}" />
+                    <attribute name="Specification-Vendor" value="SVJ Home, Inc." />
+                    <attribute name="Implementation-Title" value="${project}" />
+                    <!--attribute name="Implementation-Version" value="${version}/${TODAY}/${build.number}" /-->
+                    <!--attribute name="Implementation-Version" value="${version}-b${build.number}" /-->
+                    <attribute name="Implementation-Vendor" value="SVJ Home, Inc." />
+                </section>
+
+            </manifest>
+        </jar>
+    </target>
+
+
+    <target name="all" depends="jar,doc" description="Build everything.">
+        <echo message="Create All" />
+    </target>
+
+
+    <target name="clean.locale" description="Clean all build products.">
+        <delete  includeEmptyDirs="true" quiet="true" failonerror="false">
+            <fileset dir="${deploy}" />
+        </delete>
+        <mkdir dir="${deploy}" />
+    </target>
+
+    <target name="clean.common" description="Clean all build products.">
+        <delete  includeEmptyDirs="true" quiet="true" failonerror="false">
+            <fileset dir="${deploy.common.path}" />
+        </delete>
+        <mkdir dir="${deploy.common.path}" />
+    </target>
+
+
+    <target name="doc" depends="init" description="Javadoc for Library API.">
+
+        <echo message="Create Java Doc" />
+        <javadoc destdir="${docdir}"
+                 author="true"
+                 excludepackagenames="com.ftc.mp.components.*, javax.xml.transform.*"
+                 charset="1251"
+                 bottom="&lt;i>Copyright &#169; 2007 Sergey Zhiganov, Inc. All Rights Reserved.&lt;/i>"
+                 windowtitle="${project}"
+                 Private="yes"
+                 version="true">
+
+            <classpath refid="project.class.path" />
+
+            <packageset dir="${src}" defaultexcludes="yes">
+                <include name="**" />
+            </packageset>
+
+        </javadoc>
+    </target>
+
+
+    <target name="deploy.linux.locale" depends="clean.locale, init, compile, jar" description="Install to '${programmPath}'">
+        <echo message="Create Directories Pool for locale projects (bin, lib, log)." />
+
+        <mkdir dir="${programmPath}/lib" />
+
+        <delete includeEmptyDirs="true" quiet="true" failonerror="false">
+          <fileset dir="${programmPath}/bin"/>
+          <fileset dir="${programmPath}/conf"/>
+          <fileset dir="${programmPath}/doc"/>
+          <fileset dir="${programmPath}/img"/>
+          <fileset dir="${programmPath}/lib"/>
+          <fileset dir="${programmPath}/log"/>
+          <fileset dir="${programmPath}/msg"/>
+            <!-- dir pconf_user NOT deleted !!! -->
+        </delete>
+
+        <!-- mkdir dir="${programmPath}" / -->
+        <mkdir dir="${programmPath}/lib" />
+        <mkdir dir="${programmPath}/bin" />
+        <mkdir dir="${programmPath}/log" />
+        <mkdir dir="${programmPath}/conf" />
+        <mkdir dir="${programmPath}/img" />
+        <mkdir dir="${programmPath}/msg" />
+        <mkdir dir="${programmPath}/doc" />
+
+        <echo message="Copy files." />
+
+        <copy todir="${programmPath}/lib" file="${jar}/${project}.jar" />
+        <copy todir="${programmPath}/lib">
+            <fileset file="${lib}/**" />
+        </copy>
+
+        <!--copy todir="${programmPath}/bin">
+            <fileset file="${bin}/*.*" />
+        </copy-->
+        <copy file="${bin}/linux/wedit6_locale.sh" tofile="${programmPath}/bin/wedit6.sh"/>
+        <copy file="${bin}/linux/we6.sh" tofile="${programmPath}/bin/we6.sh"/>
+        <copy file="${bin}/windows/we6.bat" tofile="${programmPath}/bin/we6.bat"/>
+
+        <copy file="../conf/config.txt" todir="${programmPath}/conf"/>
+        <copy file="../conf/log4j/linux/log4j2_locale.xml" tofile="${programmPath}/conf/log4j2.xml"/>
+
+        <copy todir="${programmPath}/img">
+            <fileset file="../img/**" />
+        </copy>
+        <copy todir="${programmPath}/msg">
+            <fileset file="../msg/**" />
+        </copy>
+        <copy todir="${programmPath}/doc">
+            <fileset file="../doc/guid/*.xml" />
+        </copy>
+        <!--copy file="../doc/guid/*.xml" todir="${programmPath}/doc"/-->
+
+        <chmod dir="${programmPath}/bin" perm="ugo+x" includes="*.sh"/>
+        
+    </target>
+
+    <!-- Только из под root. -->
+    <target name="deploy.linux.common" depends="clean.common, init, compile, jar" description="Install to '/usr/lib'">
+        <echo message="Create Directories Pool for /USR/LIB projects (bin, lib, log)." />
+
+        <mkdir dir="${deploy.common.path}/lib" />
+
+        <delete includeEmptyDirs="true" quiet="true" failonerror="false">
+          <!--fileset dir="${deploy.path}/bin"/-->
+          <fileset dir="${deploy.common.path}/conf"/>
+          <fileset dir="${deploy.common.path}/doc"/>
+          <fileset dir="${deploy.common.path}/img"/>
+          <fileset dir="${deploy.common.path}/lib"/>
+          <!--fileset dir="${deploy.path}/log"/-->
+          <fileset dir="${deploy.common.path}/msg"/>
+            <!-- dir pconf_user NOT deleted !!! -->
+        </delete>
+
+        <!-- mkdir dir="${deploy.path}" / -->
+        <mkdir dir="${deploy.common.path}/lib" />
+        <!--mkdir dir="${deploy.path}/bin" /-->
+        <!--mkdir dir="${deploy.path}/log" /-->
+        <mkdir dir="${deploy.common.path}/conf" />
+        <mkdir dir="${deploy.common.path}/img" />
+        <mkdir dir="${deploy.common.path}/msg" />
+        <mkdir dir="${deploy.common.path}/doc" />
+        <mkdir dir="/var/log/wedit6" />
+
+        <echo message="Copy files." />
+
+        <copy todir="${deploy.common.path}/lib" file="${jar}/${project}.jar" />
+        <copy todir="${deploy.common.path}/lib">
+            <fileset file="${lib}/**" />
+        </copy>
+
+        <!--copy todir="${deploy.path}/bin">
+            <fileset file="${bin}/*.*" />
+        </copy-->
+        <copy file="../bin/linux/wedit6_common.sh" tofile="/usr/bin/wedit6.sh"/>
+
+        <copy file="../conf/config.txt" todir="${deploy.common.path}/conf"/>
+        <copy file="../conf/log4j/linux/log4j2_common.xml" tofile="${deploy.common.path}/conf/log4j2.xml"/>
+
+        <copy todir="${deploy.common.path}/img">
+            <fileset file="../img/**" />
+        </copy>
+        <copy todir="${deploy.common.path}/msg">
+            <fileset file="../msg/**" />
+        </copy>
+        <copy todir="${deploy.common.path}/doc">
+            <fileset file="../doc/guid/*.xml" />
+        </copy>
+        <!--copy file="../doc/guid/*.xml" todir="${deploy.path}/doc"/-->
+
+        <echo message="CHMOD /usr/bin/wedit6.sh" />
+        <chmod file="/usr/bin/wedit6.sh" perm="ugo+x" />
+
+        <echo message="CHMOD /var/log/wedit6" />
+        <chmod dir="/var/log/wedit6" perm="777" />
+
+    </target>
+
+    <!--target name="zip.linux.locale" depends="deploy.linux.locale"-->
+    <!-- Без изменения номера билда. -->
+    <target name="zip.linux.locale">
+        <buildnumber />
+        <zip destfile="${programmPath}/../${project}-${build.number}-distr.zip"  basedir="${programmPath}" excludes="log" />
+    </target>
+
+</project>
