@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Use log4j version 2.0
+
+    configuration monitorInterval="30" - для перечитки конфиг-файла каждые 30 сек - для отслеживания изменений.
+-->
+
+<configuration>
+    <appenders>
+        <RollingFile name="black" fileName="${env:MODULE_HOME}/log/black_box.txt" filePattern="${env:MODULE_HOME}/log/black_box/$${date:yyyy-MM}/black_box-%d{yyyy-MM-dd}-%i.txt.gz">
+            <!-- Попытка создать логгер, чтобы не архивировался - только вот эти пять файлов - чтобы не переполнялась директория. - НЕ получилась. -->
+        <!--RollingFile name="black" fileName="${env:MODULE_HOME}/log/black_box.txt" filePattern="${env:MODULE_HOME}/log/black_box/black_box-old.txt.gz"-->
+            <ThresholdFilter level="DEBUG" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout>
+                <pattern>%d{ISO8601} [%t] %-5p %logger{12} %C{1}.%M(line:%L). %m%n</pattern>
+            </PatternLayout>
+            <!-- Правила когда надо создавать новый файл - по "И" -->
+            <Policies>
+                <!-- Правило по времени (например, через каждые 6 часов) -->
+                <TimeBasedTriggeringPolicy/>
+                <!-- Правило по размерам файла (например, через 10Мб) -->
+                <SizeBasedTriggeringPolicy size="10 MB"/>
+            </Policies>
+            <!-- Ограничение на кол-во файлов - не более 5 штук. -->
+            <DefaultRolloverStrategy max="20"/>
+        </RollingFile>
+
+        <RollingFile name="errorLog" fileName="${env:MODULE_HOME}/log/wedit_error.txt"
+                     filePattern="${env:MODULE_HOME}/log/error/$${date:yyyy-MM}/wedit_error-%d{yyyy-MM-dd-HH}-%i.txt.gz">
+            <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout>
+                <pattern>%d{ISO8601} [%t] %-5p %logger{12} %C{1}.%M(line:%L). %m%n</pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="24" modulate="true" />
+                <SizeBasedTriggeringPolicy/>
+            </Policies>
+            <!-- Ограничение на кол-во файлов - не более 100 штук. -->
+            <DefaultRolloverStrategy max="50"/>
+        </RollingFile>
+
+        <RollingFile name="unknowLog" fileName="${env:MODULE_HOME}/log/unknow.txt"
+                     filePattern="${env:MODULE_HOME}/log/unknow/$${date:yyyy-MM}/unknow-%d{yyyy-MM-dd-HH}-%i.txt.gz">
+            <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout>
+                <pattern>%d{ISO8601} [%t] %-5p %logger{12} %C{1}.%M(line:%L). %m%n</pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="24" modulate="true" />
+                <SizeBasedTriggeringPolicy/>
+            </Policies>
+            <!-- Ограничение на кол-во файлов - не более 100 штук. -->
+            <DefaultRolloverStrategy max="50"/>
+        </RollingFile>
+
+        <!-- Говорим что следующие аппендеры должны работать не в этом же потоке, где вызывается logger.debug, а в отдельном
+         - т.е. сначала в поток передается запрос на отображение лога, а потом уже происходит обработка.
+         bufferSize - устанавливает размер входного буфера (по умолчанию - 128). -->
+        <Async name="async">
+            <appender-ref ref="black"/>
+            <appender-ref ref="errorLog"/>
+            <!-- Аппендер, в который выводятся сообщения, которые AsyncAppender не знает куда выводить (не может определить). Если не описан - кидаются в системный вывод. -->
+            <error-ref>unknowLog</error-ref>
+        </Async>
+
+    </appenders>
+
+    <loggers>
+        <!-- Апачевские библиотеки тоже юзают свой логгер. Повышаем уровень чтобы не засоряли. -->
+        <logger name="org.apache" level="info">
+        </logger>
+
+        <!--logger name="org.apache.log4j.xml" level="debug">
+            <appender-ref ref="black"/>
+        </logger-->
+
+        <!-- ========================== Перечень всех аппендеров и стартовый уровень логирования ====================== -->
+        <!-- Ставим дефолтный уровень DEBUG. Но приоритетнее ограничения по уровню на самих аппендерах. -->
+        <root level="debug">
+            <!--appender-ref ref="async"/-->
+            <appender-ref ref="errorLog"/>
+            <appender-ref ref="black"/>
+        </root>
+    </loggers>
+
+</configuration>

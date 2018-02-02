@@ -1,0 +1,125 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<xmlBook name='Звездный странник. Книга 5. Мегаполис-2'>
+    <bookTitle>
+        <node name='Звездный странник. Книга 5. Мегаполис-2'>
+            <element_name>bookTitle</element_name>
+            <title_vk>3</title_vk>
+            <attributes>
+                <attribute>VERSION : 215</attribute>
+                <attribute>Version_Mode : yes</attribute>
+                <attribute>Author : Сергей Афанасьев</attribute>
+                <attribute>Create date :</attribute>
+                <attribute>Type : фэнтези</attribute>
+                <attribute>Forma : роман</attribute>
+                <attribute>Size :</attribute>
+                <attribute>Address :</attribute>
+                <attribute>Phone :</attribute>
+                <attribute>Cell phone :</attribute>
+                <attribute>ICQ :</attribute>
+                <attribute>E-mail : s_afa@yahoo.com</attribute>
+                <attribute>www :</attribute>
+                <attribute>Рабочие названия: Снова Мегаполис</attribute>
+                <attribute>SAVE_DATE: 03.08.2011 17:36:40.500</attribute>
+            </attributes>
+            <node name='New - Часть 1. Подземка'>
+                <element_name>part</element_name>
+                <title_vk>3</title_vk>
+                <node name='Начало'>
+                    <element_name>chapter</element_name>
+                    <title_vk>2</title_vk>
+                    <node name='Голый человек в снегу'>
+                        <element_name>episode</element_name>
+                        <title_vk>2</title_vk>
+                        <text>
+                            <str>Пролетев несколько метров, Сергей пулей влетел в мягкий сугроб, вскольз плечом больно ударившись обо что-то
+                                твердое. И тот час тело обожгло ледянным холодом жесткого снега, накрывшего его с головой. Судорожно замахав
+                                руками, он тут же попытался выбраться, но не смог - голова сильно кружилась, неимоверно тошнило, и от всего
+                                этого он все никак не мог сориентироваться - где же здесь верх, а где - низ.
+                            </str>
+                            <eol/>
+                            <str>Стуча зубами, Сергей наконец-то ухватился за что-то - явно колесо машины, и потянулся, стараясь выбраться
+                                из сугроба.
+                            </str>
+                            <eol/>
+                            <str>Пробираясь на ощупь в рыхлом снеге по промятому им при падении тоннелю, и машинально прикидывая про себя -
+                                в какой мир он попал на этот раз, он высунул голову наружу и на мгновение замер.
+                            </str>
+                            <eol/>
+
+                            <str>7ч</str>
+                            <eol/>
+                            <str>разгадка отношений – почему Толстяк толкьо после Сергея резал Кэрол - в 7-й части.</str>
+                            <eol/>
+                            <eol/>
+                            <eol/>
+                            <eol/>
+                            <eol/>
+                        </text>
+                    </node>
+                </node>
+            </node>
+        </node>
+    </bookTitle>
+
+    <open_chapters>
+        <chapter name='11,0,'>
+            <place>1558</place>
+            <x>62</x>
+            <y>0</y>
+            <width>1440</width>
+            <height>980</height>
+        </chapter>
+        <chapter name='11,2,20,'>
+            <place>3432</place>
+            <x>65</x>
+            <y>0</y>
+            <width>1440</width>
+            <height>980</height>
+        </chapter>
+    </open_chapters>
+
+    <open_content>
+        <x>0</x>
+        <y>38</y>
+        <width>675</width>
+        <height>851</height>
+    </open_content>
+
+    <params>
+        <function name="SaveAsHTML">
+            <param name="html_file">
+                <value>/home/svj/programm/wedit/bin/D:/Raznoe/Zv_Str/ZS-5/bookTitle</value>
+            </param>
+            <param name="element_group">
+                <value>elementId / Использовать элемент / Выводить заголовок / Использовать префикс/Нумерация/Стартовый номер/ Кол-во
+                    пропусков перед заголовком/Кол-во пропусков после заголовка/ Шрифт заголовка / Align / Bold / Italic / Шрифт текста /
+                    Align / Bold / Italic ; path /1/1/1/1/1/3/1 /1/1/1/0 /0/3/0/0; chapter /1/1/1/1/1/3/1 /1/1/1/0 /0/3/0/0; bookTitle
+                    /1/1/1/1/1/3/1 /1/1/1/0 /0/3/0/0; sector /1/1/1/1/1/3/1 /1/1/1/0 /0/3/0/0; hiddenPart /1/1/1/1/1/3/1 /1/1/1/0 /0/3/0/0;
+                    episode /1/1/1/1/1/3/1 /1/1/1/0 /0/3/0/0; hiddenChapter /1/1/1/1/1/3/1 /1/1/1/0 /0/3/0/0; text /1/1/1/1/1/3/1 /1/1/1/0
+                    /0/3/0/0;
+                </value>
+            </param>
+        </function>
+
+        <function name="SaveAsRTF">
+            <param name="rtf_file_all">
+                <value>/home/svj/programm/my/wedit/bin/D:\Raznoe\Zv_Str\ZS-5\bookTitle</value>
+            </param>
+        </function>
+
+        <function name="SaveAsRTFContent">
+            <param name="rtf_file_content">
+                <value>/home/svj/Serg/Raznoe/Zv_Str/ZS-5/content/content_01.rtf</value>
+            </param>
+        </function>
+
+        <function name="SaveAsRTFSelect">
+            <param name="rtf_file_select">
+                <value>/home/svj/tmp/zs-5/podz_01.rtf</value>
+            </param>
+        </function>
+
+    </params>
+
+</xmlBook>
+

@@ -1,0 +1,169 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<bookContent name="Стихи">
+	<annotation></annotation>
+	<synopsis></synopsis>
+	<bookStructure>
+		<mandatories>
+			<textStyle>styleType=TEXT;styleName=text;foreground=java.awt.Color[r=0,g=0,b=0];Alignment=3;FirstLineIndent=10.0;family=arial;size=10;</textStyle>
+			<annotationStyle>styleType=ANNOTATION;styleName=annotation;family=arial;FirstLineIndent=5.0;Alignment=1;styleName=annotation;italic=true;size=10;foreground=java.awt.Color[r=153,g=0,b=153];</annotationStyle>
+			<labelStyle>styleType=TEXT;styleName=label;family=arial;FirstLineIndent=5.0;Alignment=0;styleName=label;size=10;foreground=java.awt.Color[r=0,g=153,b=0];</labelStyle>
+		</mandatories>
+		<types>
+			<type enName="work">
+				<ruName>рабочая</ruName>
+				<descr>Элемент в стадии реализации.</descr>
+				<styleType>2</styleType>
+				<defaultType>true</defaultType>
+			</type>
+			<type enName="draft">
+				<ruName>черновик</ruName>
+				<descr>Элемент в стадии черновых записей.</descr>
+				<color>940404</color>
+				<iconFontColor>940404</iconFontColor>
+				<styleType>2</styleType>
+				<defaultType>false</defaultType>
+			</type>
+			<type enName="think">
+				<ruName>продумать</ruName>
+				<descr>Продумать элемент.</descr>
+				<color>ff0000</color>
+				<iconFontColor>ff0000</iconFontColor>
+				<styleType>2</styleType>
+				<defaultType>false</defaultType>
+			</type>
+			<type enName="later">
+				<ruName>сделать, но потом</ruName>
+				<descr>Элемент, который точно будет реализован, но по-позже.</descr>
+				<color>0000ff</color>
+				<iconFontColor>0000ff</iconFontColor>
+				<styleType>2</styleType>
+				<defaultType>false</defaultType>
+			</type>
+			<type enName="hidden">
+				<ruName>служебный</ruName>
+				<descr>Служебный элемент.</descr>
+				<color>0000ff</color>
+				<iconFontColor>0000ff</iconFontColor>
+				<styleType>2</styleType>
+				<defaultType>false</defaultType>
+			</type>
+			<type enName="release">
+				<ruName>написана</ruName>
+				<descr>Элемент написан.</descr>
+				<color>00ff00</color>
+				<iconFontColor>00ff00</iconFontColor>
+				<styleType>2</styleType>
+				<defaultType>false</defaultType>
+			</type>
+		</types>
+		<bookElements>
+			<element level="0">
+				<name>Книга</name>
+				<color>940404</color>
+				<fontSize>18</fontSize>
+				<fontFamily>Arial</fontFamily>
+				<styleType>1</styleType>
+				<align>1</align>
+				<margin>10</margin>
+			</element>
+			<element level="1">
+				<name>Часть</name>
+				<color>ff0000</color>
+				<fontSize>16</fontSize>
+				<fontFamily>Arial</fontFamily>
+				<styleType>1</styleType>
+				<align>1</align>
+				<margin>10</margin>
+			</element>
+			<element level="2">
+				<name>Глава</name>
+				<color>0000ff</color>
+				<fontSize>16</fontSize>
+				<fontFamily>Arial</fontFamily>
+				<styleType>1</styleType>
+				<align>0</align>
+				<margin>25</margin>
+			</element>
+			<element level="3">
+				<name>Подглава</name>
+				<color>008000</color>
+				<fontSize>14</fontSize>
+				<fontFamily>Arial</fontFamily>
+				<styleType>1</styleType>
+				<align>0</align>
+				<margin>25</margin>
+			</element>
+			<element level="4">
+				<name>Эпизод</name>
+				<color>0000ff</color>
+				<fontSize>12</fontSize>
+				<fontFamily>Arial</fontFamily>
+				<styleType>0</styleType>
+				<align>1</align>
+				<margin>25</margin>
+			</element>
+		</bookElements>
+	</bookStructure>
+	<attributies>
+		<attribute name="create_date">2014-12-05 17:28:04</attribute>
+		<attribute name="last_change_date">2014-12-05 17:30:18</attribute>
+	</attributies>
+	<bookNode name="Стихи">
+		<node name="2013">
+			<text>
+				<sln>Маша Жиганова, 8 лет.</sln>
+				<eol/>
+				<sln> </sln>
+				<sln> 1)</sln>
+				<sln>Курага и чернослив</sln>
+				<sln>Разыгрался аппетит.</sln>
+				<sln>Очень-очень, очень-очень</sln>
+				<sln>Вырос вкусный чернослив.</sln>
+				<sln>И курага не отстает</sln>
+				<sln>Прыгает мне прямо в рот.</sln>
+				<eol/>
+				<sln> 2)</sln>
+				<sln>Домик едет на колесах.</sln>
+				<sln>Домик едет по земле.</sln>
+				<sln>Домик едет на колесах.</sln>
+				<sln>Домик едет налегке.</sln>
+				<sln>Из окна его увидишь</sln>
+				<sln>Башни, пашни и мосты.</sln>
+				<sln>Это все он нам расскажет,</sln>
+				<sln>И покажет по пути.</sln>
+				<eol/>
+				<sln> 3)</sln>
+				<sln>Солнце село.</sln>
+				<sln>Небо опустело.</sln>
+				<sln>Звезды взошли.</sln>
+				<sln>Огоньки зажгли.</sln>
+				<sln>Темень пришла.</sln>
+				<sln>Нас спать увела.</sln>
+				<eol/>
+				<sln> 4)</sln>
+				<sln>Нравится нам домик, </sln>
+				<sln>Бабушкин уютный.</sln>
+				<sln>Под окном березка</sln>
+				<sln>Белая стоит.</sln>
+				<sln>На суку ворона</sln>
+				<sln>Глазки строит Биму.</sln>
+				<sln>Ну а Бим-разбойник,</sln>
+				<sln>Лает и скулит.</sln>
+				<eol/>
+				<sln> 5)</sln>
+				<sln>Красота, красота,</sln>
+				<sln>Разбежалися глаза.</sln>
+				<sln>Ах какая же краса,</sln>
+				<sln>Эта дивушка-лиса!</sln>
+				<eol/>
+			</text>
+		</node>
+		<node name="Служебное">
+			<node name="Общее">
+			</node>
+			<node name="Действующие лица">
+			</node>
+		</node>
+	</bookNode>
+</bookContent>

@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<params>
+
+    <open>
+        <projects>
+            <project name="Сборник-2">
+                <projectFile>/home/svj/projects/SVJ/WEdit-6/test/pr-02/project.xml</projectFile>
+                <book name="Сказка о мышонке">
+                    <element name="глава 1" cursor_row="12" cursor_column="23" />
+                </book>
+            </project>
+        </projects>
+    </open>
+
+    <functions>
+        
+        <function name="CHANGE_ICON_SIZE">
+            <param name="iconSize" type="simple">
+                <value>44</value>
+            </param>
+        </function>
+
+        <function name="REOPEN_PROJECT">
+            <param name="ListMaxSize" type="simple">
+                <value>15</value>
+            </param>
+
+            <param name="ProjectList" type="list_item">
+                <list>
+                    <item name="Сборник-2">/home/svj/projects/SVJ/WEdit-6/test/pr-02/project.xml</item>
+                    <item name="Повести">/home/svj/projects/SVJ/WEdit-6/test/Miniatur/project.xml</item>
+                    <item name="Сборник-3">/home/svj/projects/SVJ/WEdit-6/test/pr-03/project.xml</item>
+                </list>
+            </param>
+        </function>
+
+        <function name="DECORATOR">
+            <param name="laf_name" type="simple">
+                <value>javax.swing.plaf.metal.MetalLookAndFeel</value>
+            </param>
+        </function>
+
+    </functions>
+
+</params>

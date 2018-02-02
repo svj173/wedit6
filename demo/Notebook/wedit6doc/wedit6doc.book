@@ -1,0 +1,141 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<bookContent name="WEDit6_Документация">
+	<annotation></annotation>
+	<synopsis></synopsis>
+	<bookStructure>
+		<mandatories>
+			<textStyle>styleType=TEXT;styleName=text;foreground=java.awt.Color[r=0,g=0,b=0];Alignment=3;FirstLineIndent=10.0;family=arial;size=10;</textStyle>
+			<annotationStyle>styleType=ANNOTATION;styleName=annotation;family=arial;FirstLineIndent=5.0;Alignment=1;styleName=annotation;italic=true;size=10;foreground=java.awt.Color[r=153,g=0,b=153];</annotationStyle>
+			<labelStyle>styleType=TEXT;styleName=label;family=arial;FirstLineIndent=5.0;Alignment=0;styleName=label;size=10;foreground=java.awt.Color[r=0,g=153,b=0];</labelStyle>
+		</mandatories>
+		<types>
+			<type enName="work">
+				<ruName>рабочая</ruName>
+				<descr>Элемент в стадии реализации.</descr>
+				<styleType>2</styleType>
+				<defaultType>true</defaultType>
+			</type>
+			<type enName="draft">
+				<ruName>черновик</ruName>
+				<descr>Элемент в стадии черновых записей.</descr>
+				<color>940404</color>
+				<iconFontColor>940404</iconFontColor>
+				<styleType>2</styleType>
+				<defaultType>false</defaultType>
+			</type>
+			<type enName="think">
+				<ruName>продумать</ruName>
+				<descr>Продумать элемент.</descr>
+				<color>ff0000</color>
+				<iconFontColor>ff0000</iconFontColor>
+				<styleType>2</styleType>
+				<defaultType>false</defaultType>
+			</type>
+			<type enName="later">
+				<ruName>сделать, но потом</ruName>
+				<descr>Элемент, который точно будет реализован, но по-позже.</descr>
+				<color>0000ff</color>
+				<iconFontColor>0000ff</iconFontColor>
+				<styleType>2</styleType>
+				<defaultType>false</defaultType>
+			</type>
+			<type enName="hidden">
+				<ruName>служебный</ruName>
+				<descr>Служебный элемент.</descr>
+				<color>0000ff</color>
+				<iconFontColor>0000ff</iconFontColor>
+				<styleType>2</styleType>
+				<defaultType>false</defaultType>
+			</type>
+			<type enName="release">
+				<ruName>написана</ruName>
+				<descr>Элемент написан.</descr>
+				<color>00ff00</color>
+				<iconFontColor>00ff00</iconFontColor>
+				<styleType>2</styleType>
+				<defaultType>false</defaultType>
+			</type>
+		</types>
+		<bookElements>
+			<element level="0">
+				<name>Книга</name>
+				<color>940404</color>
+				<fontSize>18</fontSize>
+				<fontFamily>Arial</fontFamily>
+				<styleType>1</styleType>
+				<align>1</align>
+				<margin>10</margin>
+			</element>
+			<element level="1">
+				<name>Часть</name>
+				<color>ff0000</color>
+				<fontSize>16</fontSize>
+				<fontFamily>Arial</fontFamily>
+				<styleType>1</styleType>
+				<align>1</align>
+				<margin>10</margin>
+			</element>
+			<element level="2">
+				<name>Глава</name>
+				<color>0000ff</color>
+				<fontSize>16</fontSize>
+				<fontFamily>Arial</fontFamily>
+				<styleType>1</styleType>
+				<align>0</align>
+				<margin>25</margin>
+			</element>
+			<element level="3">
+				<name>Подглава</name>
+				<color>008000</color>
+				<fontSize>14</fontSize>
+				<fontFamily>Arial</fontFamily>
+				<styleType>1</styleType>
+				<align>0</align>
+				<margin>25</margin>
+			</element>
+			<element level="4">
+				<name>Эпизод</name>
+				<color>0000ff</color>
+				<fontSize>12</fontSize>
+				<fontFamily>Arial</fontFamily>
+				<styleType>0</styleType>
+				<align>1</align>
+				<margin>25</margin>
+			</element>
+		</bookElements>
+	</bookStructure>
+	<attributies>
+		<attribute name="create_date">2014-12-05 17:32:59</attribute>
+		<attribute name="last_change_date">2014-12-05 17:50:07</attribute>
+	</attributies>
+	<bookNode name="WEDit6_Документация">
+		<node name="Введение">
+			<text>
+				<sln>В своем творческом процессе я долгое время пользвоался Notebook, а потом и Word. И был недоволен, т.к. мне требовался быстрый и удобный механизм перетаскивания глав и разделов книги в разные места (муки творчества зачастую требвоали изменять и сюжет, и порядок действий). А также - быстрый доступ к другим книгам - т.к. у меня не получалось все время от начала и до конца тратить на одну книгу. Потом понадобились функции конвертации произведений в разные форматы - html, doc, причем html имел свой особенности, в зависимости от сайта, на котором предполагалось разместить данное произведение. Также - возможность работать со сборниками проивзедений, а не только с одним Сборником. И чтобы весь этот функционал располагался в одном месте в одном гуи-редакторе. В интернете (на тот момент) ничего подходящего не нашел. И поэтому я принялся ваять редактор для "Писателя" (WriterEditor) самостоятельно, добавляя в него разные функции, которые, естественно, вдруг стали необходимы в работе.</sln>
+				<eol/>
+				<sln>На подходе</sln>
+				<sln>- проверка орфографии - пока не нашел быстрый алгоритм, все предыдущие реализации оказывались очень уж тормозными.</sln>
+				<sln>- вывод списка синонимов для указанного слова</sln>
+				<sln>- возможность автоматически заменять тексты на каком-либо сайте самиздата (здесь необходимо, чтобы владельцы сайта позволяли это)</sln>
+				<sln>- генерация черновика синопсиса на основе заголовков всех глав, названий мелких эпизодов книги, аннотаций.</sln>
+			</text>
+		</node>
+		<node name="Общее описание">
+			<text>
+				<eol/>
+				<eol/>
+			</text>
+		</node>
+		<node name="Установка">
+			<text>
+				<eol/>
+				<eol/>
+			</text>
+		</node>
+		<node name="Служебное">
+			<node name="Общее">
+			</node>
+		</node>
+	</bookNode>
+</bookContent>

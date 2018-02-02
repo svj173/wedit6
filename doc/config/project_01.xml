@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="rrrr">
+	<author>
+		<name></name>
+		<last_name></last_name>
+		<e_mail></e_mail>
+	</author>
+	<create_date>05.08.2011 17:58:33</create_date>
+	<section name="Miniatur">
+		<section name="UrfinDjus">
+			<bookTitle name="urfin_djus.bookTitle">/home/svj/projects/SVJ/WEdit-6/test/Miniatur/UrfinDjus/urfin_djus.bookTitle</bookTitle>
+		</section>
+		<section name="Dream">
+			<bookTitle name="dream.bookTitle">/home/svj/projects/SVJ/WEdit-6/test/Miniatur/Dream/dream.bookTitle</bookTitle>
+			<bookTitle name="relikt.bookTitle">/home/svj/projects/SVJ/WEdit-6/test/Miniatur/Dream/relikt.bookTitle</bookTitle>
+		</section>
+		<section name="ZS">
+			<bookTitle name="zs5.bookTitle">/home/svj/projects/SVJ/WEdit-6/test/Miniatur/ZS/zs5.bookTitle</bookTitle>
+			<bookTitle name="zs4.bookTitle">/home/svj/projects/SVJ/WEdit-6/test/Miniatur/ZS/zs4.bookTitle</bookTitle>
+		</section>
+	</section>
+</project>

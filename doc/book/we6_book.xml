@@ -1,0 +1,162 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<bookContent name="Сказки-1">
+
+     <annotation>
+        Аннотация на всю книгу.
+        Храбрый мышонок отправился в дремучий лес. И что там его ожидало.
+     </annotation>
+
+     <synopsis>
+        Синопсис на книгу.
+        Возможно, можно генерить из аннотаций на книгу и главы.
+     </synopsis>
+
+     <bookStructure>
+
+         <!--
+         <types>
+             <type name="work">
+                 <ruName>Рабочий</ruName>
+                 <desc>Рабочий текст (черновой)</desc>
+             </type>
+             <type name="release">
+                 <ruName>Релиз</ruName>
+                 <desc>Законченный текст</desc>
+             </type>
+             <type name="hidden">
+                 <ruName>Скрытый</ruName>
+                 <desc>Материал, используемый в книге</desc>
+             </type>
+         </types>
+         -->
+
+         <!-- Вопрос - взаимосвязь цветового стиля и элементов и их типов. Где? И как?
+               При добавлении нового типа нет смысла прописывать стили всем уровням - т.к. этот тип скорее 
+              всего будет использоваться в одном-двух местах (например, только для глав).
+               Заполняем по мере необходимости - если навешиваем тип на элемент,
+              для которого еще не прописан стиль для данного типа.
+              Тип 'work' задан всегда, удалить нельзя. И здесь он хранится не строкой а ссылкой на обьект в списке типов.
+              Если такого обьекта небыло - создать. Если при создании - уже есть такой - обновить данные. -->
+       <elements>
+         <element level="0">
+             <name>Книга</name>
+             <type>work</type>
+             <rowSpace>4</rowSpace>
+             <treeFgColor>00ff00</treeFgColor>
+             <treeFont>Monospaced-1-0-0-0-0-0-0-22</treeFont>
+
+             <!--
+             такой вариант обработки слишком сложен.
+             Делаем проще - никакого списка типов.
+             В тип пишется все что угодно - условие - для одинаковых уровней это значение должно быть уникальным.
+             <types>
+                 <type name="work">
+                    <treeFgColor>00ff00</treeFgColor>
+                    <treeFont>Monospaced-1-0-0-0-0-0-0-22</treeFont>
+                 </type>
+             </types>
+             -->
+
+         </element>
+         <element level="1">
+             <name>Часть</name>
+             <type>work</type>
+             <rowSpace>3</rowSpace>
+             <treeFgColor>0000ff</treeFgColor>
+             <treeFont>Monospaced-1-0-0-0-0-0-0-20</treeFont>
+         </element>
+         <element level="2">
+             <name>Глава</name>
+             <type>work</type>
+             <rowSpace>2</rowSpace>
+             <treeFgColor>000000</treeFgColor>
+             <treeFont>Monospaced-0-0-0-0-0-0-0-18</treeFont>
+         </element>
+         <element level="2">
+             <name>Глава</name>
+             <type>hidden</type>
+             <rowSpace>2</rowSpace>
+             <treeFgColor>444444</treeFgColor>
+             <treeFont>Monospaced-0-0-0-0-0-0-0-18</treeFont>
+         </element>
+         <element level="3">
+             <name>Подглава</name>
+             <type>work</type>
+             <rowSpace>2</rowSpace>
+             <treeFgColor>000000</treeFgColor>
+             <treeFont>Monospaced-2-0-0-0-0-0-0-16</treeFont>
+         </element>
+       </elements>
+
+     </bookStructure>
+
+
+     <bookNode name="Сказки-1">
+         <node name="глава 0">
+             <type>work</type>
+         </node>
+         <node name="глава 1">
+             <type>work</type>
+             <node name="el-1-01">
+                 <type>work</type>
+             </node>
+         </node>
+         <node name="глава 2">
+             <type>work</type>
+             <annotation> Глава, в которой главный герой наконец-то что-то понимает. </annotation>
+             <text>
+                 <str>Пролетев несколько метров, Сергей пулей влетел в мягкий сугроб, вскольз плечом больно ударившись обо что-то твердое. И тот час тело обожгло ледянным холодом жесткого снега, накрывшего его с головой. Судорожно замахав руками, он тут же попытался выбраться, но не смог - голова сильно кружилась, неимоверно тошнило, и от всего этого он все никак не мог сориентироваться - где же здесь верх, а где - низ.</str>
+                 <eol/>
+                 <str>Стуча зубами, Сергей наконец-то ухватился за что-то - явно колесо машины, и потянулся, стараясь выбраться из сугроба. </str>
+                 <eol/>
+                 <str>Пробираясь на ощупь в рыхлом снеге по промятому им при падении тоннелю, и машинально прикидывая про себя -  в какой мир он попал на этот раз, он высунул голову наружу и на мгновение замер.</str>
+                 <eol/>
+
+                 <str>7ч</str>
+                 <eol/>
+                 <str style="color:red">разгадка отношений – почему Толстяк толкьо после Сергея - Кэрол - в 7-й части.</str>
+                 <eol/>
+             </text>
+         </node>
+         <node name="глава 3">
+             <type>work</type>
+         </node>
+         <node name="глава 4">
+             <type>hidden</type>
+             <node name="el-4-01">
+                 <type>work</type>
+             </node>
+         </node>
+         <node name="глава 5">
+             <type>work</type>
+         </node>
+     </bookNode>
+
+     <params>
+         <!--
+         <function name="SaveAsHTML">
+             <param name="html_file">
+                 <value>/home/svj/programm/wedit/bin/D:/Raznoe/Zv_Str/ZS-5/bookTitle</value>
+             </param>
+             <param name="element_group">
+                 <value>elementId / Использовать элемент / Выводить заголовок / Использовать префикс/Нумерация/Стартовый номер/ Кол-во
+                     пропусков перед заголовком/Кол-во пропусков после заголовка/ Шрифт заголовка / Align / Bold / Italic / Шрифт текста /
+                     Align / Bold / Italic ; path /1/1/1/1/1/3/1 /1/1/1/0 /0/3/0/0; chapter /1/1/1/1/1/3/1 /1/1/1/0 /0/3/0/0; bookTitle
+                     /1/1/1/1/1/3/1 /1/1/1/0 /0/3/0/0; sector /1/1/1/1/1/3/1 /1/1/1/0 /0/3/0/0; hiddenPart /1/1/1/1/1/3/1 /1/1/1/0 /0/3/0/0;
+                     episode /1/1/1/1/1/3/1 /1/1/1/0 /0/3/0/0; hiddenChapter /1/1/1/1/1/3/1 /1/1/1/0 /0/3/0/0; text /1/1/1/1/1/3/1 /1/1/1/0
+                     /0/3/0/0;
+                 </value>
+             </param>
+         </function>
+
+         <function name="SaveAsRTF">
+             <param name="rtf_file_all">
+                 <value>/home/svj/programm/my/wedit/bin/D:\Raznoe\Zv_Str\ZS-5\bookTitle</value>
+             </param>
+         </function>
+           -->
+    </params>
+
+ </bookContent>
+         

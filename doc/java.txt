@@ -1,0 +1,3 @@
+
+// Проверить, может идет вложение самого в себя?  
+if ( newNode.isNodeAncestor ( selectNode ) )    throw new WEditException ( "Копирование самого в себя!" );

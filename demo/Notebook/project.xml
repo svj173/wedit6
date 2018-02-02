@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="Notebook">
+	<author>
+		<name>svj</name>
+		<last_name></last_name>
+		<e_mail></e_mail>
+	</author>
+	<create_date>05.12.2014 15:42:55</create_date>
+	<section name="Notebook" dirName="Notebook">
+		<section name="WEdit6_Docum" dirName="wedit6doc">
+			<book name="WEDit6_Документация">wedit6doc.book</book>
+		</section>
+	</section>
+</project>

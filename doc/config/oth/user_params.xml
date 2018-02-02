@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<params>
+<function name="REOPEN_PROJECT">
+		<param name="BookList" type="list_item">
+<list>
+			<item name="/home/svj/projects/SVJ/WEdit-6/test/Miniatur/project.xml">ttttt</item>
+		</list></param>
+
+</function>
+
+</params>

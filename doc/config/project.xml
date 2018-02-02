@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="Название проекта">
+    <author>
+        <name></name>
+        <last_name></last_name>
+        <address>
+            <e_mail></e_mail>
+            <icq></icq>
+        </address>
+    </author>
+
+    <create_date></create_date>
+
+    <section name="Имя раздела (здесь - название проекта)">
+        <section name="">
+            <section name="">
+                <bookTitle name="Имя книги">bookTitle file</bookTitle>
+            </section>
+            <bookTitle name="Имя книги">bookTitle file</bookTitle>
+        </section>
+
+        <bookTitle name="Имя книги">bookTitle file</bookTitle>
+    </section>
+
+</project>
+        

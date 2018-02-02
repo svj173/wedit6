@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 
 <!--
-Р—Р°РїСѓСЃРє СЂСѓРєР°РјРё:
+Запуск руками:
  ant -buildfile wedit6.xml deploy.linux.common
 
 
@@ -20,7 +20,7 @@
     <property name="deploy.common.path" value="/usr/lib/wedit6" />
 
 
-    <!-- РЎРѕР·РґР°С‚СЊ СЂР°Р±РѕС‡СѓСЋ РґРёСЂРµРєС‚РѕСЂРёСЋ Рё СЃРєРѕРїРёСЂРѕРІР°С‚СЊ С‚СѓРґР° Р±РёР±Р» jar, СЃС‚Р°СЂС‚РѕРІС‹Рµ СЃРєСЂРёРїС‚С‹ -->
+    <!-- Создать рабочую директорию и скопировать туда библ jar, стартовые скрипты -->
     <property name="programmPath" value="/home/svj/programm/my/wedit6" />
     
     <path id="project.class.path">
@@ -87,9 +87,9 @@
                 <attribute name="Main-Class" value="svj.wedit.v6.WEdit6" />
                 <attribute name="Class-Path" value="${project}.jar log4j-api-2.0-beta9.jar
                  log4j-core-2.0-beta9.jar itext-2.0.6.jar dom4j-2.0.0-RC1.jar
-                 poi/poi-3.14-20160307.jar
-                 poi/poi-ooxml-3.14-20160307.jar poi/poi-scratchpad-3.14-20160307.jar
-                 poi/xmlbeans-2.6.0.jar  poi/poi-ooxml-schemas-3.14-20160307.jar
+                 poi/poi-3.17.jar  poi/ooxml-schemas-1.1.jar
+                 poi/poi-ooxml-3.17.jar poi/poi-scratchpad-3.17.jar
+                 poi/xmlbeans-2.6.0.jar  poi/poi-ooxml-schemas-3.17.jar
                 " />
                 <attribute name="Implementation-Version" value="${version}-b${build.number}"/>
 
@@ -207,7 +207,7 @@
         
     </target>
 
-    <!-- РўРѕР»СЊРєРѕ РёР· РїРѕРґ root. -->
+    <!-- Только из под root. -->
     <target name="deploy.linux.common" depends="clean.common, init, compile, jar" description="Install to '/usr/lib'">
         <echo message="Create Directories Pool for /USR/LIB projects (bin, lib, log)." />
 
@@ -269,7 +269,7 @@
     </target>
 
     <!--target name="zip.linux.locale" depends="deploy.linux.locale"-->
-    <!-- Р‘РµР· РёР·РјРµРЅРµРЅРёСЏ РЅРѕРјРµСЂР° Р±РёР»РґР°. -->
+    <!-- Без изменения номера билда. -->
     <target name="zip.linux.locale">
         <buildnumber />
         <zip destfile="${programmPath}/../${project}-${build.number}-distr.zip"  basedir="${programmPath}" excludes="log" />

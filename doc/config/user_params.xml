@@ -1,0 +1,127 @@
+<?xml version='1.0' encoding='UTF-8'?>
+
+<!--
+ Индивидуальные параметры пользователя.
+ Хранятся в его рабочей директории в файле .wedit6
+-->
+        
+<params>
+    <function name="SimpleSearch">
+        <param name="icon_path" type="simple">
+            <value>img/tabbed/search.jpg</value>
+        </param>
+        <param name="max_size">
+            <value>15</value>
+        </param>
+    </function>
+
+    <function name="Reopen">
+        <param name="BookList" type="list_item">
+            <list>
+                <item name="Реликт">
+                    /home/svj/IdeaProjects/WEdit/project/test/book3/relikt.bookTitle
+                </item>
+                <item name="1">
+                    <attrs>
+                        <filePath>/home/svj/IdeaProjects/WEdit/project/test/book1/book1.bookTitle</filePath>
+                        <title>TestBook-1</title>
+                    </attrs>
+                </item>
+                <item name="2">
+                    <attrs>
+                        <filePath>/home/svj/Serg/Raznoe/Zv_Str/ZS-4/bookTitle/zs4.bookTitle</filePath>
+                        <title>Звездный странник. Книга 4. Властелин душ</title>
+                    </attrs>
+                </item>
+                <item name="3">
+                    <attrs>
+                        <filePath>/home/svj/tmp/cp/zs4_62.bookTitle</filePath>
+                        <title>Звездный странник. Книга 4. Властелин душ</title>
+                    </attrs>
+                </item>
+                <item name="4">
+                    <attrs>
+                        <filePath>/home/svj/Serg/Raznoe/History/Torjok/bookTitle/torjok.bookTitle</filePath>
+                        <title>Торжок-остров</title>
+                    </attrs>
+                </item>
+                <item name="5">
+                    <attrs>
+                        <filePath>/home/svj/Serg/Raznoe/History/Torjok/bookTitle/torjok.bookTitle</filePath>
+                        <title>Торжок-остров</title>
+                    </attrs>
+                </item>
+                <item name="6">
+                    <attrs>
+                        <filePath>/home/svj/Serg/Raznoe/History/Torjok/bookTitle/torjok.bookTitle</filePath>
+                        <title>Торжок-остров</title>
+                    </attrs>
+                </item>
+                <item name="7">
+                    <attrs>
+                        <filePath>/home/svj/Serg/Raznoe/History/Torjok/bookTitle/torjok.bookTitle</filePath>
+                        <title>Торжок-остров</title>
+                    </attrs>
+                </item>
+                <item name="8">
+                    <attrs>
+                        <filePath>/home/svj/Serg/Raznoe/History/Torjok/bookTitle/torjok.bookTitle</filePath>
+                        <title>Торжок-остров</title>
+                    </attrs>
+                </item>
+                <item name="9">
+                    <attrs>
+                        <filePath>/home/svj/Serg/Raznoe/History/Torjok/bookTitle/torjok.bookTitle</filePath>
+                        <title>Торжок-остров</title>
+                    </attrs>
+                </item>
+                <item name="10">
+                    <attrs>
+                        <filePath>/home/svj/tmp/zs4/zs4.bookTitle</filePath>
+                        <title>Звездный странник. Книга 4. Властелин душ</title>
+                    </attrs>
+                </item>
+                <item name="11">
+                    <attrs>
+                        <filePath>D:\Raznoe\Zv_Str\ZS-5\bookTitle\zs5.bookTitle</filePath>
+                        <title>Zs-5</title>
+                    </attrs>
+                </item>
+            </list>
+        </param>
+        <param name="ListMaxSize" type="simple">
+            <value>20</value>
+        </param>
+    </function>
+
+    <function name="SaveAsRTF">
+        <param name="element_group">
+
+        </param>
+    </function>
+
+    <function name="OpenBook">
+        <param name="file_dir">
+            <value>/home/svj/IdeaProjects/WEdit/project/test/book3/relikt.bookTitle</value>
+        </param>
+    </function>
+
+    <function name="Shutdown">
+        <param name="tmp_file_shutdown">
+            <value>/home/svj/IdeaProjects/WEdit/project</value>
+        </param>
+    </function>
+
+    <function name="MemoryCheck">
+        <param name="memory_time">
+            <value>60</value>
+        </param>
+    </function>
+
+    <function name="Lang">
+        <param name="current_lang">
+            <value>ru</value>
+        </param>
+    </function>
+
+</params>
