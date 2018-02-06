@@ -8,7 +8,8 @@
 
 <configuration>
     <appenders>
-        <RollingFile name="black" fileName="${env:MODULE_HOME}/log/black_box.txt" filePattern="${env:MODULE_HOME}/log/black_box/$${date:yyyy-MM}/black_box-%d{yyyy-MM-dd}-%i.txt.gz">
+        <!--RollingFile name="black" fileName="${env:MODULE_HOME}/log/black_box.txt" filePattern="${env:MODULE_HOME}/log/black_box/$${date:yyyy-MM}/black_box-%d{yyyy-MM-dd}-%i.txt.gz"-->
+        <RollingFile name="black" fileName="${env:MODULE_HOME}/log/black_box.txt" filePattern="${env:MODULE_HOME}/log/black_box/$${date:yyyy-MM}/black_box-%d{yyyy-}-%i.txt.gz">
             <!-- Попытка создать логгер, чтобы не архивировался - только вот эти пять файлов - чтобы не переполнялась директория. - НЕ получилась. -->
         <!--RollingFile name="black" fileName="${env:MODULE_HOME}/log/black_box.txt" filePattern="${env:MODULE_HOME}/log/black_box/black_box-old.txt.gz"-->
             <ThresholdFilter level="DEBUG" onMatch="ACCEPT" onMismatch="DENY"/>
@@ -23,10 +24,17 @@
                 <SizeBasedTriggeringPolicy size="10 MB"/>
             </Policies>
             <!-- Ограничение на кол-во файлов - не более 5 штук. -->
-            <DefaultRolloverStrategy max="20"/>
+            <DefaultRolloverStrategy max="5"/>
         </RollingFile>
 
-        <RollingFile name="errorLog" fileName="${env:MODULE_HOME}/log/wedit_error.txt" filePattern="${env:MODULE_HOME}/log/error/$${date:yyyy-MM}/wedit_error-%d{yyyy-MM-dd-HH}-%i.txt.gz">
+        <!--
+
+RollingFile name="errorLog" fileName="${env:MODULE_HOME}/log/wedit_error.txt" filePattern="${env:MODULE_HOME}/log/wedit_error-%i.txt"
+        Pattern does not contain a date
+
+        -->
+        <!--RollingFile name="errorLog" fileName="${env:MODULE_HOME}/log/wedit_error.txt" filePattern="${env:MODULE_HOME}/log/error/$${date:yyyy-MM}/wedit_error-%d{yyyy-MM-dd-HH}-%i.txt.gz"-->
+        <RollingFile name="errorLog" fileName="${env:MODULE_HOME}/log/wedit_error.txt" filePattern="${env:MODULE_HOME}/log/error/$${date:yyyy-MM}/wedit_error-%d{yyyy-}-%i.txt.gz">
             <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
             <PatternLayout>
                 <pattern>%d{ISO8601} [%t] %-5p %logger{12} %C{1}.%M(line:%L). %m%n</pattern>
@@ -36,7 +44,7 @@
                 <SizeBasedTriggeringPolicy/>
             </Policies>
             <!-- Ограничение на кол-во файлов - не более 100 штук. -->
-            <DefaultRolloverStrategy max="50"/>
+            <DefaultRolloverStrategy max="5"/>
         </RollingFile>
 
         <RollingFile name="unknowLog" fileName="${env:MODULE_HOME}/log/unknow.txt"
