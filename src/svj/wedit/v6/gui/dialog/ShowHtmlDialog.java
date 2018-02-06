@@ -1,6 +1,7 @@
 package svj.wedit.v6.gui.dialog;
 
 
+import svj.wedit.v6.Par;
 import svj.wedit.v6.WCons;
 import svj.wedit.v6.exception.WEditException;
 import svj.wedit.v6.tools.Convert;
@@ -27,22 +28,33 @@ public class ShowHtmlDialog extends WDialog<String,Void>
     private JEditorPane textPane;
     private JEditorPane smallPane;
     private JPanel      topPanel;
+    /** Для устанволения ширины диалога - делитель для ширины экрана. */
+    private final int         widthDiv;
 
     private class MP extends JPanel
     {
         @Override
-        public Dimension getPreferredSize() {
-            return new Dimension(780, super.getPreferredSize().height);
+        public Dimension getPreferredSize()
+        {
+            //return new Dimension(780, super.getPreferredSize().height);
+            int w;
+            if ( widthDiv > 0 )
+                w = Par.SCREEN_SIZE.width / widthDiv;
+            else
+                w = super.getPreferredSize().width;
+            return new Dimension ( w, super.getPreferredSize().height );
         }
     }
 
 
-    public ShowHtmlDialog ( String title )
+    public ShowHtmlDialog ( String title, int widthDiv )
     {
         super ( title );
 
         JPanel          panel, panelTextPane;
         JScrollPane     scroll;
+
+        this.widthDiv = widthDiv;
 
         panel       = new JPanel();
 
@@ -119,6 +131,22 @@ public class ShowHtmlDialog extends WDialog<String,Void>
         // не прошло
         getRootPane().registerKeyboardAction ( listener, KeyStroke.getKeyStroke( KeyEvent.VK_ENTER, 0), JComponent.WHEN_IN_FOCUSED_WINDOW );
 
+    }
+
+    protected void createDialogSize ()
+    {
+        if ( widthDiv > 0 )
+        {
+            int ic, width, height;
+
+            ic = Par.SCREEN_SIZE.width / 2;
+            width = ic + ic / widthDiv;
+            height = Par.SCREEN_SIZE.height / 2;
+            setPreferredSize ( new Dimension ( width, height ) );
+            setSize ( width, height );
+
+            pack ();
+        }
     }
 
 	/**

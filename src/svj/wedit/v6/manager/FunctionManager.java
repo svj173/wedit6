@@ -30,7 +30,10 @@ import svj.wedit.v6.function.option.DecoratorFunction;
 import svj.wedit.v6.function.option.changeIconSize.ChangeMenuIconSizeFunction;
 import svj.wedit.v6.function.option.changeIconSize.ChangePanelIconSizeFunction;
 import svj.wedit.v6.function.option.changeIconSize.ChangeToolBarIconSizeFunction;
-import svj.wedit.v6.function.project.*;
+import svj.wedit.v6.function.project.CloseProjectFunction;
+import svj.wedit.v6.function.project.SaveAbsoluteAllProjectsFunction;
+import svj.wedit.v6.function.project.SaveAllProjectsFunction;
+import svj.wedit.v6.function.project.ZipAllProjectsFunction;
 import svj.wedit.v6.function.project.archive.ArchiveProjectFunction;
 import svj.wedit.v6.function.project.create_new.NewProjectFunction;
 import svj.wedit.v6.function.project.edit.book.DeleteBookFunction;
@@ -49,6 +52,7 @@ import svj.wedit.v6.function.project.sync.SyncProjectFunction;
 import svj.wedit.v6.function.service.search.SimpleSearchFunction;
 import svj.wedit.v6.function.statistic.StatAllBookFunction;
 import svj.wedit.v6.function.statistic.StatAllOpenFunction;
+import svj.wedit.v6.function.statistic.StatEditBookInfoFunction;
 import svj.wedit.v6.function.system.MemoryCheckFunction;
 import svj.wedit.v6.function.text.*;
 import svj.wedit.v6.logger.Log;
@@ -229,8 +233,9 @@ public class FunctionManager
         add ( new SetAllTextAsSimpleFunction()     );
 
         // ---------------- Statistic -----------------------
-        add ( new StatAllOpenFunction()     );
-        add ( new StatAllBookFunction()     );
+        add ( new StatAllOpenFunction()         );
+        add ( new StatAllBookFunction()         );
+        add ( new StatEditBookInfoFunction()    );
 
         // ---------------- Convert -----------------------
         add ( new SaveAsRTFSelectFunction()     );

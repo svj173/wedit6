@@ -51,7 +51,7 @@ public abstract class AbstractConvertFunction  extends FileWriteFunction
     private final boolean multiSelect;
 
     /** Сборщик статистики по Титлам - каких (по уровням) и сколько раз было использовано. Для вывода в Итого. */
-    private Map<Integer,Integer>  titleStat = new HashMap<Integer,Integer>();
+    private final Map<Integer,Integer>  titleStat = new HashMap<Integer,Integer>();
 
 
     // ------------------------------------- abstract -----------------------------------------
@@ -127,6 +127,7 @@ public abstract class AbstractConvertFunction  extends FileWriteFunction
         Log.file.debug ( "Start" );
 
         numbers.clear();
+        titleStat.clear();
         warnBuffer = new StringBuilder ( 64 );
 
         try

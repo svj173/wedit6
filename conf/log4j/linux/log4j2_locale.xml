@@ -26,8 +26,7 @@
             <DefaultRolloverStrategy max="20"/>
         </RollingFile>
 
-        <RollingFile name="errorLog" fileName="${env:MODULE_HOME}/log/wedit_error.txt"
-                     filePattern="${env:MODULE_HOME}/log/error/$${date:yyyy-MM}/wedit_error-%d{yyyy-MM-dd-HH}-%i.txt.gz">
+        <RollingFile name="errorLog" fileName="${env:MODULE_HOME}/log/wedit_error.txt" filePattern="${env:MODULE_HOME}/log/error/$${date:yyyy-MM}/wedit_error-%d{yyyy-MM-dd-HH}-%i.txt.gz">
             <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
             <PatternLayout>
                 <pattern>%d{ISO8601} [%t] %-5p %logger{12} %C{1}.%M(line:%L). %m%n</pattern>

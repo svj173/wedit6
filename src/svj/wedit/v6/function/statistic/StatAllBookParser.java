@@ -67,7 +67,7 @@ public class StatAllBookParser implements IProjectSectionParser<String>
     {
         text.append ( "<B>== Всего книг: " );
         text.append ( booksCount );
-        text.append ( "</B><br/>\n" );
+        text.append ( "</B><br/><br/>\n" );
     }
 
     @Override

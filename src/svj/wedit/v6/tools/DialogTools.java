@@ -70,7 +70,12 @@ public class DialogTools
 
     public static void showHtml ( String title, String htmlText )
     {
-        ShowHtmlDialog dialog = new ShowHtmlDialog(title);
+        showHtml ( title, htmlText, 2 );
+    }
+
+    public static void showHtml ( String title, String htmlText, int widthDiv )
+    {
+        ShowHtmlDialog dialog = new ShowHtmlDialog ( title, widthDiv );
         try
         {
             dialog.init ( htmlText );

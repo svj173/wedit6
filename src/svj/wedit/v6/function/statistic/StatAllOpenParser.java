@@ -9,6 +9,7 @@ import svj.wedit.v6.obj.project.IProjectParser;
 
 /**
  * Сборщик информации обо всем открытом.
+ * <BR/> перевести на SwingWorker - быстрее работать.
  * <BR/>
  * <BR/> User: svj
  * <BR/> Date: 07.04.2012 8:42:04

@@ -24,6 +24,7 @@ public enum FunctionId
     OPEN_TEXT, CLOSE_TEXT, CLOSE_ALL_TEXT, SAVE_TEXT,
     STAT_OPEN,      // меню - Статистика / Инфа обо всех открытых
     STAT_BOOK,      // меню - Статистика / Список книг
+    STAT_BOOK_EDIT,      // меню - Статистика по редактированию Эпизодов. Смотреть исправления за - день, неделю, месяц...
     TEXT_INFO_ELEMENT, TEXT_SELECT_ELEMENT, TEXT_SELECT_ALIGN, TEXT_SELECT_STYLE, SELECT_IMAGE,
     UNDO_TEXT, REDO_TEXT, VIEW_FROM_SOURCE,
     INSERT_TABLE,

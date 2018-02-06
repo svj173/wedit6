@@ -261,10 +261,16 @@ public class WEMenuBar extends JMenuBar
 
         result  = new WEMenu ( "Статистика" );
 
+        // Все открытые. Подробно - ИД, файл, размер, позиция курсора.
         menu    = getMenu ( FunctionId.STAT_OPEN );
         if ( menu != null )  result.add ( menu );
 
+        // Список всех книг - по Сборникам, без доп данных. (Парсятся проекты)
         menu    = getMenu ( FunctionId.STAT_BOOK );
+        if ( menu != null )  result.add ( menu );
+
+        // Статистика по редактированию Эпизодов. Смотреть исправления за - день, неделю, месяц...
+        menu    = getMenu ( FunctionId.STAT_BOOK_EDIT );
         if ( menu != null )  result.add ( menu );
 
         return result;
