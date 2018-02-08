@@ -12,6 +12,7 @@ import svj.wedit.v6.tools.DialogTools;
 import svj.wedit.v6.tools.ProjectTools;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 
 
@@ -77,6 +78,15 @@ public class StatEditBookInfoFunction extends Function
         WidgetsDialog result;
 
         result = new WidgetsDialog ( "Выберите диапазон" );
+
+        // Описание
+        JTextArea textArea = new JTextArea ( " Замечание:\n При удалении или добавлении элементов книги - занесение в даты редактирования книги происходит только после ее сохранения в файл!" );
+        textArea.setLineWrap ( true );
+        textArea.setWrapStyleWord ( true );
+        textArea.setEditable ( false );
+        textArea.setPreferredSize ( new Dimension ( 250, 75 ) );  // главное - задать примерно правильную высоту.
+        //textArea.setMinimumSize ( new Dimension ( 250, 75 ) );  // главное - задать примерно правильную высоту.
+        result.addToNorth ( textArea );
 
         // выбираем первое значение.
         datePeriodWidget.setIndex ( 0 );

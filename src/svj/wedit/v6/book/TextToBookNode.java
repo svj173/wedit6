@@ -134,6 +134,9 @@ public class TextToBookNode
      *  кидается как простой текст, описанный данным стилем.
      * <BR> Т.е. текст имеет атрибут - имя стиля. Если у текста стиля
      *  нет - значит стандартный, по умолчанию.
+     * <br/>
+     * <br/> Ошибки надо бы собирать и в конце выводить как сообщение - если акция от пользователя, иначе просто в лог. (errorMessage)
+     * <br/>
      *
      * @param elm        Анализируемый элемент документа.
      * @param errorMessage Массив сообщений об ошибках.
@@ -190,7 +193,8 @@ public class TextToBookNode
             else if ( str.equals(AbstractDocument.ParagraphElementName ) || str.equals(AbstractDocument.SectionElementName ) )
             {
                 //Log.l.debug ( "---- Treat Children" );
-                // Это элемент, содержащий подэлементы. -- paragraph
+                // Это элемент, содержащий подэлементы. -- paragraph - Т.е. Абзац.
+                // - Что может содержать внутри?
                 // - Прогнать на вложенные обьекты - рекурсия
                 isize   = elm.getElementCount();
                 for ( i=0; i<isize; i++ )
@@ -233,10 +237,14 @@ public class TextToBookNode
         }
     }
 
+    /**
+     * Таблица.
+     * todo Не доделана.
+     * @param style     Стиль, в котором также хранятся обьекты JScrollPane и JTable. (Атрибут стиля под именем component).
+     */
     private void processTable ( AttributeSet style )
     {
-        String fileName;
-        Object obj, name;
+        Object      obj, name;
         Enumeration en;
 
         obj = null;
@@ -301,17 +309,6 @@ public class TextToBookNode
                 }
             }
         }
-
-        /*
-        if ( fileName != null )
-        {
-            getCurrentNode().addText ( new ImgTextObject ( fileName ) );
-        }
-        else
-        {
-            Log.l.error ( "В стиле IMG не задано имя файла. style = %s", style );
-        }
-        */
     }
 
 

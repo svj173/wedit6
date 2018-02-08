@@ -33,7 +33,7 @@ import java.util.Map;
  */
 public abstract class AbstractConvertFunction  extends FileWriteFunction
 {
-    /* Нумерация для элементов (для Глав - своя). */
+    /* Нумерация для элементов (Часити, Главы). Ключ - уровень элемента. Value - текущее значение. */
     private final Map<Integer,Integer> numbers = new HashMap<Integer,Integer> ();
 
     /* Текстовый буфер для режима - поиск попаданий заданных символов, с сообщением в конце конвертации о местах попаданий. */
@@ -384,6 +384,9 @@ public abstract class AbstractConvertFunction  extends FileWriteFunction
         phase       = "start";     // шаг процесса - для отладки
         try
         {
+            // в numbers - скидываем в 1 все номера, кроме текущего уровня.
+            clearNumbers ( level );
+
             nodeLevel   = nodeObject.getLevel();
             // Взять тип заголовка элемента - может быть NULL (т.е. work)
             elementType = nodeObject.getElementType();
@@ -520,6 +523,20 @@ public abstract class AbstractConvertFunction  extends FileWriteFunction
             str = Convert.concatObj ( "Системная ошибка. nodeObject = '", nodeObject, "'. Phase = ", phase, "\n Error : \n", e );
             Log.file.error ( str, e );
             throw new WEditException ( e, str );
+        }
+    }
+
+    /**
+     * скидываем в 1 все номера, кроме текущего уровня.
+     * @param level    Текущий уровень.
+     */
+    private void clearNumbers ( int level )
+    {
+        int lev;
+        for ( Map.Entry<Integer,Integer> entry : numbers.entrySet() )
+        {
+            lev = entry.getKey ();
+            if ( lev > level )  numbers.put ( lev, 0 );
         }
     }
 

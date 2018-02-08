@@ -282,12 +282,12 @@ public abstract class WDialog<T,M>   extends JDialog implements CloseHandler
         rootPanel.add ( comp, BorderLayout.EAST );
     }
 
-    protected void addToNorth ( Component comp )
+    public void addToNorth ( Component comp )
     {
         rootPanel.add ( comp, BorderLayout.NORTH );
     }
 
-    protected void addToWest ( Component comp )
+    public void addToWest ( Component comp )
     {
         rootPanel.add ( comp, BorderLayout.WEST );
     }
