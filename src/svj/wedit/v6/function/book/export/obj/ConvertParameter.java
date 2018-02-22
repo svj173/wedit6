@@ -74,6 +74,10 @@ public class ConvertParameter     extends FunctionParameter<Object>   implements
     // Выводить ли аннотацию
     private BooleanParameter     printAnnotation;
 
+    // Неизменяемые заголовки. Хранятся в виде пары: Уровень заголовка - Название заголовка. Параметры разделены точкой с запятой.
+    // Для одного уровня может быть несколкьо Названий - т.е. несколкьо пар.
+    private SimpleParameter      strongParameter;
+
     // Локальные параметры - индивидуальные для конкретной функции Конвертации (например, для HTML - Включать HTML-заголовок)
     private final Collection<FunctionParameter>  localeParams = new LinkedList<FunctionParameter>();
 
@@ -104,6 +108,8 @@ public class ConvertParameter     extends FunctionParameter<Object>   implements
         {
             other.addLocale ( p.clone() );
         }
+
+        other.setStrongParameter ( strongParameter.clone() );
 
         other.setCreateContentParam ( createContentParam.clone() );
         other.setContentWidthParam ( contentWidthParam.clone() );
@@ -189,6 +195,9 @@ public class ConvertParameter     extends FunctionParameter<Object>   implements
                 type.toXml ( ic2, out );
             }
             outString ( ic1, "</types>\n", out );
+
+            // ------------------------ Неизменяемые заголовки -----------------------
+            getStrongParameter().toXml ( ic1, out );
 
             // --------------------- Другие параметры -----------------------
             outString ( ic1, "<others>\n", out );
@@ -334,6 +343,13 @@ public class ConvertParameter     extends FunctionParameter<Object>   implements
         return result;
     }
 
+    public SimpleParameter getStrongParameter ()
+    {
+        // Параметр должен быть всегда.
+        if ( strongParameter == null )  strongParameter = new SimpleParameter ( "strongTitleParam", "", true );
+        return strongParameter;
+    }
+
     public SimpleParameter getContentWidthParam ()
     {
         // Параметр должен быть всегда.
@@ -385,6 +401,8 @@ public class ConvertParameter     extends FunctionParameter<Object>   implements
         result.append ( types.size() );
         result.append ( "; locale size = " );
         result.append ( localeParams.size() );
+        result.append ( "; strongParameter = " );
+        result.append ( strongParameter );
         //result.append ( "; tornOffHtmlTitle = " );
         //result.append ( tornOffHtmlTitle );
         result.append ( "; createContentParam = " );
@@ -471,4 +489,8 @@ public class ConvertParameter     extends FunctionParameter<Object>   implements
         return null;
     }
 
+    public void setStrongParameter ( SimpleParameter strongParameter )
+    {
+        this.strongParameter = strongParameter;
+    }
 }

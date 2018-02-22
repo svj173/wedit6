@@ -126,14 +126,41 @@ public class DialogTools
     }
     //*/
 
-    public static void showError ( Component parentFrame, Object msg, String title )
-    {
-        JOptionPane.showMessageDialog ( parentFrame, msg, title, JOptionPane.ERROR_MESSAGE );
-    }
-
     public static void showError ( Object msg, String title )
     {
-        JOptionPane.showMessageDialog ( Par.GM.getFrame(), msg, title, JOptionPane.ERROR_MESSAGE );
+        //JOptionPane.showMessageDialog ( parentFrame, msg, title, JOptionPane.ERROR_MESSAGE );
+        showError ( null, msg, title );
+    }
+
+    public static void showError ( Component parentFrame, Object msg, String title )
+    {
+        Object object;
+        // Анализ на очень длинные строки.
+        if ( msg instanceof String )
+        {
+            String str = msg.toString ();
+            if ( str.length() > 80 )
+            {
+                //*
+                JTextArea textArea = new JTextArea ( str );
+                textArea.setWrapStyleWord ( true );
+                textArea.setLineWrap ( true );
+                textArea.setPreferredSize ( new Dimension ( Par.SCREEN_SIZE.width / 2, (str.length() / 80 + 1)*15 ) );
+                object = textArea;
+                        //*/
+                //str = StringTools.recut ( str, 75, "\n" );
+            }
+            else
+            {
+                object = str;
+            }
+        }
+        else
+        {
+            object = msg;
+        }
+        if ( parentFrame == null )  parentFrame = Par.GM.getFrame();
+        JOptionPane.showMessageDialog ( parentFrame, object, title, JOptionPane.ERROR_MESSAGE );
     }
 
 }

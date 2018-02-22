@@ -8,6 +8,7 @@ import svj.wedit.v6.logger.Log;
 import svj.wedit.v6.obj.WPair;
 import svj.wedit.v6.obj.WorkResult;
 import svj.wedit.v6.tools.Convert;
+import svj.wedit.v6.tools.DialogTools;
 
 import javax.swing.*;
 import java.awt.*;
@@ -214,7 +215,8 @@ public abstract class WEventHandler<T extends EventObject>
             // это информационное сообщение
             operResult    = WorkResult.INFO;
             Log.l.info ( "WEventHandler.handle(%s): handle action release info = %s",getName(), ex.getMessage() );
-            JOptionPane.showMessageDialog ( Par.GM.getFrame(), ex.getMessage(), "Сообщение",  JOptionPane.INFORMATION_MESSAGE );
+            DialogTools.showMessage ( Par.GM.getFrame(), ex.getMessage(), "Сообщение" );
+            //JOptionPane.showMessageDialog ( Par.GM.getFrame(), ex.getMessage(), "Сообщение",  JOptionPane.INFORMATION_MESSAGE );
         }
         else
         {
@@ -235,7 +237,8 @@ public abstract class WEventHandler<T extends EventObject>
             Toolkit.getDefaultToolkit().beep();
             // todo - описать глобальные параметры для вывода сообщения на экран информационной панели.
             // - окно
-            JOptionPane.showMessageDialog ( Par.GM.getFrame(), ex.getMessage(), "Ошибка",  JOptionPane.ERROR_MESSAGE );
+            DialogTools.showError ( Par.GM.getFrame(), ex.getMessage(), "Ошибка" );
+            //JOptionPane.showMessageDialog ( Par.GM.getFrame(), ex.getMessage(), "Ошибка",  JOptionPane.ERROR_MESSAGE );
         }
     }
 

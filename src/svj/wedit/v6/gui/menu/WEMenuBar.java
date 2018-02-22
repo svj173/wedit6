@@ -23,14 +23,11 @@ import java.awt.event.ActionListener;
  */
 public class WEMenuBar extends JMenuBar
 {
-    //private WeakReference<JMenu> helpMenu = null;
-    
     public WEMenuBar ()
     {
         super();
 
         WEMenu menu;
-        JComponent c;
 
         // Файл
         menu    = createFileMenu();
@@ -47,10 +44,6 @@ public class WEMenuBar extends JMenuBar
         // Импортировать
         menu    = createImportMenu ();
         add ( menu );
-
-        // Сборник
-        //menu    = createProjectMenu ();
-        //add ( menu );
 
         // Книга
         menu    = createBookMenu();

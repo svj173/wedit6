@@ -11,29 +11,31 @@ import svj.wedit.v6.gui.layout.VerticalLayout;
 import svj.wedit.v6.gui.list.WListPanel;
 import svj.wedit.v6.gui.panel.EditablePanel;
 import svj.wedit.v6.gui.panel.SimpleEditablePanel;
+import svj.wedit.v6.gui.panel.WPanel;
+import svj.wedit.v6.gui.renderer.BookNodeCellRenderer;
 import svj.wedit.v6.gui.renderer.INameRenderer;
 import svj.wedit.v6.gui.tabs.TabsChangeListener;
 import svj.wedit.v6.gui.tabs.TabsPanel;
+import svj.wedit.v6.gui.tree.TreePanel;
 import svj.wedit.v6.gui.widget.*;
 import svj.wedit.v6.gui.widget.font.FontWidget;
 import svj.wedit.v6.logger.Log;
+import svj.wedit.v6.obj.TreeObj;
+import svj.wedit.v6.obj.TreeObjType;
 import svj.wedit.v6.obj.WType;
+import svj.wedit.v6.obj.book.BookNode;
 import svj.wedit.v6.obj.book.BookStructure;
 import svj.wedit.v6.obj.book.element.WBookElement;
-import svj.wedit.v6.tools.Convert;
-import svj.wedit.v6.tools.DialogTools;
-import svj.wedit.v6.tools.GuiTools;
+import svj.wedit.v6.tools.*;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
+import javax.swing.tree.TreeSelectionModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * Диалог настроек элементов книги - для конвертации (RTF, HTML...)
@@ -57,7 +59,7 @@ public class ConvertDialog extends WValidateDialog<BookmarksParameter,ConvertPar
     /** Список вариантов конвертации (закладки) */
     private WListPanel<ConvertParameter>  listPanel;
     //private JPanel          elementsPanel, othersPanel, typesPanel;
-    private EditablePanel          elementsPanel, othersPanel, typesPanel, localePanel;
+    private EditablePanel          elementsPanel, othersPanel, typesPanel, localePanel, strongTitlesPanel;
     private JButton         addButton, editButton, saveButton, cancelButton, deleteButton, typeListButton, copyButton, pasteButton;
     private FileWidget      fileWidget;
     private Collection<WBookElement> bookElementList;
@@ -68,6 +70,9 @@ public class ConvertDialog extends WValidateDialog<BookmarksParameter,ConvertPar
     private int             titleWidth, valueWidth;
 
     private Collection<FunctionParameter> localeParams;
+
+    /** Для - Неизменяемые заголовки. */
+    private BookNode rootBookNode = null;
 
 
 
@@ -89,11 +94,18 @@ public class ConvertDialog extends WValidateDialog<BookmarksParameter,ConvertPar
     public ConvertDialog ( Frame owner, String title, BookmarksParameter bookmarksParameter, BookStructure bookStructure,
                            Collection<FunctionParameter> localeParams )
     {
+        this ( owner, title, bookmarksParameter, bookStructure, localeParams, null );
+    }
+
+    public ConvertDialog ( Frame owner, String title, BookmarksParameter bookmarksParameter, BookStructure bookStructure,
+                           Collection<FunctionParameter> localeParams, BookNode rootBookNode )
+    {
         super ( owner, title );
 
         this.bookmarkParameter  = bookmarksParameter;
         this.bookElementList    = bookStructure.getBookElements();
         this.bookTypeList       = bookStructure.getTypes ();
+        this.rootBookNode       = rootBookNode;
 
         titleWidth = 200;
         valueWidth = 550;
@@ -321,10 +333,6 @@ public class ConvertDialog extends WValidateDialog<BookmarksParameter,ConvertPar
 
         centerPanel.add ( tabsPanel, BorderLayout.CENTER );
 
-
-        EditablePanel sPanel;
-
-
         //font    = new Font ( "Monospaced", Font.BOLD, 12 ); // фонт титлов на группах параметров
 
         // Заголовки
@@ -333,14 +341,13 @@ public class ConvertDialog extends WValidateDialog<BookmarksParameter,ConvertPar
         // Типы элементов
         typesPanel = createConvertParamsPanelAndAddToTabs ( tabsPanel, "Types", "Типы элементов" );
 
+        // Неизменяемые заголовки
+        strongTitlesPanel = createConvertParamsPanelAndAddToTabs ( tabsPanel, "strongTitles", "Неизменяемые заголовки" );
+
         // Разное
         othersPanel = createConvertParamsPanelAndAddToTabs ( tabsPanel, "Others", "Разное" );
 
         // Локальные параметры - Индивидуальная панель. Берется вся панель целиком.
-        //if ( initObject.hasLocaleParams() )
-        //{
-        //    localePanel = createConvertParamsPanelAndAddToTabs ( tabsPanel, "Locale", "Локальные" );
-        //}
         localePanel = createConvertParamsPanelAndAddToTabs ( tabsPanel, "Locale", "Локальные" );
 
         Log.l.debug ( "(%s) ConvertDialog.init: tabsPanel = %s", getName(), tabsPanel );
@@ -480,26 +487,8 @@ public class ConvertDialog extends WValidateDialog<BookmarksParameter,ConvertPar
         cp.setLayout ( new BoxLayout ( cp, BoxLayout.PAGE_AXIS ) );
         centerPanel.add ( new JScrollPane ( cp ), BorderLayout.CENTER );
 
-        font    = new Font ( "Monospaced", Font.BOLD, 12 ); // фонт титлов на группах параметров
-        /*
-        elementsPanel   = new JPanel();
-        elementsPanel.setLayout ( new BoxLayout ( elementsPanel, BoxLayout.PAGE_AXIS ) );
-        //elementsPanel.setBorder ( BorderFactory.createTitledBorder ( "Элементы" ) );
-        elementsPanel.setBorder ( BorderFactory.createTitledBorder ( null, "Элементы", TitledBorder.CENTER, TitledBorder.TOP, font, WCons.BLUE_1 ) );
-        cp.add ( elementsPanel );
+        //font    = new Font ( "Monospaced", Font.BOLD, 12 ); // фонт титлов на группах параметров
 
-        typesPanel   = new JPanel();
-        typesPanel.setLayout ( new BoxLayout ( typesPanel, BoxLayout.PAGE_AXIS ) );
-        //typesPanel.setBorder ( BorderFactory.createTitledBorder ( "Типы элементов" ) );
-        typesPanel.setBorder ( BorderFactory.createTitledBorder ( null, "Типы элементов", TitledBorder.CENTER, TitledBorder.TOP, font, WCons.BLUE_1 ) );
-        cp.add ( typesPanel );
-
-        othersPanel   = new JPanel();
-        othersPanel.setLayout ( new BoxLayout ( othersPanel, BoxLayout.PAGE_AXIS ) );
-        //othersPanel.setBorder ( BorderFactory.createTitledBorder ( "Параметры" ) );
-        othersPanel.setBorder ( BorderFactory.createTitledBorder ( null, "Параметры", TitledBorder.CENTER, TitledBorder.TOP, font, WCons.BLUE_1 ) );
-        cp.add ( othersPanel );
-        */
         // File - выделен в самом низу панели - чтобы был всегда виден
         // Файл
         fileWidget = new FileWidget ( "Файл", false );
@@ -518,7 +507,6 @@ public class ConvertDialog extends WValidateDialog<BookmarksParameter,ConvertPar
             p = bookmarkParameter.getConvertParameter ( str );
             if ( p != null )  listPanel.setSelectedItem ( p );
         }
-        //*/
     }
 
     /**
@@ -561,18 +549,17 @@ public class ConvertDialog extends WValidateDialog<BookmarksParameter,ConvertPar
         typesPanel.revalidate();
         typesPanel.repaint();
 
+        // ----------- Изменить панель Неизменяемые заголовки. ---------------
+        // todo Занесем значения из parameter
+        // Здесь просто копия дерева, на котормо можно отметить множество элементов.
+        // Значения сохраняются в виде пары - Уровень, Название.
+        strongTitlesPanel.removeAll();
+        strongTitlesPanel.add ( createStrongTitlesPanel(parameter) );
+        strongTitlesPanel.revalidate();
+        strongTitlesPanel.repaint();
+
         // ----------- Изменить панель остальных параметров ---------------
         othersPanel.removeAll();
-        /*
-        // Для самиздат - отключить (не выводить) теги - html, title, body.
-        //othersPanel.add ( new JLabel ( parameter.getName() ) );
-        // - Включить/выключить заголовок - html,title,body
-        parameterPanel = createOnOffHtmlTitlePanel ( parameter.getTornOffHtmlTitle() );
-        othersPanel.add ( parameterPanel );
-        // - Красная строка
-        parameterPanel = createRedLineParamPanel ( parameter.getRedLineParam() );
-        othersPanel.add ( parameterPanel );
-        */
         // - Аннотация
         parameterPanel = createPrintAnnotationPanel ( parameter.getPrintAnnotation() );
         othersPanel.add ( parameterPanel );
@@ -625,6 +612,58 @@ public class ConvertDialog extends WValidateDialog<BookmarksParameter,ConvertPar
         // -------------------------- File ------------------------------------
         fileWidget.setValue ( parameter.getFileName() );
         fileWidget.setEditable ( false );  // запрещаем редактирование
+    }
+
+    private Component createStrongTitlesPanel ( ConvertParameter parameter )
+    {
+        TreePanel           treePanel;
+        JScrollPane         scrollPane;
+        SimpleEditablePanel result;
+        TreeObj             cloneTree;
+        SimpleParameter     strongTitleParameter;
+        String              value;
+
+        // Создать панель
+        result  = new SimpleEditablePanel();
+        result.setLayout ( new BorderLayout ( 5,5 ) );
+
+        // Взять параметр, отвечающий за данные значения. Если его нет - создать.
+        strongTitleParameter = parameter.getStrongParameter();
+        result.setObject ( strongTitleParameter );
+
+        try
+        {
+            if ( rootBookNode == null )  throw new WEditException ( "Дерево книги не задано!" );
+
+            // Клон дерева книги.
+            cloneTree = TreeObjTools.createTree ( rootBookNode.clone() );
+
+            // TreeObj root, T object
+            treePanel   = new TreePanel ( cloneTree, null );
+            //treePanel.getTree().setRootVisible ( true );
+            treePanel.setSelectionMode ( TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION );
+            treePanel.addRenderer ( TreeObjType.BOOK_NODE, new BookNodeCellRenderer() );
+
+            // todo Взять из параметра значения выбранных узлов дерева и отметить их.
+            // - 1=scroll|ppp;2=Не вошедшее
+            value = strongTitleParameter.getValue();
+            Log.l.info ( "strongTitlesPanel: get value = %s", value );
+
+            // Распарсить их.
+            // Отметить на дереве.
+            //treePanel.selectNode ( value );
+            // scroll_2018_02_09_17_11_47_398
+            treePanel.selectNode ( "scroll_2018_02_09_17_07_40_864" );
+
+            scrollPane  = new JScrollPane ( treePanel );
+            result.add ( scrollPane, BorderLayout.CENTER );
+
+        } catch ( Exception e )      {
+            JLabel label = new JLabel ( "Error: "+e );
+            result.add ( label, BorderLayout.CENTER );
+        }
+
+        return result;
     }
 
     /**
@@ -865,6 +904,9 @@ public class ConvertDialog extends WValidateDialog<BookmarksParameter,ConvertPar
             }
         }
 
+        // Неизменяемые заголовки
+    //    strongTitlesPanel.setEnabled ( true );
+
         // - Оcтальные параметры
         cList = othersPanel.getComponents();
         for ( Component c : cList )
@@ -913,6 +955,7 @@ public class ConvertDialog extends WValidateDialog<BookmarksParameter,ConvertPar
             // Очистить рабочие панели
             elementsPanel.removeAll();
             othersPanel.removeAll();
+            strongTitlesPanel.removeAll();
             typesPanel.removeAll();
             //if ( localePanel != null )  localePanel.removeAll();
             localePanel.removeAll();
@@ -974,8 +1017,8 @@ public class ConvertDialog extends WValidateDialog<BookmarksParameter,ConvertPar
                         }
                         else
                         {
-                            str = Convert.concatObj ( "Обьект '%s' не является AbstractWidget.",cc );
-                            Log.l.error ( null, str );
+                            //str = Convert.concatObj ( "Обьект '%s' не является AbstractWidget.",cc );
+                            Log.l.error ( "Обьект '%s' не является AbstractWidget.", cc );
                         }
                     }
                 }
@@ -1003,16 +1046,21 @@ public class ConvertDialog extends WValidateDialog<BookmarksParameter,ConvertPar
                     }
                     else
                     {
-                        str = Convert.concatObj ( "Обьект в виджете типов '%s' отсутствует или не является SimpleParameter.",c );
-                        Log.l.error ( null, str );
+                        //str = Convert.concatObj ( "Обьект в виджете типов '%s' отсутствует или не является SimpleParameter.",c );
+                        Log.l.error ( "Обьект в виджете типов '%s' отсутствует или не является SimpleParameter.", c );
                     }
                 }
                 else
                 {
-                    str = Convert.concatObj ( "Обьект '%s' не является AbstractWidget.",c );
-                    Log.l.error ( null, str );
+                    //str = Convert.concatObj ( "Обьект '%s' не является AbstractWidget.",c );
+                    Log.l.error ( "Обьект '%s' не является AbstractWidget.", c );
                 }
             }
+
+            // ----------------- Неизменяемые заголовки ------------------------
+            // todo Взять отмеченные элементы дерева и сохранить их в виде пары: Уровень - Наименование.
+            strongTitlesPanel.setEnabled ( false );
+            setStrongTitlesToParam ();
 
             // ----------------- Оcтальные параметры ------------------------
 
@@ -1064,15 +1112,86 @@ public class ConvertDialog extends WValidateDialog<BookmarksParameter,ConvertPar
             fileWidget.setEditable ( false );
 
         } catch ( Exception e )        {
-            str = "Системная ошибка сохранения атрибутов Закладок конвертации в HTML в параметре Конвертации.";
+            str = "Системная ошибка сохранения атрибутов Закладок конвертации в параметры Конвертации.";
             Log.l.error ( str, e );
             throw new WEditException ( e, str, " :\n", e );
         }
     }
 
+    private void setStrongTitlesToParam () throws WEditException
+    {
+        Component[] cList;
+
+        cList = strongTitlesPanel.getComponents();      // Всего один компонент - SimpleEditablePanel
+        Log.l.info ( "strongTitlesPanel: cList.size = %d", cList.length );
+        int ic = 0;
+        if ( cList.length >= 1 )
+        {
+            // - 0 - SimpleEditablePanel
+            Log.l.info ( "strongTitlesPanel: cList.class = %s", cList[0].getClass().getName() );
+            if ( cList[0] instanceof WPanel )
+            {
+                WPanel          panel;
+                SimpleParameter strongTitleParameter;
+
+                panel = (WPanel ) cList[0];
+                // Взять обьект Параметра
+                strongTitleParameter = (SimpleParameter) panel.getObject();
+                Component[] c = panel.getComponents();
+                Log.l.info ( "strongTitlesPanel: c.class = %s", c[0].getClass().getName() );
+                if ( c[0] instanceof JScrollPane )
+                {
+                    String str;
+                    StringBuilder value = new StringBuilder ( 32 );
+                    JScrollPane pane = ( JScrollPane ) c[0];
+                    Component comp = pane.getViewport ().getView ();
+                    TreePanel treePanel = ( TreePanel ) comp;
+                    // Взять отмеченные любых уровней.
+                    TreeObj[] selected = treePanel.getAllSelectNodes();
+                    Log.l.info ( "strongTitlesPanel: selected = %s", DumpTools.printArray ( selected, '\n' ) );
+
+                    for ( TreeObj treeObj : selected )
+                    {
+                        value.append ( treeObj.getId() );
+                    }
+
+                    /*
+                    Map<Integer,String> map = new HashMap<Integer,String>();
+                    for ( TreeObj treeObj : selected )
+                    {
+                        str = map.get ( treeObj.getLevel() );
+                        if ( str != null )
+                            str = str + "|" + treeObj.getName();
+                        else
+                            str = treeObj.getName();
+                        map.put ( treeObj.getLevel(), str );
+                    }
+
+                    // Преобразовать их в строку вида: 1=Вступление|Эпилог;2=Общее
+                    StringBuilder value = new StringBuilder ( 32 );
+                    for ( Map.Entry<Integer,String> entry : map.entrySet() )
+                    {
+                        if ( ic != 0 ) value.append ( ';' );
+                        value.append ( entry.getKey() );
+                        value.append ( '=' );
+                        value.append ( entry.getValue() );
+                        ic++;
+                    }
+                    */
+                    Log.l.info ( "strongTitlesPanel: create value = %s", value );
+
+                    // Занести новое значение
+                    strongTitleParameter.setValue ( value.toString() );
+                    //throw new WEditException ( "selected = " + DumpTools.printArray ( selected, ';' ) );
+                }
+            }
+        }
+        //if ( ic >= 0 ) throw new WEditException ( "ic = "+ic );
+    }
+
     /**
      * Отмена редактирования.
-     * <br/> Скинуть значения из параметров виджеты.
+     * <br/> Скинуть значения из параметров в виджеты.
      * <br/> -- Разблокирует кнопку - Конвертить
      * <br/>
      * @param parameter

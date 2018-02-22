@@ -19,6 +19,10 @@ import java.awt.event.ActionEvent;
 /**
  * Меню - Статистика / Статистика по редактированию Эпизодов.
  * <BR/> Смотреть исправления за периоды - день, неделю, месяц...
+ * <BR/> Выводит список книг (по Сборникам), дату их правки, и тип правки - Редактирование, Создание.
+ * <BR/>
+ * <BR/> Парсим все файлы открытых Сборников на предмет получения данных - атрибуты книги last_change_date и create_date.
+ * <BR/> Про неоткрытые Собрники ничего не известно, поэтому их и не трогаем.
  * <BR/>
  * <BR/> User: svj
  * <BR/> Date: 02.02.2018 16:12:54
@@ -44,12 +48,7 @@ public class StatEditBookInfoFunction extends Function
     {
         StatEditBookInfoParser   parser;
         String              text;
-        JLabel              label;
-        JScrollPane         scrollPane;
         WidgetsDialog       dialog;
-        DatePeriod          datePeriod = null;
-
-        text = "Test";
 
         // Диалог - запрашиваем диапазон дат.
         dialog = createQuestionDialog();
@@ -57,18 +56,19 @@ public class StatEditBookInfoFunction extends Function
         dialog.showDialog ();
         if ( dialog.isOK() )
         {
-            //throw new WEditException ( "datePeriod = "+datePeriod+ "; \nstartDate = "+startDate+"; \nendDate = "+endDate );
-
             // Цикл по всем Сборникам.
             // - Парсим все файлы на предмет получения данных - атрибуты книги last_change_date и create_date
 
             // Собрать инфу обо всех книгах используемых Сборников.
+
             // todo Процесс долгий так что необходимо запускать через прогресс-бар.
+            // -- extends MultiFunction, а диалог запроса Периода применять в методе beforeHandle.
+
             parser  = new StatEditBookInfoParser ( datePeriodWidget.getValue() );
             ProjectTools.processProjectTree ( parser );
             text    = parser.getResult();
 
-            // Вывести ее в отдельном окне - как Component или HTML
+            // Вывести Инфу в отдельном окне - как HTML текст.
             DialogTools.showHtml ( getName(), text, 5 );
         }
     }
@@ -85,10 +85,10 @@ public class StatEditBookInfoFunction extends Function
         textArea.setWrapStyleWord ( true );
         textArea.setEditable ( false );
         textArea.setPreferredSize ( new Dimension ( 250, 75 ) );  // главное - задать примерно правильную высоту.
-        //textArea.setMinimumSize ( new Dimension ( 250, 75 ) );  // главное - задать примерно правильную высоту.
         result.addToNorth ( textArea );
 
-        // выбираем первое значение.
+        // Виджеты
+        // - выбираем первое значение.
         datePeriodWidget.setIndex ( 0 );
 
         result.addWidget ( datePeriodWidget );
@@ -116,7 +116,7 @@ public class StatEditBookInfoFunction extends Function
     @Override
     public String getToolTipText ()
     {
-        return "Показать информацию по редактированию Эпизодов за периоды - день, неделю, месяц...";
+        return "Показать информацию по редактированию Эпизодов за периоды - час, день, неделю, месяц...";
     }
 
 }

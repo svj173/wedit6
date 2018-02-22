@@ -112,4 +112,15 @@ public class StringTools
        return result;
     }
 
+    /**
+     * Нарезать строку, вставляя разделитель.
+     * @param str
+     * @param size
+     * @param separator
+     * @return
+     */
+    public static String recut ( String str, int size, String separator )
+    {
+        return null;
+    }
 }

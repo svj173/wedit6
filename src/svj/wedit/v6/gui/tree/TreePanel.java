@@ -65,7 +65,8 @@ public class TreePanel<T extends Editable>  extends EditablePanel  //implements 
 
     private boolean allowExpand;
 
-    /* Хранимый обьект, отождествляемый с данной панель - Сборник из книг, Содержимое книги. */
+    /* Хранимый обьект, отождествляемый с данной панель - Сборник из книг, Содержимое книги.
+     * todo В WPanel это уже реализовано. Только без приведения типа. */
     private T object;
 
     private JScrollPane         scrollPane;
@@ -136,6 +137,11 @@ public class TreePanel<T extends Editable>  extends EditablePanel  //implements 
         return result.toString();
     }
 
+    public void setSelectionMode ( int mode )
+    {
+        tree.getSelectionModel().setSelectionMode ( mode );
+    }
+
     private void startInit () throws WEditException
     {
         TreeMouseAdapter    mouseListener;
@@ -147,7 +153,7 @@ public class TreePanel<T extends Editable>  extends EditablePanel  //implements 
         {
             tree = new JTree ( treeModel );
 
-            // Режим выборки элементво в дереве
+            // Режим выборки элементов в дереве - по умолчанию
             //mode = TreeSelectionModel.SINGLE_TREE_SELECTION;        // только один обьект
             mode = TreeSelectionModel.CONTIGUOUS_TREE_SELECTION;    // несколько обьектов, которые следуют подряд, без разрывов.
             tree.getSelectionModel().setSelectionMode ( mode );
@@ -419,6 +425,43 @@ public class TreePanel<T extends Editable>  extends EditablePanel  //implements 
         return result;
     }
 
+    public TreeObj[] getAllSelectNodes ()  throws WEditException
+    {
+        TreeObj[]   result;
+        TreePath[]  currentSelections;
+        int         i, size;
+        TreeObj     treeObj;
+
+        result  = null;
+
+        currentSelections = tree.getSelectionPaths();
+        Log.l.debug ( "currentSelections = ", WDumpTools.printArray ( currentSelections ) );
+
+        if ( currentSelections != null )
+        {
+            // Есть отмеченные
+            size    = currentSelections.length;
+            Log.l.debug ( "select size = ", size );
+            // Сформировать массив
+            result  = new TreeObj[size];
+            for ( i=0; i<size; i++ )
+            {
+                treeObj = ( TreeObj ) ( currentSelections[i].getLastPathComponent() );
+                result[i] = treeObj;
+            }
+
+            if ( size > 1 )
+            {
+                //Log.l.debug ( "result size before sorting = ", result.length );
+                // Пересортировать обьекты согласно индексам и по возрастанию (true)
+                SortingNode.sorting ( result, true );
+                //Log.l.debug ( "result size after sorting = ", result.length );
+            }
+        }
+
+        return result;
+    }
+
     public TreeObj[] getSelectedNodesForCut ( boolean useRoot )  throws WEditException
     {
         TreeObj[]   result;
@@ -564,6 +607,8 @@ public class TreePanel<T extends Editable>  extends EditablePanel  //implements 
         //TreePath path;
 
         Log.l.debug ( "%s: selectNode: Start. new nodeId = %s", getName(), nodeId );
+
+        if ( nodeId == null )  return;
 
         obj = TreeObjTools.getObjectInNodeById ( getRoot(), nodeId );
         Log.l.debug ( "%s: selectNode: nodeId = %s; find obj = %s", getName(), nodeId, obj );

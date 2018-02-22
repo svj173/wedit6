@@ -27,6 +27,9 @@ public class WPanel   extends JPanel  implements Comparable<WPanel>
     /* ID (en) родительской панели. Особенно для tabs-панели - для привязки к родительской таб-панели. */
     private String parentId;
 
+    /** Какой-то обьект, связанный с этой панелью. */
+    private Object object;
+
 
 
     public WPanel ()
@@ -146,4 +149,13 @@ public class WPanel   extends JPanel  implements Comparable<WPanel>
         return result;
     }
 
+    public Object getObject ()
+    {
+        return object;
+    }
+
+    public void setObject ( Object object )
+    {
+        this.object = object;
+    }
 }

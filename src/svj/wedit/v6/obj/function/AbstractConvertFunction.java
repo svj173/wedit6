@@ -214,7 +214,8 @@ public abstract class AbstractConvertFunction  extends FileWriteFunction
             //Log.file.debug ( "--- bookmarksParameter 2 after merge = \n%s", bookmarksParameter );
 
             // Создаем и открываем диалог настроек конвертации
-            dialog = new ConvertDialog ( Par.GM.getFrame(), getName(), bookmarksParameter, bookStructure, otherConvertParams );
+            //dialog = new ConvertDialog ( Par.GM.getFrame(), getName(), bookmarksParameter, bookStructure, otherConvertParams );
+            dialog = new ConvertDialog ( Par.GM.getFrame(), getName(), bookmarksParameter, bookStructure, otherConvertParams, bookContent.getBookNode() );
             dialog.init ( bookmarksParameter );
             dialog.showDialog();
 

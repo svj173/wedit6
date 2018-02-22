@@ -51,7 +51,13 @@ public class ConvertParamParser extends FunctionParamsStaxParser
                     startElement = event.asStartElement();
                     tagName      = startElement.getName().getLocalPart();
 
-                    if ( tagName.equals( ConfigParam.FILE) )
+                    if ( tagName.equals( "strongTitleParam") )
+                    {
+                        // Неизменяемые главы
+                        str = getText ( eventReader );
+                        fParameter.getStrongParameter().setValue ( str );
+                    }
+                    else if ( tagName.equals( ConfigParam.FILE) )
                     {
                         // имя файла в который последний произошло конвертирование книги
                         str = getText ( eventReader );

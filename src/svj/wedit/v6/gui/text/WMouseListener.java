@@ -101,7 +101,6 @@ public class WMouseListener implements MouseListener
             elementFunction.rewrite();
         }
 
-        //*
         function = Par.GM.getFrame().getTextsPanel().getFunction ( FunctionId.TEXT_SELECT_ELEMENT );
         Log.l.debug ( "----- function (SelectElementFunction) = %s", function );
         if ( ( function != null ) && ( function instanceof SelectElementFunction ) )
@@ -144,33 +143,18 @@ public class WMouseListener implements MouseListener
             //textPane.getAccessibleAt(p); // getCaretPosition,
             //textPane.getCaretPosition(); // номер от начала текста
 
-            // todo переместить курсор в эту точку
+            // переместить курсор в эту точку
             textPane.getCaret().setMagicCaretPosition ( p );
 
             str = textPane.getSelectedText();
-            //if ( str == null )  str = "Null";
 
             if ( str != null )
             {
                 // Открыть меню
                 JPopupMenu pm = new JPopupMenu ();
-                //pm.add ( menuItem );
 
                 try
                 {
-                    /*
-                    menuItem = new JMenuItem ( textPane.getToolTipText ( event ) );
-                    pm.add ( menuItem );
-                    //menuItem = new JMenuItem ( textPane.getToolTipLocation ( event ).toString () );
-                    //pm.add ( menuItem );
-                    menuItem = new JMenuItem ( "X:"+x+"; Y:"+y );
-                    pm.add ( menuItem );
-                    if ( pos != null )
-                    {
-                        menuItem = new JMenuItem ( "pos: "+pos );
-                        pm.add ( menuItem );
-                    }
-                    */
                     String title;
                     if ( str.length() > 10 )
                         title = str.substring ( 0, 9 ) + "...";
@@ -186,7 +170,7 @@ public class WMouseListener implements MouseListener
 
                     // todo Список омонимов
 
-                    // todo функция по перекодировке текста - русский-английский
+                    // функция по перекодировке текста - русский-английский
                     menuItem = createEncodeMenu ( textPane, str );
                     pm.add ( menuItem );
 
@@ -197,8 +181,6 @@ public class WMouseListener implements MouseListener
                 pm.show ( event.getComponent(), x, y );
             }
         }
-
-        //*/
     }
 
     private JMenuItem createEncodeMenu ( final JTextPane textPane, final String str )
@@ -214,8 +196,8 @@ public class WMouseListener implements MouseListener
 
                 // перекодировать
                 // - строим строки двух раскладок
-                String en = "~!@#$%^&*()_+|QWERTYUIOP{}ASDFGHJKL:\"ZXCVBNM<>?`1234567890-=\\qwertyuiop[]asdfghjkl;\'zxcvbnm,./";
-                String ru = "Ё!\"№;%:?*()_+/ЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮ,ё1234567890-=\\йцукенгшщзхъфывапролджэячсмитьбю.";
+                String en = " ~!@#$%^&*()_+|QWERTYUIOP{}ASDFGHJKL:\"ZXCVBNM<>?`1234567890-=\\qwertyuiop[]asdfghjkl;\'zxcvbnm,./";
+                String ru = " Ё!\"№;%:?*()_+/ЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮ,ё1234567890-=\\йцукенгшщзхъфывапролджэячсмитьбю.";
                 // - создаем мап - исходя из того из какой раскладки в какую.
                 Map<Character, Character> map = new HashMap<Character, Character> ( en.length () );
                 int index = 0;
