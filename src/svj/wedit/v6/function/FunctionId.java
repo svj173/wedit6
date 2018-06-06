@@ -20,6 +20,9 @@ public enum FunctionId
     DECORATOR, CHANGE_TOOL_BAR_ICON_SIZE, CHANGE_PANEL_ICON_SIZE, CHANGE_MENU_ICON_SIZE,
     MOVE_BOOK,
 
+    // Book tree - toolbar
+    EDIT_NODE_TYPE,
+
     // Text
     OPEN_TEXT, CLOSE_TEXT, CLOSE_ALL_TEXT, SAVE_TEXT,
     STAT_OPEN,      // меню - Статистика / Инфа обо всех открытых

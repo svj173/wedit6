@@ -24,6 +24,7 @@ import svj.wedit.v6.function.book.imports.doc.ImportBookFromDocFunction;
 import svj.wedit.v6.function.book.imports.txt.ImportBookFromTxtFunction;
 import svj.wedit.v6.function.book.imports.we1.ImportFromWe1Function;
 import svj.wedit.v6.function.book.text.ReplaceBlockTextFunction;
+import svj.wedit.v6.function.book.tree.GroupEditNodeTypeFunction;
 import svj.wedit.v6.function.book.undo.RedoFunction;
 import svj.wedit.v6.function.book.undo.UndoFunction;
 import svj.wedit.v6.function.option.DecoratorFunction;
@@ -200,6 +201,10 @@ public class FunctionManager
         add ( new PasteBookNodeAfterFunction()  );
         add ( new DeleteBookNodeFunction()      );
         add ( new EditBookNodeFunction()        );
+
+
+        // ---------------- Контекстное меню на дереве книги -----------------------
+        add ( new GroupEditNodeTypeFunction()   );
 
         // - Описание элементов книги
         add ( new EditDescElementFunction()     );

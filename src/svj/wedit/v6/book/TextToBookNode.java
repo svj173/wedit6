@@ -37,6 +37,56 @@ import java.util.List;
  * <BR/> При скидывании в обьект:
  -- флаг на титл и игнорировать пустые строки (в т.ч. и для анотации) пока не появится текст.
  -- по окончании работы с титлом (элементом книги) - trim на все его тексты (т.е. удалить все последние Eol-обьекты).
+ *
+ Структура DOC-обьекта.
+ - paragraph - это кусок тектса который обязательно заканчивается возвратом каретки. Состоит из конечных обьектов content.
+
+ section
+    paragraph
+       content
+          title: ss002_color
+       /content
+       content
+ 	      пустая строка  + ВК
+       /content
+    /paragraph
+    paragraph
+       content
+          annotation: аннотация 2
+       /content
+       content
+ 	      пустая строка  + ВК
+       /content
+    /paragraph
+    paragraph
+       content
+ 	      пустая строка + ВК
+       /content
+    /paragraph
+    paragraph
+       content
+          ппп
+       /content
+       content
+          12 - другого цвета
+       /content
+       content
+          rrrrп + ВК
+       /content
+    /paragraph
+    paragraph
+       icon
+          (стиль элемента: styleName=image,iconFile=/home/svj/Serg/Stories/SvjStores/test/sibir_test/image/ico_listusers.gif)
+       /icon
+       content
+          Текст рядом с картинкой. + ВК
+       /content
+    /paragraph
+
+ *
+ *
+ * <BR/>
+ * <BR/>
  * <BR/>
  * <BR/> User: svj
  * <BR/> Date: 10.04.2012 22:32:53
@@ -194,7 +244,7 @@ public class TextToBookNode
             {
                 //Log.l.debug ( "---- Treat Children" );
                 // Это элемент, содержащий подэлементы. -- paragraph - Т.е. Абзац.
-                // - Что может содержать внутри?
+                // - Что может содержать внутри? - обьекты content
                 // - Прогнать на вложенные обьекты - рекурсия
                 isize   = elm.getElementCount();
                 for ( i=0; i<isize; i++ )
@@ -235,6 +285,7 @@ public class TextToBookNode
         //} finally          {
             //Log.l.debug ( "Finish" );
         }
+        Log.l.debug ( "Finish. element name = %s", str );
     }
 
     /**

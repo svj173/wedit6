@@ -30,12 +30,13 @@
 4) Добавить функцию в главное меню
  - WEMenuBar - методы по главным меню
 
-5) Добавить функцию в контекстное меню
+5) Добавить функцию в контекстное меню дерева  (здесь же добавляются иконки над панелями)
  - Сборника
      - ContentFrame.createProjectPopUpMenu
  - Книг
  - Текстов
-     - ContentFrame.createBooksAndTextPanel
+     - ContentFrame.createBooksAndTextPanel    - иконки над панелями
+     - ContentFrame.createBookPopUpMenu        - контекстное меню дерева
 
 5) Занести в буфер
       Buffer.setBuffer ( newNodes );
