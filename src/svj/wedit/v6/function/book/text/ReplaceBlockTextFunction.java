@@ -59,14 +59,18 @@ public class ReplaceBlockTextFunction extends SimpleFunction
     private final Map<Character,Character>  mapChars    = new HashMap<Character,Character> ();
     private final Map<String,String>        mapText     = new HashMap<String,String> ();
 
+    /** Счетчик изменений. */
+    private final long[] count = new long[1];
+
+
     public ReplaceBlockTextFunction ()
     {
         setId ( FunctionId.BLOCK_REPLACE );
         setName ( "Блочная замена" );
-        //setMapKey ( "Ctrl/R" );      // переносим в
+        //setMapKey ( "Ctrl/R" );      
         setIconFileName ( "replace.png" );    // бинокль, как в Офисе
 
-        Character ch = '"';
+        Character ch = '"';  // на что меняем все кавычки.
 
         // кавычки
         mapChars.put ( (char) 0x02DD, ch );      // ”
@@ -74,13 +78,13 @@ public class ReplaceBlockTextFunction extends SimpleFunction
         mapChars.put ( '»', ch );
         mapChars.put ( '‘', ch );
         mapChars.put ( '’', ch );
-        mapChars.put ( (char) 0x201C, ch );
-        mapChars.put ( (char) 0x201D, ch );
-        mapChars.put ( (char) 0x201E, ch );
+        mapChars.put ( (char) 0x201C, ch );      // две запятых вверху, направленные вверх
+        mapChars.put ( (char) 0x201D, ch );      // две запятых вверху, направленные вниз
+        mapChars.put ( (char) 0x201E, ch );      // две запятых внизу
 
-        // двойной пробел
+        // двойной пробел на один
         mapText.put ( "  ", " " );
-        // тире
+        // дефис на тире
         mapText.put ( "- ", "– " );
     }
 
@@ -93,6 +97,8 @@ public class ReplaceBlockTextFunction extends SimpleFunction
         BookNode                node;
 
         Log.l.debug ( "Start" );
+
+        count[0] = 0;
 
         // Взять текущую книгу - TreePanel
         //currentBookContentPanel = Par.GM.getFrame().getCurrentBookContentPanel();
@@ -124,7 +130,7 @@ public class ReplaceBlockTextFunction extends SimpleFunction
         // отмечаем что были изменения.
         currentBookContent.setEdit ( true );
 
-        DialogTools.showMessage ( getName(), "Успешно завершилась." );
+        DialogTools.showMessage ( getName(), "Успешно завершилась.\nИзменений: "+count[0] );
     }
 
     private void processNode ( BookNode bookNode )
@@ -164,22 +170,113 @@ public class ReplaceBlockTextFunction extends SimpleFunction
         {
             for ( TextObject textObj : text )
             {
-                str     = textObj.getText();
-                for ( Map.Entry<Character,Character> entry : mapChars.entrySet() )
-                {
-                    str = str.replace ( entry.getKey(), entry.getValue() );
-                }
-                for ( Map.Entry<String,String> entry : mapText.entrySet() )
-                {
-                    str = str.replaceAll ( entry.getKey(), entry.getValue() );
-                }
+                str = textObj.getText();
+                str = change ( str );
                 // Занести изменения обратно в обьект
                 textObj.setText ( str );
             }
         }
     }
 
+    protected String change ( String str )
+    {
+        long ic;
+        
+        //int count = StringUtils.countMatches( "a.b.c.d", ".");     apache.common.lang
+        //int occurance = StringUtils.countOccurrencesOf("a.b.c.d", ".");          -- Spring Framework
+
+        // символьные замены
+        for ( Map.Entry<Character,Character> entry : mapChars.entrySet() )
+        {
+            ic = str.codePoints().filter(ch -> ch == entry.getKey()).count();
+            if ( ic > 0 ) count[0] = count[0] + ic;
+            str = str.replace ( entry.getKey(), entry.getValue() );
+        }
+        // строковые замены
+        for ( Map.Entry<String,String> entry : mapText.entrySet() )
+        {
+            ic       = countSubstr ( str, entry.getKey() );
+            if ( ic > 0 ) count[0] = count[0] + ic;
+            str = str.replaceAll ( entry.getKey(), entry.getValue() );
+        }
+
+        return str;
+    }
+
+    private long countSubstr ( String text, String substr )
+    {
+        int ic, index;
+
+        ic    = 0;
+        //System.out.println ( "substr: '"+substr+"'; text: "+text );
+        // отлавливаем самую первую позицию - если в начале строки
+        index = text.indexOf ( substr );
+        if ( index >= 0 )
+        {
+            ic++;
+            while ( index > 0 )
+            {
+                //System.out.println ( "- " + index );
+                index = text.indexOf ( substr, index + 1 );
+                if ( index >= 0 ) ic++;
+            }
+        }
+        //System.out.println ( "ic = "+ ic );
+        return ic;
+    }
+
     @Override
     public void rewrite ()     {    }
+
+    private long getCount ()
+    {
+        return count[0];
+    }
+
+
+    public static void main ( String[] args )
+    {
+        ReplaceBlockTextFunction function;
+        String[] array;
+
+        /*
+        // кавычки
+        mapChars.put ( (char) 0x02DD, ch );      // ”
+        mapChars.put ( '«', ch );
+        mapChars.put ( '»', ch );
+        mapChars.put ( '‘', ch );
+        mapChars.put ( '’', ch );
+        mapChars.put ( (char) 0x201C, ch );
+        mapChars.put ( (char) 0x201D, ch );
+        mapChars.put ( (char) 0x201E, ch );
+
+        // двойной пробел
+        mapText.put ( "  ", " " );
+        // тире
+        mapText.put ( "- ", "– " );
+
+         */
+
+        /*
+        array = new String[4];
+        array[0] = "проверка «какого-то» текста.";   // 2
+        array[1] = "проверка ‘какого-то’ текста.";   // 2
+        array[2] = "проверка  какого-то  текста.";   // 2
+        array[3] = "- проверка какого-то текста.";   // 1
+        */
+
+        array = new String[2];
+        array[0] = "  проверка  какого-то  текста.";   // 3
+        array[1] = "- проверка какого-то текста.";     // 1
+
+        function = new ReplaceBlockTextFunction();
+
+        for ( String str : array )
+        {
+            function.change ( str );
+        }
+
+        System.out.println ( "Изменений: "+function.getCount() );
+    }
 
 }
