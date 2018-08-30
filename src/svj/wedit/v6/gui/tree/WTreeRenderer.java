@@ -145,6 +145,15 @@ public class WTreeRenderer extends DefaultTreeCellRenderer implements Cloneable
                 if ( object != null )  comp.setText ( object.toString() );
             }
 
+            // Спецвыделение
+            String subType = obj.getSubType();  // По идее - колор
+            if ( subType != null )
+            {
+                // Color.decode ( "#70AE70" );
+                //comp.setForeground ( WCons.BLUE_1 );
+                comp.setForeground ( Color.decode ( subType ) );
+            }
+
         } catch ( Exception e ) {
             Log.l.error ( Convert.concatObj ( "ERROR. value = ", value ), e );
             comp.setForeground ( Color.RED );

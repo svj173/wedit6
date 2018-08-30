@@ -34,6 +34,8 @@ public class TreeObj extends DefaultMutableTreeNode implements Comparable<TreeOb
     /** Тип сортировки для вложенных устройств. */
     private WCompareType        deviceComparatorType    = WCompareType.ABC;
 
+    private String subType = null;
+
 
     @Override
     public String toString ()
@@ -51,6 +53,8 @@ public class TreeObj extends DefaultMutableTreeNode implements Comparable<TreeOb
         result.append ( getId() );
         result.append ( "; parentId = " );
         result.append ( getParentId() );
+        result.append ( "; subType = " );
+        result.append ( getSubType() );
         result.append ( "; wtree = " );
         result.append ( getWTreeObj() );
 
@@ -67,6 +71,7 @@ public class TreeObj extends DefaultMutableTreeNode implements Comparable<TreeOb
         result  = (TreeObj) super.clone();
         result.setId ( getId() );
         result.setParentId ( getParentId() );
+        result.setSubType ( getSubType() );
         //result.setParent ( getWTreeObj() );      // clone?
         //result.setParent ( getParent() );
         // userObject ? -- отдельно идет в BookTools
@@ -234,4 +239,13 @@ public class TreeObj extends DefaultMutableTreeNode implements Comparable<TreeOb
         this.deviceComparatorType = WCompareType.getByNumber ( wComparatorType );
     }
 
+    public String getSubType ()
+    {
+        return subType;
+    }
+
+    public void setSubType ( String subType )
+    {
+        this.subType = subType;
+    }
 }

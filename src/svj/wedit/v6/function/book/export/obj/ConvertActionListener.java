@@ -35,8 +35,6 @@ public class ConvertActionListener  extends WActionListener
     {
         ConvertAction   action;
         String          cmd;
-        ConvertDialog   dialog;
-        Object          eventSource;
         ConvertParameter currentParameter;
 
         Log.l.debug ( "Start (convertAction). event = ", event );

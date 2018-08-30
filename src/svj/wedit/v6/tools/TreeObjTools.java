@@ -98,6 +98,28 @@ public class TreeObjTools
         return null;
     }
 
+    /* Найти обьект по подтипу от заданого узла и вглубь. */
+    public static void getObjectsInNodeBySubtype ( TreeObj object, String subtype, Collection<TreeObj> result )
+    {
+        boolean                 b;
+        TreeObj                 obj;
+        Enumeration<TreeObj>    childs;
+
+        if ( (object == null) || (subtype == null) )     return;
+
+        b = Utils.compareToWithNull ( object.getSubType(), subtype ) == 0;
+        //Logger.getInstance().debug ( "-- TreeObjTools.getObjectInNodeById: b = " + b );
+        if ( b ) result.add ( object );
+
+        childs = object.children();
+        while ( childs.hasMoreElements() )
+        {
+            obj     = childs.nextElement();
+            getObjectsInNodeBySubtype ( obj, subtype, result );
+            //if ( findObj != null ) result.add ( findObj );
+        }
+    }
+
     /**
      * На основе деревянного обьекта (паренты) создать gui-дерево.
      * @param wTreeObj  исходный обьект

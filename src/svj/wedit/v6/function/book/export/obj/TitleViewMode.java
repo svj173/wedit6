@@ -19,7 +19,8 @@ public enum TitleViewMode   implements INameNumber
     ONLY_NAME                   ( 4, "выводить только название титла" ),
     TREE_STARS                  ( 5, "вместо заголовка выводить три звездочки" ),
     NUMBER_AND_POINT_WITH_NAME  ( 6, "выводить номер заголовка с точкой (например, 1.) и название титла" ),
-    NUMBER_AND_BR_WITH_NAME     ( 7, "выводить номер заголовка со скобкой (например, 1) ) и название титла" )
+    NUMBER_AND_BR_WITH_NAME     ( 7, "выводить номер заголовка со скобкой (например, 1) ) и название титла" ),
+    NUMBER_AND_POINT_ONLY       ( 8, "выводить номер заголовка с точкой" )
     ;
 
     private int     number;

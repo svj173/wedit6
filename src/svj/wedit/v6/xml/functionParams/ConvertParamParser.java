@@ -3,10 +3,12 @@ package svj.wedit.v6.xml.functionParams;
 
 import svj.wedit.v6.function.book.export.obj.ConvertParameter;
 import svj.wedit.v6.function.params.FunctionParameter;
+import svj.wedit.v6.function.params.OrderListParameter;
 import svj.wedit.v6.logger.Log;
 import svj.wedit.v6.obj.ConfigParam;
 
 import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
@@ -29,11 +31,15 @@ public class ConvertParamParser extends FunctionParamsStaxParser
         XMLEvent            event;
         StartElement        startElement;
         EndElement          endElement;
-        String              str;
+        String              str, paramType;
         ConvertParameter    fParameter;
-        FunctionParameter   param;
+        FunctionParameter   param, ps;
         boolean             bwork;
         ParamType           useType;
+        Attribute           attr;
+
+        tagName = paramType = null;
+        param   = null;
 
         fParameter  = new ConvertParameter ( paramName );
         useType     = ParamType.OTHER;
@@ -53,9 +59,31 @@ public class ConvertParamParser extends FunctionParamsStaxParser
 
                     if ( tagName.equals( "strongTitleParam") )
                     {
-                        // Неизменяемые главы
-                        str = getText ( eventReader );
-                        fParameter.getStrongParameter().setValue ( str );
+                        // Неизменяемые главы   - ParameterType.LIST_ITEM  - OrderListParameter
+                        //str = getText ( eventReader );
+                        //fParameter.getStrongParameter().setValue ( str );
+                        attr    = startElement.getAttributeByName ( NAME );
+                        if ( attr == null )
+                        {
+                            Log.l.error ( "Ошибка инициализации параметра функции 'strongTitleParam'. Отсутствует имя Параметра." );
+                        }
+                        paramName   = attr.getValue();
+
+                        attr    = startElement.getAttributeByName ( TYPE );
+                        if ( attr == null )
+                        {
+                            Log.l.error ( "Отсутствует тип Параметра" );
+                        }
+                        else
+                        {
+                            // занести параметр
+                            paramType   = attr.getValue();
+                            // Получить параметр (индивидуальный xml-парсинг по типу параметра)
+                            ps          = FunctionParamsStaxParser.parseFunctionParameter ( paramName, paramType, eventReader, errMsg );
+                            //Log.l.debug ("--- functionId = %s; fParameter = %s", functionId, fParameter );
+                            if ( ps != null )  fParameter.setStrongParameter ( (OrderListParameter ) ps );
+                        }
+
                     }
                     else if ( tagName.equals( ConfigParam.FILE) )
                     {
@@ -133,7 +161,7 @@ public class ConvertParamParser extends FunctionParamsStaxParser
             errMsg.append ( "Ошибка чтения параметра : " );
             errMsg.append ( e );
             errMsg.append ( "\n" );
-            Log.file.error ( "err", e );
+            Log.file.error ( "error. tagName = "+tagName+"; param = "+param +"; paramType = "+paramType+"; ", e );
         }
 
         return fParameter;

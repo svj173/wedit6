@@ -2,10 +2,7 @@ package svj.wedit.v6.function.book.export.obj;
 
 
 import svj.wedit.v6.exception.WEditException;
-import svj.wedit.v6.function.params.BooleanParameter;
-import svj.wedit.v6.function.params.FunctionParameter;
-import svj.wedit.v6.function.params.ParameterType;
-import svj.wedit.v6.function.params.SimpleParameter;
+import svj.wedit.v6.function.params.*;
 import svj.wedit.v6.logger.Log;
 import svj.wedit.v6.obj.ConfigParam;
 import svj.wedit.v6.tools.Convert;
@@ -74,9 +71,10 @@ public class ConvertParameter     extends FunctionParameter<Object>   implements
     // Выводить ли аннотацию
     private BooleanParameter     printAnnotation;
 
-    // Неизменяемые заголовки. Хранятся в виде пары: Уровень заголовка - Название заголовка. Параметры разделены точкой с запятой.
+    // Неизменяемые заголовки. Хранятся в виде пары: Уровень заголовка - Название заголовка. Параметры - ИД элемента.
     // Для одного уровня может быть несколкьо Названий - т.е. несколкьо пар.
-    private SimpleParameter      strongParameter;
+    //private SimpleParameter      strongParameter;
+    private OrderListParameter      strongParameter;
 
     // Локальные параметры - индивидуальные для конкретной функции Конвертации (например, для HTML - Включать HTML-заголовок)
     private final Collection<FunctionParameter>  localeParams = new LinkedList<FunctionParameter>();
@@ -140,7 +138,10 @@ public class ConvertParameter     extends FunctionParameter<Object>   implements
 
     public void addType ( FunctionParameter type )
     {
-        types.add ( (SimpleParameter) type );
+        if ( type instanceof SimpleParameter )
+            types.add ( (SimpleParameter) type );
+        else
+            Log.l.error( "NONE SimpleParameter: %s", type );
     }
 
     public void addLocale ( FunctionParameter param )
@@ -343,10 +344,12 @@ public class ConvertParameter     extends FunctionParameter<Object>   implements
         return result;
     }
 
-    public SimpleParameter getStrongParameter ()
+    public OrderListParameter getStrongParameter ()
     {
         // Параметр должен быть всегда.
-        if ( strongParameter == null )  strongParameter = new SimpleParameter ( "strongTitleParam", "", true );
+        //if ( strongParameter == null )  strongParameter = new SimpleParameter ( "strongTitleParam", "", true );
+        //return strongParameter;
+        if ( strongParameter == null )  strongParameter = new OrderListParameter ( "strongTitleParam" );
         return strongParameter;
     }
 
@@ -489,7 +492,7 @@ public class ConvertParameter     extends FunctionParameter<Object>   implements
         return null;
     }
 
-    public void setStrongParameter ( SimpleParameter strongParameter )
+    public void setStrongParameter ( OrderListParameter strongParameter )
     {
         this.strongParameter = strongParameter;
     }
