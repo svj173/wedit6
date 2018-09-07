@@ -51,6 +51,7 @@ public class SelectElementFunction  extends SimpleFunction
         styleWidget = new ComboBoxWidget<WEditStyle> ( null, true, "-- элемент --", new LinkedList<WEditStyle>() );
         styleWidget.initAction ( this, "Element" );
         styleWidget.setComboRenderer ( new AttributeSetRenderer() );
+        //styleWidget.setMaximumRowCount(10);
         styleWidget.setVisible ( true );
         
         textAction  = new TextAction ( "textAction" );
@@ -100,7 +101,6 @@ public class SelectElementFunction  extends SimpleFunction
         TreePanel<BookContent>      bookPanel;
         BookContent                 bookContent;
         Collection<WEditStyle>      styles;
-        WEditStyle                  style;
 
         Log.l.debug ( "Start" );
 
@@ -120,6 +120,7 @@ public class SelectElementFunction  extends SimpleFunction
             // наполнить выпадашку новыми значениями.
             //Log.l.debug ( "styles for element widget = ", styles );
             styleWidget.setValues ( styles );
+            styleWidget.setMaximumRowCount ( styles.size()+1 );
             styleWidget.repaint();
             styleWidget.revalidate();
             styleWidget.getGuiComponent().repaint();

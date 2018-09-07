@@ -83,7 +83,7 @@ public class SimpleSearchFunction   extends SimpleFunction
     {
         setId ( FunctionId.SEARCH );
         setName ( "Поиск в текущей книге" );
-        //setMapKey ( "Ctrl/S" );      // переносим в SaveAbsoluteAllProjectsFunction
+        setMapKey ( "Ctrl/F" );
         setIconFileName ( "search.png" );
     }
 

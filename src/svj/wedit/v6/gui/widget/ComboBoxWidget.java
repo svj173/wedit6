@@ -243,4 +243,8 @@ public class ComboBoxWidget<T>  extends AbstractWidget<T>
         comboBox.setRenderer ( renderer );
     }
 
+    public void setMaximumRowCount(int length) {
+        comboBox.setMaximumRowCount ( length );
+    }
+    
 }

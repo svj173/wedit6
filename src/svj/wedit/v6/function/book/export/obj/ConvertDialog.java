@@ -736,8 +736,9 @@ public class ConvertDialog extends WValidateDialog<BookmarksParameter,ConvertPar
         formatWidget    = new ComboBoxWidget<TitleViewMode> ( "Формат", TitleViewMode.values() );
         formatWidget.setName ( "ElementFormat" );
         formatWidget.setEditable ( false );
+        formatWidget.setMaximumRowCount ( TitleViewMode.values().length );
         formatWidget.setTitleWidth ( titleWidth );
-        formatWidget.setValueWidth ( valueWidth );
+        //formatWidget.setValueWidth ( valueWidth );
         formatWidget.setObject ( element );
         formatWidget.setComboRenderer ( new INameRenderer () );
         formatType      = element.getFormatType();
