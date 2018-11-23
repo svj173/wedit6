@@ -59,6 +59,7 @@ public class BookContentStaxParser   extends WEditStaxParser
             result.setFileSize ( file.length() );
             result.setId ( bookId );
             //result.setProjectDir ( file.getParentFile() );   // Заносим директорию
+            Par.CURRENT_PARSE_BOOK = result;
 
             // всегда добавляем фиксированные атрибуты. Если они есть в книге, то они заменятся на реальные.
             date    = new Date();
@@ -94,6 +95,8 @@ public class BookContentStaxParser   extends WEditStaxParser
             Log.file.error ("err",e);
             throw new WEditException ( e, "Системная ошибка чтения файла опиcания\n книги '", file, "' :\n ", e );
         }
+
+        Par.CURRENT_PARSE_BOOK = null;
 
         return result;
     }

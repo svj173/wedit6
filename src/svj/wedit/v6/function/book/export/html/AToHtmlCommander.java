@@ -272,6 +272,8 @@ public abstract class AToHtmlCommander  extends FileWriteFunction implements Tre
 
             // Проверить - игнорировать этот элемент?
             // if ( cp.ignoreElement(elementType) )  return;
+            WType wType = nodeObject.getBookContent().getBookStructure().getType(elementType);
+            Log.file.info ( "Find: elementType = '%s'; wType = %s", elementType, wType );
             handleType = ConvertTools.getType ( elementType, cp.getTypes () );
             switch ( handleType )
             {

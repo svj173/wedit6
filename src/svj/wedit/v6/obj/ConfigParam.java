@@ -22,6 +22,7 @@ public interface ConfigParam
     String LIST        = "list";
     String OPEN        = "open";
     String FILE        = "file";
+    String STRONG_TITLE = "strongTitleParam";
 
     String BOOK        = "book";
     String CHAPTER     = "chapter";

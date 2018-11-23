@@ -1,6 +1,7 @@
 package svj.wedit.v6.function.book.export.obj;
 
 
+import svj.wedit.v6.Par;
 import svj.wedit.v6.exception.WEditException;
 import svj.wedit.v6.function.params.*;
 import svj.wedit.v6.logger.Log;
@@ -141,7 +142,14 @@ public class ConvertParameter     extends FunctionParameter<Object>   implements
         if ( type instanceof SimpleParameter )
             types.add ( (SimpleParameter) type );
         else
-            Log.l.error( "NONE SimpleParameter: %s", type );
+        {
+            String msg = "";
+            if ( Par.CURRENT_PARSE_BOOK != null )
+                msg = "Book: "+ Par.CURRENT_PARSE_BOOK.getName() + "; File: "+Par.CURRENT_PARSE_BOOK.getFileName()+
+                        "; ID = "+Par.CURRENT_PARSE_BOOK.getId();
+            Log.l.error ("%s. None SimpleParameter type (file: %s) [%s]: %s", getName(), getFileName(), msg, type );
+            //Log.l.error ( DumpTools.printCurrentStackTrace() );
+        }
     }
 
     public void addLocale ( FunctionParameter param )
@@ -198,7 +206,10 @@ public class ConvertParameter     extends FunctionParameter<Object>   implements
             outString ( ic1, "</types>\n", out );
 
             // ------------------------ Неизменяемые заголовки -----------------------
-            getStrongParameter().toXml ( ic1, out );
+            outString ( ic1, "<strongTitleParam>\n", out );
+            //getStrongParameter().toXml ( ic1, ConfigParam.STRONG_TITLE, out );
+            getStrongParameter().toXml ( ic2, out );
+            outString ( ic1, "</strongTitleParam>\n", out );
 
             // --------------------- Другие параметры -----------------------
             outString ( ic1, "<others>\n", out );
@@ -349,7 +360,7 @@ public class ConvertParameter     extends FunctionParameter<Object>   implements
         // Параметр должен быть всегда.
         //if ( strongParameter == null )  strongParameter = new SimpleParameter ( "strongTitleParam", "", true );
         //return strongParameter;
-        if ( strongParameter == null )  strongParameter = new OrderListParameter ( "strongTitleParam" );
+        if ( strongParameter == null )  strongParameter = new OrderListParameter ( ConfigParam.STRONG_TITLE  );
         return strongParameter;
     }
 

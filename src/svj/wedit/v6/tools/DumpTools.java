@@ -20,6 +20,31 @@ import java.util.Map;
  */
 public class DumpTools
 {
+    /** Распечать stack trace текущего места. Т.е. выводим полное дерево java-классов, которые были вызваны. */
+    public static StringBuilder printCurrentStackTrace() {
+        // Ошибка - это вызов не из AWT потока. Выяснить - откуда пришел вызов (распечатать stacktrace)
+        StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+        StringBuilder message = new StringBuilder(128);
+
+        // StackTraceElement с индексом 0 — это вершина стека. Отсальные элементы - дальнейшие вызовы.
+        // Состав элемента:
+        // - getClassName — это имя класса, из которого делался или делается вызов.
+        // - getMethodName — это имя метода, из которого делается вызов.
+
+        if (stackTraceElements.length > 0)
+        {
+            for (StackTraceElement trace : stackTraceElements)
+            {
+                message.append ( '\t' );
+                // Выводит: класс, метод, номер линии, ссылки на файл, содержащий данный класс и т.д.
+                message.append ( trace );
+                message.append ( WCons.END_LINE );
+            }
+            message.append(WCons.END_LINE);
+        }
+        return message;
+    }
+
     /**
      * Перечислить содержимое  массива через символ CH.
      * В конце строки символа CH - нет

@@ -6,6 +6,7 @@ import svj.wedit.v6.function.book.export.obj.*;
 import svj.wedit.v6.function.params.SimpleParameter;
 import svj.wedit.v6.logger.Log;
 import svj.wedit.v6.obj.WTreeObj;
+import svj.wedit.v6.obj.WType;
 import svj.wedit.v6.obj.book.BookNode;
 import svj.wedit.v6.obj.book.TextObject;
 import svj.wedit.v6.tools.Convert;
@@ -16,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Пробегает по весм обьектам дерева и дергает TreeNodeProcessor.
+ * Пробегает по всем обьектам дерева и дергает TreeNodeProcessor.
  * <BR/> Исп в HTML
  * <BR/>
  * <BR/> User: svj
@@ -94,6 +95,9 @@ public class TreeNodeManager
 
             // Проверить - игнорировать этот элемент?
             // if ( cp.ignoreElement(elementType) )  return;
+
+            WType wType = bookNode.getBookContent().getBookStructure().getType(elementType);
+            Log.file.info ( "Find: elementType = '%s'; wType = %s", elementType, wType );
             handleType = ConvertTools.getType ( elementType, cp.getTypes () );
             switch ( handleType )
             {

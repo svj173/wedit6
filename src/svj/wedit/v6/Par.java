@@ -1,6 +1,7 @@
 package svj.wedit.v6;
 
 
+import svj.wedit.v6.obj.book.BookContent;
 import svj.wedit.v6.tools.Convert;
 
 import java.awt.*;
@@ -69,4 +70,6 @@ public class Par
     /* Размеры иконок в рабочих кнопках. */
     public static int BUTTONS_ICON_SIZE = 24;
 
+    // Книга которую распарсивают - для более вразумительных сообщений об ошибках.
+    public static BookContent CURRENT_PARSE_BOOK = null;
 }

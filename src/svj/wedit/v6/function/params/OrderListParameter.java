@@ -112,10 +112,39 @@ public class OrderListParameter   extends FunctionParameter<List<WPair<String,St
         return list;
     }
 
+    public void toXml ( int level, String tagName, OutputStream out ) throws WEditException
+    {
+        int    ic1, ic2;
+
+        try
+        {
+            ic1 = level+1;
+            ic2 = ic1+1;
+
+            // <param name="BookList" type="list_item">
+            outString ( level, "<"+tagName+" name=\""+getName()+"\" type=\""+ ParameterType.LIST_ITEM+ "\">\n", out );
+            outString ( ic1, "<list>\n", out );
+
+            for ( WPair<String,String> wp : list )
+            {
+                // name - имя проекта. value - имя файла проекта.
+                outTag ( ic2, "item", wp.getParam1(), wp.getParam2(), out );
+            }
+            outString ( ic1, "</list>\n", out );
+            outString ( level, "</"+tagName+">\n", out );
+
+        } catch ( Exception e )        {
+            Log.file.error ( "err", e );
+            throw new WEditException ( e, "Ошибка записи XML представления Параметра '", getName(), "' в поток :\n", e );
+        }
+    }
+
     @Override
     public void toXml ( int level, OutputStream out ) throws WEditException
     {
         int    ic1, ic2;
+
+        Log.l.info ( "[STRONG] (%s) toXml: list = %s", getName(), list );
 
         try
         {

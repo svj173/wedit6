@@ -165,6 +165,14 @@ public class ConvertToDoc  extends AbstractConvertFunction
         r.addBreak();
     }
 
+    protected String getNewLineSymbol ()
+    {
+        processEmptyTitle ( null );
+        return WCons.SP;
+    }
+
+
+
     @Override
     protected void processTitle ( String title, int level, ConvertParameter cp, BookNode bookNode )
     {

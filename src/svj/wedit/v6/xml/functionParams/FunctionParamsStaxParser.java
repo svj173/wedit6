@@ -165,6 +165,7 @@ public abstract class FunctionParamsStaxParser   extends WEditStaxParser
             {
                 paramType   = attr.getValue();
                 // Получить параметр (индивидуальный xml-парсинг по типу параметра)
+                Log.file.info ("--- paramType = %s", paramType );
                 param       = FunctionParamsStaxParser.parseFunctionParameter ( paramName, paramType, eventReader, errMsg );
             }
         }

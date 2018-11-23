@@ -104,6 +104,12 @@ public class ConvertToTxt extends AbstractConvertFunction
         writeStr ( getRedLineValue(cp) );
     }
 
+    protected String getNewLineSymbol ()
+    {
+        return WCons.NEW_LINE;
+    }
+
+
     @Override
     protected void processTitle ( String title, int level, ConvertParameter cp, BookNode bookNode )
     {

@@ -12,7 +12,7 @@
         <RollingFile name="black" fileName="${env:MODULE_HOME}/log/black_box.txt" filePattern="${env:MODULE_HOME}/log/black_box/$${date:yyyy-MM}/black_box-%d{yyyy-}-%i.txt.gz">
             <!-- Попытка создать логгер, чтобы не архивировался - только вот эти пять файлов - чтобы не переполнялась директория. - НЕ получилась. -->
         <!--RollingFile name="black" fileName="${env:MODULE_HOME}/log/black_box.txt" filePattern="${env:MODULE_HOME}/log/black_box/black_box-old.txt.gz"-->
-            <ThresholdFilter level="DEBUG" onMatch="ACCEPT" onMismatch="DENY"/>
+            <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
             <PatternLayout>
                 <pattern>%d{ISO8601} [%t] %-5p %logger{12} %C{1}.%M(line:%L). %m%n</pattern>
             </PatternLayout>

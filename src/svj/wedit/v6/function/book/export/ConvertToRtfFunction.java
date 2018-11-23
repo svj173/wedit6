@@ -317,6 +317,20 @@ public class ConvertToRtfFunction extends AbstractConvertFunction // SimpleBookF
         }
     }
 
+    protected String getNewLineSymbol ()
+    {
+        Paragraph paragraph = new Paragraph (leading, "", textFont2 );
+        //paragraph.add ( Chunk.NEWLINE );
+        try
+        {
+            document.add ( paragraph );
+        } catch ( Exception e ) {
+            Log.l.error ( "error", e );
+        }
+        return WCons.SP;
+    }
+
+
     @Override
     protected void finishConvert ( ConvertParameter cp ) throws WEditException
     {

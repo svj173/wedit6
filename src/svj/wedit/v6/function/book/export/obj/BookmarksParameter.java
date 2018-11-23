@@ -242,8 +242,12 @@ public class BookmarksParameter extends FunctionParameter<Object>
     {
         SimpleParameter result;
 
+        //result  = new SimpleParameter ( type.getRuName(), TypeHandleType.NOTHING.toString() );
+        // Имя - обязательно английское. Для виджетов есть отдельное ruName
+        // Но здесь - только русское имя (в xml файле)
         result  = new SimpleParameter ( type.getRuName(), TypeHandleType.NOTHING.toString() );
         result.setValue ( TypeHandleType.NOTHING.toString () );
+        result.setRuName ( type.getRuName() );
 
         return result;
     }

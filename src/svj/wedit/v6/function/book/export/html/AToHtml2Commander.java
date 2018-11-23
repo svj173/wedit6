@@ -426,5 +426,10 @@ public abstract class AToHtml2Commander extends AbstractConvertFunction
     	return false;
     }
 
+    protected String getNewLineSymbol ()
+    {
+        return BR;
+    }
+
     
 }

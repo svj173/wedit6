@@ -52,7 +52,7 @@ public class SimpleParamParser  extends FunctionParamsStaxParser
                     if ( tagName.equals( ConfigParam.VALUE) )
                     {
                         str = getText ( eventReader );
-                        Log.file.debug ( "---- SimpleParamParser: paramName = %s; value = '%s'",paramName, str );
+                        Log.file.info ( "---- SimpleParamParser: paramName = %s; value = '%s'",paramName, str );
                         fParameter = new SimpleParameter ( paramName, str );
                         //fParameter.setHasEmpty ( true );
                     }

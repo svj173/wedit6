@@ -143,11 +143,15 @@ public abstract class Function implements ActionListener
             handle ( e );
 
         } catch ( Exception ex )         {
-            Log.l.error ( "Error", ex );
             // Вывести сообщение об ошибке - только если не было отмены работы функции (cancel)
             if ( ex instanceof WEditException )
             {
                 WEditException we = (WEditException) ex;
+                if ( we.isInfo() )
+                    Log.l.error ( "Error", ex );
+                else
+                    Log.l.info ( ex.getMessage() );
+
                 if ( ! we.isCancel() )
                 {
                     // Если это не CANCEL - выдать сообщение об ошибке.
@@ -156,6 +160,7 @@ public abstract class Function implements ActionListener
             }
             else
             {
+                Log.l.error ( "Error", ex );
                 // Выдать на экран - системная ошибка + стэк-трэйс
                 DialogTools.showError ( ex.getMessage(), "Ошибка" );
             }

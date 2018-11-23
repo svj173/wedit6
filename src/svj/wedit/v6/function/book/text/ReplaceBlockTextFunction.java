@@ -86,6 +86,7 @@ public class ReplaceBlockTextFunction extends SimpleFunction
         mapText.put ( "  ", " " );
         // дефис на тире
         mapText.put ( "- ", "– " );
+        mapText.put ( "\\!\\?", "\\?\\!" );
     }
 
     @Override
@@ -200,7 +201,84 @@ public class ReplaceBlockTextFunction extends SimpleFunction
             str = str.replaceAll ( entry.getKey(), entry.getValue() );
         }
 
+        // удаляем пробелы в конце строки
+        // todo Надо отлаживать, т.к. то пустые строки удаляет, то не все пробелы справа (если больше одного)
+        //str = trimEndLine ( str );
+
         return str;
+    }
+
+    /**
+     * Удалить последние пробелы.
+     * Внимание: Чаще всего в конце строки стоит символ переноса. Необходимо перенос оставить, а правые пробелы удалить.
+     * ПС: точно не знаю, но вполне могут быть два символа N,R. (или не могут?)
+     * @param text  Исходный текст.
+     * @return      Преобразованный текст.
+     */
+    private String trimEndLine ( String text ) {
+        int     len, st, icN, icR, end;
+        char[]  val;
+        char    ch;
+        boolean work, hasLastSpace;
+        String  result, str;
+
+        len     = text.length();
+        if ( len == 0 )  return text;
+
+        end     = text.length() - 1;  // указатель на номер последнего символа
+
+        st      = icN = icR = 0;
+        val     = text.toCharArray();
+        work    = true;
+        hasLastSpace = false;
+
+        //while ( st < len ) {
+        while ( work ) {
+            if ( len == 0 )  break;
+            ch = val[len - 1];
+            switch ( ch ) {
+                case ' ':
+                    // запоминаем номер символа, стоявшего после пробела - если это были переводы строк.
+                    if ( ! hasLastSpace ) end = len;
+                    len--;
+                    hasLastSpace = true;
+                    break;
+                case '\n':
+                    icN++;
+                    len--;
+                    break;
+                case '\r':
+                    icR++;
+                    len--;
+                    break;
+                default:
+                    work = false;
+                    break;
+            }
+        }
+
+        if ( len == 0 )  return  text; // значит были только одни переносы строк.
+
+        Log.l.info( "text = '%s'\n - lenText = %d; len = %d; last = '%s'", text, text.length(), len, val[text.length() - 1] );
+
+        if ( hasLastSpace )  {
+            // учет кол-ва замен - для статистики.
+            int ic = val.length - len + icN + icR;
+            if ( ic > 0 ) count[0] = count[0] + ic;
+
+            if ( end < ( val.length - 1) )  {
+                // были символы переноса строк - вырезать их
+                str = text.substring(end);
+            } else
+                str = "";
+
+            result = text.substring (st, len) + str;  // вернуть обратно переносы строк
+
+        } else {
+            result = text;
+        }
+
+        return result;
     }
 
     private long countSubstr ( String text, String substr )

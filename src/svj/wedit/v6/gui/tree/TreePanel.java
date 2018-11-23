@@ -265,6 +265,7 @@ public class TreePanel<T extends Editable>  extends EditablePanel  //implements 
         rewriteEdit();
 
         // считаем что если дерево изменилось, то  currentObj принадлежит старому дереву и в новом надо искать его подобие.
+        // Хотя если созадли новый эпизож и выбрали его, то в старом дереве его точно не будет.
         oldCurrentObj  = currentObj;
         //Log.l.debug ( getName(), "", oldCurrentObj );
 
@@ -275,8 +276,10 @@ public class TreePanel<T extends Editable>  extends EditablePanel  //implements 
                 currentObj  = TreeObjTools.getObjectInNodeById ( (TreeObj) treeModel.getRoot(), oldCurrentObj.getId() );
             Log.l.debug (  "%s: NEW currentObj = %s", getName(), currentObj );
 
-            if ( (oldCurrentObj != null) && (currentObj == null) )
-                Log.l.error ( "%s: NOT found object for oldCurrentObj = %s; ", getName(), oldCurrentObj );
+            if ( (oldCurrentObj != null) && (currentObj == null) ) {
+                Log.l.error("%s: NOT found object for oldCurrentObj = %s; ", getName(), oldCurrentObj);
+                currentObj = oldCurrentObj;
+            }
 
             switch ( repaintTreeMode )
             {
@@ -300,8 +303,6 @@ public class TreePanel<T extends Editable>  extends EditablePanel  //implements 
                     // - выключить все акции на дереве
                     if ( treeListener != null )  treeListener.setDisableAction();
                     allowExpand = false;  // запретить выделять обьект при его закрытии (иначе будет акция)
-                    //treeModel.onEltexStructChanged();
-                    //Log.l.debug ( "EltexTreePanel.rewrite: type+ALL. Reload TreeModel" );
                     treeModel.reload();
                     //treeModel.nodeStructureChanged ( currentObj );
                     // - выделить обьект на дереве - без акции
@@ -609,6 +610,8 @@ public class TreePanel<T extends Editable>  extends EditablePanel  //implements 
         Log.l.debug ( "%s: selectNode: Start. new nodeId = %s", getName(), nodeId );
 
         if ( nodeId == null )  return;
+
+        // todo Смотреть, есть ли такой массив
 
         obj = TreeObjTools.getObjectInNodeById ( getRoot(), nodeId );
         Log.l.debug ( "%s: selectNode: nodeId = %s; find obj = %s", getName(), nodeId, obj );

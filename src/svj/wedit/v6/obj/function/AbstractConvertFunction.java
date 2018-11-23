@@ -72,6 +72,8 @@ public abstract class AbstractConvertFunction  extends FileWriteFunction
 
     protected abstract void finishConvert ( ConvertParameter cp ) throws WEditException;
 
+    protected abstract String getNewLineSymbol ();
+
 
     public AbstractConvertFunction ( FunctionId functionId, String functionName, String iconFile, boolean multiSelect )
     {
@@ -347,7 +349,12 @@ public abstract class AbstractConvertFunction  extends FileWriteFunction
 
             // Заключительная строка
             str = cp.getEndTextParam().getValue ();
-            if ( str != null )  writeStr ( str );
+            if ( str != null )
+            {
+                writeStr ( str );
+                // перевод строки
+                writeStr ( getNewLineSymbol() );
+            }
 
             // Заключительные html-теги - если разрешено.
             //if ( tornOnHeader )   writeStr ( fos, "\n\n<BR/>\n</BODY>\n</HTML>\n\n" );
@@ -388,25 +395,35 @@ public abstract class AbstractConvertFunction  extends FileWriteFunction
             // в numbers - скидываем в 1 все номера, кроме текущего уровня.
             clearNumbers ( level );
 
-            nodeLevel   = nodeObject.getLevel();
-            // Взять тип заголовка элемента - может быть NULL (т.е. work)
-            elementType = nodeObject.getElementType();
-            //if ( elementType == null )  elementType = ""; // work
-            Log.file.debug ( "---- elementType = '%s'; book title = %s", elementType, nodeObject.getName() );
+            nodeLevel    = nodeObject.getLevel();
 
-            elementParam    = cp.getElementParam(nodeLevel);
-            if ( elementParam == null )  throw new WEditException ( null, "Не найден элемент описания уровня ", nodeLevel );
+            elementParam = cp.getElementParam ( nodeLevel );
+            if (elementParam == null)
+                throw new WEditException(null, "Не найден элемент описания уровня " + nodeLevel);
 
-            // Проверить - игнорировать этот элемент?
-            // if ( cp.ignoreElement(elementType) )  return;
-            handleType = ConvertTools.getType ( elementType, cp.getTypes() );
-            switch ( handleType )
-            {
-                case NOTHING:
-                    return;
-                case PRINT_LATER:
-//                    writeStr ( fos, "<...>" );
-                    return;
+
+            // Считаем что заголовок книги (уровень=0) всегда разрешен для конвертирования.
+            if ( nodeLevel > 0 ) {
+
+                // Взять тип заголовка элемента - может быть NULL (т.е. work)
+                elementType = nodeObject.getElementType();
+                //if ( elementType == null )  elementType = ""; // work
+                Log.file.debug("---- elementType = '%s'; book title = %s", elementType, nodeObject.getName());
+
+                // Проверить - игнорировать этот элемент?
+                // if ( cp.ignoreElement(elementType) )  return;
+                // - cp.getTypes - скорее всего только русские имена. Поэтоум ищем обьект Типа по его en-имени
+                WType wType = getBookContent().getBookStructure().getType(elementType);
+                handleType = ConvertTools.getType ( wType, cp.getTypes() );
+                Log.file.info("Find: level = %d; nodeLevel = %d; node = %s; elementType = '%s'; wType = %s; handleType "
+                        + "= %s", nodeLevel, level, nodeObject.getName(), elementType, wType, handleType);
+                switch (handleType) {
+                    case NOTHING:
+                        return;
+                    case PRINT_LATER:
+                        //                    writeStr ( fos, "<...>" );
+                        return;
+                }
             }
 
 

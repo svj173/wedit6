@@ -8,7 +8,6 @@ import svj.wedit.v6.logger.Log;
 import svj.wedit.v6.obj.ConfigParam;
 
 import javax.xml.stream.XMLEventReader;
-import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
@@ -22,7 +21,7 @@ import javax.xml.stream.events.XMLEvent;
  */
 public class ConvertParamParser extends FunctionParamsStaxParser
 {
-    private enum ParamType { ELEMENT, TYPE, OTHER, LOCALE }
+    private enum ParamType { ELEMENT, TYPE, OTHER, LOCALE, STRONG_TITLE  }
 
     @Override
     public FunctionParameter parse ( XMLEventReader eventReader, String paramName, StringBuilder errMsg )
@@ -33,10 +32,10 @@ public class ConvertParamParser extends FunctionParamsStaxParser
         EndElement          endElement;
         String              str, paramType;
         ConvertParameter    fParameter;
-        FunctionParameter   param, ps;
+        FunctionParameter   param;
         boolean             bwork;
         ParamType           useType;
-        Attribute           attr;
+        //Attribute           attr;
 
         tagName = paramType = null;
         param   = null;
@@ -57,15 +56,18 @@ public class ConvertParamParser extends FunctionParamsStaxParser
                     startElement = event.asStartElement();
                     tagName      = startElement.getName().getLocalPart();
 
-                    if ( tagName.equals( "strongTitleParam") )
+                    if ( tagName.equals( ConfigParam.STRONG_TITLE ) )
                     {
                         // Неизменяемые главы   - ParameterType.LIST_ITEM  - OrderListParameter
+                        useType = ParamType.STRONG_TITLE;
+                        /*
                         //str = getText ( eventReader );
                         //fParameter.getStrongParameter().setValue ( str );
                         attr    = startElement.getAttributeByName ( NAME );
                         if ( attr == null )
                         {
                             Log.l.error ( "Ошибка инициализации параметра функции 'strongTitleParam'. Отсутствует имя Параметра." );
+                            continue;
                         }
                         paramName   = attr.getValue();
 
@@ -83,7 +85,7 @@ public class ConvertParamParser extends FunctionParamsStaxParser
                             //Log.l.debug ("--- functionId = %s; fParameter = %s", functionId, fParameter );
                             if ( ps != null )  fParameter.setStrongParameter ( (OrderListParameter ) ps );
                         }
-
+                        */
                     }
                     else if ( tagName.equals( ConfigParam.FILE) )
                     {
@@ -104,6 +106,7 @@ public class ConvertParamParser extends FunctionParamsStaxParser
                                     fParameter.addElement ( param );
                                     break;
                                 case TYPE:
+                                    Log.file.info ("--- TYPE: param = %s", param );
                                     fParameter.addType ( param );
                                     break;
                                 case OTHER:
@@ -111,6 +114,10 @@ public class ConvertParamParser extends FunctionParamsStaxParser
                                     break;
                                 case LOCALE:
                                     fParameter.addLocale ( param );
+                                    break;
+                                case STRONG_TITLE:
+                                    if ( param instanceof OrderListParameter )
+                                        fParameter.setStrongParameter ( (OrderListParameter ) param );
                                     break;
                             }
                         }

@@ -28,6 +28,35 @@ public class StringTools
         return str.isEmpty();
     }
 
+    /**
+     * Добавить символы в конец строки.
+     * @param str   Строка
+     * @param ch    Символ
+     * @param size  Сколько раз.
+     * @return      Результат.
+     */
+    public static String addSpaceLast ( String str, char ch, int size ) {
+        StringBuilder sb;
+        int ic;
+
+        if (str == null) {
+            str = "";
+        }
+        ic = str.length();
+        if (size <= ic) {
+            return str;
+        }
+
+        sb = new StringBuilder(64);
+        sb.append(str);
+        for (int i = 0; i < (size - ic); i++) {
+            sb.append(ch);
+        }
+
+        return sb.toString();
+    }
+
+
     public static String createFirst ( int spaceSize )
     {
         StringBuilder result;
