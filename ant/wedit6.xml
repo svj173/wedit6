@@ -90,6 +90,7 @@
                  poi/poi-3.17.jar  poi/ooxml-schemas-1.1.jar
                  poi/poi-ooxml-3.17.jar poi/poi-scratchpad-3.17.jar
                  poi/xmlbeans-2.6.0.jar  poi/poi-ooxml-schemas-3.17.jar
+                 spell/jortho.jar
                 " />
                 <attribute name="Implementation-Version" value="${version}-b${build.number}"/>
 
@@ -191,6 +192,10 @@
 
         <copy file="../conf/config.txt" todir="${programmPath}/conf"/>
         <copy file="../conf/log4j/linux/log4j2_locale.xml" tofile="${programmPath}/conf/log4j2.xml"/>
+
+        <copy todir="${programmPath}/conf/spell">
+            <fileset file="../conf/text/spell/**" />
+        </copy>
 
         <copy todir="${programmPath}/img">
             <fileset file="../img/**" />

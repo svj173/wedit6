@@ -7,6 +7,7 @@ import svj.wedit.v6.function.params.*;
 import svj.wedit.v6.logger.Log;
 import svj.wedit.v6.obj.ConfigParam;
 import svj.wedit.v6.tools.Convert;
+import svj.wedit.v6.tools.DumpTools;
 import svj.wedit.v6.tools.Utils;
 import svj.wedit.v6.util.IClone;
 
@@ -147,7 +148,8 @@ public class ConvertParameter     extends FunctionParameter<Object>   implements
             if ( Par.CURRENT_PARSE_BOOK != null )
                 msg = "Book: "+ Par.CURRENT_PARSE_BOOK.getName() + "; File: "+Par.CURRENT_PARSE_BOOK.getFileName()+
                         "; ID = "+Par.CURRENT_PARSE_BOOK.getId();
-            Log.l.error ("%s. None SimpleParameter type (file: %s) [%s]: %s", getName(), getFileName(), msg, type );
+            Log.l.error ("%s. None SimpleParameter type (file: %s) [%s]: param type = %s\n%s", getName(), getFileName(),
+                    msg, type, DumpTools.printCurrentStackTrace() );
             //Log.l.error ( DumpTools.printCurrentStackTrace() );
         }
     }

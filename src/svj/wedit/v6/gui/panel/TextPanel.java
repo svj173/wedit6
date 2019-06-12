@@ -1,12 +1,12 @@
 package svj.wedit.v6.gui.panel;
 
 
+import com.inet.jortho.SpellChecker;
 import svj.wedit.v6.Par;
 import svj.wedit.v6.book.TextToBookNode;
 import svj.wedit.v6.exception.WEditException;
 import svj.wedit.v6.gui.text.WDocumentListener;
 import svj.wedit.v6.gui.text.WKeyListener;
-import svj.wedit.v6.gui.text.WMouseListener;
 import svj.wedit.v6.gui.tree.TreePanel;
 import svj.wedit.v6.logger.Log;
 import svj.wedit.v6.obj.book.BookContent;
@@ -17,7 +17,11 @@ import svj.wedit.v6.undo.CompoundUndoMan;
 import javax.swing.*;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
-import javax.swing.text.*;
+import javax.swing.text.DefaultHighlighter;
+import javax.swing.text.DefaultStyledDocument;
+import javax.swing.text.EditorKit;
+import javax.swing.text.StyledDocument;
+
 import java.awt.*;
 
 
@@ -81,7 +85,7 @@ public class TextPanel extends EditablePanel //implements Comparable<WPanel>
         doc.addDocumentListener ( new WDocumentListener ( this ) );
 
         // Ловим щелчок мышки на тексте - чтобы изменять выпадашки стилей, цветов, элементов - для информации.
-        textPane.addMouseListener ( new WMouseListener() );
+        //textPane.addMouseListener ( new WMouseListener() );
 
 
 
@@ -184,6 +188,40 @@ public class TextPanel extends EditablePanel //implements Comparable<WPanel>
         caret.install ( textPane );
         textPane.setCaret ( caret );
         //*/
+
+        // Навесить Орфографию.
+        SpellChecker.register( textPane );
+
+        // todo В выпадающее меню Орфографии добавляем свою меню по переконвертирвоке текста.
+        /*
+        for ( MouseListener mouseListener : textPane.getMouseListeners() ) {
+            // Ищем  PopupListener
+            if ( mouseListener instanceof PopupListener ) {
+                PopupListener popupListener = (PopupListener) mouseListener;
+                // достаем параметр menu и добавляем к нему свое меню.
+                Field f = null;
+                try {
+                    f = PopupListener.class.getDeclaredField("меню");
+                    f.setAccessible(true);
+                    JPopupMenu menu = (JPopupMenu) f.get(popupListener);
+                    JMenuItem item = new JMenuItem("Конвертация");
+                    item.addActionListener(new WMouseListener());
+                    menu.add(item);
+                } catch (Exception e) {
+                    Log.l.error ( "Add text popup menu error.", e );
+                }
+            }
+        }
+        */
+
+        // todo
+        // textPane.addMouseListener(new PopupListener(JPopupMenu menu));
+
+    }
+
+    protected void finalize() throws Throwable {
+        // отключить проверку.
+        SpellChecker.unregister( textPane );
     }
 
     @Override

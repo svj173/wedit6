@@ -1,6 +1,8 @@
 package svj.wedit.v6;
 
 
+import com.inet.jortho.FileUserDictionary;
+import com.inet.jortho.SpellChecker;
 import svj.wedit.v6.gui.panel.TextPanel;
 import svj.wedit.v6.gui.tree.TreePanel;
 import svj.wedit.v6.logger.Log;
@@ -9,6 +11,8 @@ import svj.wedit.v6.obj.book.BookNode;
 import svj.wedit.v6.obj.open.OpenParamsData;
 
 import java.awt.*;
+import java.io.File;
+import java.net.URL;
 
 /**
  * Класс отвечает за запуск GUI воплощения данного редактора.
@@ -174,6 +178,19 @@ public class WEdit6 implements Runnable
             str = System.getenv ( "HOME" ); // for Windows
             Log.l.debug ( "HOME = %s", str );
             if ( str != null )  Par.USER_HOME_DIR  = str;
+
+            // Регистрируем Орфографию
+            // - Где размещены библиотеки
+            String spellWorkDir = Par.MODULE_HOME + File.separator + "conf" + File.separator +"spell";
+            Log.l.info ( "spellWorkDir = '%s'", spellWorkDir );
+            SpellChecker.setUserDictionaryProvider( new FileUserDictionary(spellWorkDir) );
+            URL url = new File(spellWorkDir+ File.separator +"dictionaries.cnf").toURI().toURL();
+            SpellChecker.registerDictionaries( url, "ru" );
+            //SpellChecker.registerDictionaries( null, "ru" );
+            // todo На тексте исчезла моя выпадашка о перекодировке. Добавить ее в кучу.
+            // todo При доабвлении слова в словарь создает UserDictionary_ru.txt там же где и словари.
+            // -- этот файл надо как-то сохранять при накате новой версии. т.е. перед очисткой директории скопировать
+            // в ТМП.
 
             // Создать и инициализировать Редактор
             edit = new WEdit6();
