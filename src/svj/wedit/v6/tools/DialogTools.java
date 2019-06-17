@@ -41,6 +41,22 @@ public class DialogTools
         return result;
     }
 
+    public static int showConfirmDialog ( Component parentFrame, Object msg, String buttonName1,
+                                          String buttonName2, String buttonName3 )
+    {
+        int result;
+        Object[] options = { buttonName1, buttonName2, buttonName3 };
+        result = JOptionPane.showOptionDialog ( parentFrame,
+            msg,
+            "Подтверждение",
+            JOptionPane.DEFAULT_OPTION,
+            JOptionPane.WARNING_MESSAGE,
+            null,
+            options,
+            options[0] );
+        return result;
+    }
+
     public static int showConfirmDialog ( Component parentFrame, String title, Object msg )
     {
         int result;

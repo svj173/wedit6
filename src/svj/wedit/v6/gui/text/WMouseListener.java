@@ -7,16 +7,9 @@ import svj.wedit.v6.function.text.InfoElementTypeFunction;
 import svj.wedit.v6.function.text.SelectElementFunction;
 import svj.wedit.v6.logger.Log;
 import svj.wedit.v6.obj.function.Function;
-import svj.wedit.v6.tools.DialogTools;
 
-import javax.swing.*;
-import javax.swing.text.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.*;
 
 /**
  * Ловим щелчок мышки на тексте - чтобы изменять выпадашки стилей, цветов, элементов - для информации.
@@ -59,12 +52,6 @@ public class WMouseListener implements MouseListener
     @Override
     public void mouseClicked ( MouseEvent event )
     {
-        Object          source;
-        JTextPane       textPane;
-        AttributeSet    charAttr, inputAttr, paragraphAttr;
-        Style           logicalStyle;
-        String          styleName;
-
         Log.l.debug ( "--- MouseListener.mouseClicked: event = ", event.getSource() );
 
         if ( event.isConsumed() ) return;
@@ -110,7 +97,15 @@ public class WMouseListener implements MouseListener
             elementFunction.setCurrentStyle ( null ); // reset
         }
 
+        /*
+        // Перенесли в TextConvertListener
         // ловим правую кнопку мыши - выводим меню.
+        Object          source;
+        JTextPane       textPane;
+        AttributeSet    charAttr, inputAttr, paragraphAttr;
+        Style           logicalStyle;
+        String          styleName;
+
         if ( SwingUtilities.isRightMouseButton(event) )
         {
             int x, y;
@@ -164,11 +159,10 @@ public class WMouseListener implements MouseListener
                     menuItem.setBackground ( Color.LIGHT_GRAY );
                     pm.add ( menuItem );
 
-                    // todo Список испарвлений орфографии
-
-                    // todo Список синонимов
-
-                    // todo Список омонимов
+                    // -- все нижнее - в SpellChecker
+                    // Список испарвлений орфографии
+                    // Список синонимов
+                    // Список омонимов
 
                     // функция по перекодировке текста - русский-английский
                     menuItem = createEncodeMenu ( textPane, str );
@@ -181,8 +175,10 @@ public class WMouseListener implements MouseListener
                 pm.show ( event.getComponent(), x, y );
             }
         }
+        */
     }
 
+    /*
     private JMenuItem createEncodeMenu ( final JTextPane textPane, final String str )
     {
         JMenuItem menuItem = new JMenuItem("Перераскладка");
@@ -239,6 +235,7 @@ public class WMouseListener implements MouseListener
 
         return menuItem;
     }
+    */
 
     @Override
     public void mousePressed ( MouseEvent e )
