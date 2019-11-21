@@ -25,7 +25,6 @@ import java.util.Collection;
  */
 public class ConvertToTxt extends AbstractConvertFunction
 {
-    private final String   RED_LINE_PARAM       = "redLine";
 
     //private StringBuilder errMsg = new StringBuilder();
 
@@ -34,8 +33,6 @@ public class ConvertToTxt extends AbstractConvertFunction
     /* Текст для красной строки. */
     private final SimpleParameter redLineParam;
 
-    /** Полученное значение красной строки. */
-    private String redLineValue = null;
 
 
     public ConvertToTxt ()
@@ -168,22 +165,6 @@ public class ConvertToTxt extends AbstractConvertFunction
         if ( errMsg.length () > 0 )
             throw new WEditException ( null, "Ошибка преобразования : ", errMsg );
         */
-    }
-
-    private String getRedLineValue ( ConvertParameter cp )
-    {
-        if ( redLineValue == null )
-        {
-            redLineValue = WCons.SP;
-            FunctionParameter fp;
-            fp = cp.getLocaleParam ( RED_LINE_PARAM );
-            if ( fp != null )
-            {
-                if ( fp.getValue() != null )
-                    redLineValue = fp.getValue().toString();
-            }
-        }
-        return redLineValue;
     }
 
 }

@@ -2,6 +2,7 @@ package svj.wedit.v6.obj.function;
 
 
 import svj.wedit.v6.Par;
+import svj.wedit.v6.WCons;
 import svj.wedit.v6.exception.WEditException;
 import svj.wedit.v6.function.FunctionId;
 import svj.wedit.v6.function.book.export.obj.*;
@@ -33,6 +34,8 @@ import java.util.Map;
  */
 public abstract class AbstractConvertFunction  extends FileWriteFunction
 {
+    public final String   RED_LINE_PARAM       = "redLine";
+
     /* Нумерация для элементов (Часити, Главы). Ключ - уровень элемента. Value - текущее значение. */
     private final Map<Integer,Integer> numbers = new HashMap<Integer,Integer> ();
 
@@ -52,6 +55,10 @@ public abstract class AbstractConvertFunction  extends FileWriteFunction
 
     /** Сборщик статистики по Титлам - каких (по уровням) и сколько раз было использовано. Для вывода в Итого. */
     private final Map<Integer,Integer>  titleStat = new HashMap<Integer,Integer>();
+
+    /** Полученное значение красной строки. */
+    private String redLineValue = null;
+
 
 
     // ------------------------------------- abstract -----------------------------------------
@@ -717,6 +724,22 @@ public abstract class AbstractConvertFunction  extends FileWriteFunction
     public boolean isMultiSelect ()
     {
         return multiSelect;
+    }
+
+    public String getRedLineValue ( ConvertParameter cp )
+    {
+        if ( redLineValue == null )
+        {
+            redLineValue = WCons.SP;
+            FunctionParameter fp;
+            fp = cp.getLocaleParam ( RED_LINE_PARAM );
+            if ( fp != null )
+            {
+                if ( fp.getValue() != null )
+                    redLineValue = fp.getValue().toString();
+            }
+        }
+        return redLineValue;
     }
 
 }

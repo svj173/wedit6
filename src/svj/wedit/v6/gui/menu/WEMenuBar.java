@@ -112,6 +112,9 @@ public class WEMenuBar extends JMenuBar
         menu    = getMenu ( FunctionId.CONVERT_TO_TXT );
         if ( menu != null )  result.add ( menu );
 
+        menu    = getMenu ( FunctionId.CONVERT_TO_FB2 );
+        if ( menu != null )  result.add ( menu );
+
         result.addSeparator();
 
         menu    = getMenu ( FunctionId.CONVERT_CONTENT_TO_RTF );

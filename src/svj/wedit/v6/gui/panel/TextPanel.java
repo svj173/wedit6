@@ -19,12 +19,10 @@ import svj.wedit.v6.undo.CompoundUndoMan;
 import javax.swing.*;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
-import javax.swing.text.DefaultHighlighter;
-import javax.swing.text.DefaultStyledDocument;
-import javax.swing.text.EditorKit;
-import javax.swing.text.StyledDocument;
+import javax.swing.text.*;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseListener;
 import java.lang.reflect.Field;
 
@@ -156,18 +154,78 @@ public class TextPanel extends EditablePanel //implements Comparable<WPanel>
             }
         } );
 
-        // изменить курсор
-        //Caret caret;
+        // изменить курсор в текстовом редакторе
+        /*
+        Caret caret = textPane.getCaret();
+        // object, name, oldValue, newValue
+        PropertyChangeEvent prop = new PropertyChangeEvent (null, "caretWidth", null, 3);
+        DefaultCaret defaultCaret = (DefaultCaret) caret;
+        defaultCaret.handler.propertyChange(prop);
+        */
+
         //caret   = textPane.getCaret();    // стандартный текстовый курсор. мигание = 500.
         //Log.l.info ( "-- caret blink = %d", caret.getBlinkRate() );
         /*
         // Свой курсор. Шире в два раза и с хвостиками вверху и внизу.
         // - Косяк с вводом текста. Почему-то после каждой буквы курсор передвигается вправо через одну позицию (символ).
         caret = new TextCaret (2);
-        caret.setBlinkRate ( 500 ); // мигание курсора, в мсек
+        caret.setBlinkRate ( 500 ); // мигание курсора (пауза), в мсек
         caret.install ( textPane );
         textPane.setCaret ( caret );
         //*/
+
+        //KeyStroke keySave = KeyStroke.getKeyStroke(KeyEvent.VK_F12, Event.ACTION_EVENT);
+
+
+        // F12 - Изменяет курсор в текстовм поле, чтобы его легко найти.
+        KeyStroke keySave = KeyStroke.getKeyStroke("F12");
+        Action hardCaret = new AbstractAction("HardCaret") {
+            public void actionPerformed(ActionEvent e) {
+                Log.l.info("Set new caret blink");
+                Caret caret;
+                //caret = textPane.getCaret();
+                //caret.setBlinkRate(50);
+
+                /*
+                try {
+                    Caret caretOld = textPane.getCaret();
+
+                    caret = new TextCaret(2);
+                    caret.setBlinkRate ( 500 ); // мигание курсора (пауза), в мсек
+                    caret.install ( textPane );
+                    textPane.setCaret ( caret );
+
+                    // пауза не рабоатет - замирает курсор
+                    Thread.currentThread().sleep(3000);
+                    
+                    caret.deinstall(textPane);
+                    textPane.setCaret ( caretOld );
+
+                } catch (InterruptedException e1) {
+                    Log.l.info("Set new caret error", e1);
+                }
+                */
+
+                /*
+                caret = new TextCaret(4);
+                caret.setBlinkRate ( 500 ); // мигание курсора (пауза), в мсек
+                caret.install ( textPane );
+                textPane.setCaret ( caret );
+                */
+
+                // увеличили толщину курсора - но проблемы со вставками текста - курсор убегает вправо за следующий
+                // символ.
+                /*
+                textPane.putClientProperty("caretWidth",4);
+                caret = textPane.getCaret();
+                caret.install ( textPane );
+                // А как вернуть обратный режим?
+                */
+            }
+        };
+        getActionMap().put("hardCaret", hardCaret);
+        getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(keySave, "hardCaret");
+
 
         // Навесить Орфографию.
         SpellChecker.register( textPane );

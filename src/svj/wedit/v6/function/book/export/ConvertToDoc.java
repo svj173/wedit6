@@ -35,7 +35,7 @@ import java.util.Collection;
  * <BR/> Доп параметры (Локальные):
  * <BR/> 1) Выбор формата - DOC, DOCX   -- здесь выбор происходит по расширению результирующего файла.
  * <BR/>
- * <BR/> todo Внимание: Не реализован цветной текст в середине абзаца!
+ * <BR/> Внимание: Не реализован цветной текст в середине абзаца! -- Сделано
  * <BR/>
  * <BR/> Page size. Стандартное:
  * <BR/> - А4 - ширина 21, высота - 29.7 (см)
@@ -58,7 +58,7 @@ public class ConvertToDoc  extends AbstractConvertFunction
 
     public ConvertToDoc ()
     {
-        super ( FunctionId.CONVERT_TO_DOC, "Преобразовать книгу в DOC", "to_html.png", false );
+        super ( FunctionId.CONVERT_TO_DOC, "Преобразовать книгу в DOC", "to_doc.png", false );
 
         /*
         fileType = new ComboBoxParameter ( FILE_TYPE_PARAM );

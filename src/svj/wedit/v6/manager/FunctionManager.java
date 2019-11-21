@@ -250,6 +250,7 @@ public class FunctionManager
         add ( new ConvertContentToRtfFunction() );
         add ( new ConvertToDoc() );
         add ( new ConvertToTxt() );
+        add ( new ConvertToFB2() );
 
         add ( new SimpleSearchFunction() );
 

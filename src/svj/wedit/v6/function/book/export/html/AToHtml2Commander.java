@@ -2,7 +2,6 @@ package svj.wedit.v6.function.book.export.html;
 
 
 import svj.wedit.v6.Par;
-import svj.wedit.v6.WCons;
 import svj.wedit.v6.exception.WEditException;
 import svj.wedit.v6.function.FunctionId;
 import svj.wedit.v6.function.book.export.obj.ConvertParameter;
@@ -22,6 +21,7 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.html.CSS;
 import javax.swing.text.html.HTML;
+
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -147,18 +147,6 @@ public abstract class AToHtml2Commander extends AbstractConvertFunction
         // Красная строка - для последующих текстов.
         writeStr ( BR );
         writeStr ( getRedLineValue(cp) );
-    }
-
-    private String getRedLineValue ( ConvertParameter cp )
-    {
-        String result = WCons.SP;
-        FunctionParameter fp;
-        fp = cp.getLocaleParam ( RED_LINE_PARAM );
-        if ( fp != null )
-        {   if ( fp.getValue() != null )
-            result = fp.getValue().toString();
-        }
-        return result;
     }
 
     protected void processText ( TextObject textObj, ConvertParameter cp )

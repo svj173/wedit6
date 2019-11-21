@@ -14,7 +14,6 @@ import svj.wedit.v6.tools.ElementCons;
 import svj.wedit.v6.tools.StyleTools;
 import svj.wedit.v6.xml.WEditStaxParser;
 
-import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
@@ -40,7 +39,7 @@ import javax.xml.stream.events.XMLEvent;
  */
 public class BookStructureStaxParser   extends WEditStaxParser
 {
-    private static final QName  level             = new QName("level");
+    //private static final QName  level             = new QName("level");
 
 
     public void read ( XMLEventReader eventReader, BookStructure bookStructure ) throws WEditException
@@ -49,7 +48,6 @@ public class BookStructureStaxParser   extends WEditStaxParser
         XMLEvent                event;
         StartElement            startElement;
         EndElement              endElement;
-        BookElementStaxParser   elementParser;
         WBookElementsStaxParser bookElementParser;
         BookTypesStaxParser     typesParser;
         boolean                 bWork;
@@ -61,7 +59,6 @@ public class BookStructureStaxParser   extends WEditStaxParser
         {
             bWork   = true;
 
-            //elementParser       = new BookElementStaxParser();
             typesParser         = new BookTypesStaxParser();
             bookElementParser   = new WBookElementsStaxParser();
 

@@ -59,13 +59,18 @@ public class StringTools
 
     public static String createFirst ( int spaceSize )
     {
+        return createFirst(spaceSize, '\t');
+    }
+
+    public static String createFirst ( int spaceSize, char sep )
+    {
         StringBuilder result;
 
         if ( spaceSize < 0 )  spaceSize = 0;
 
         result = new StringBuilder ( spaceSize );
 
-        for ( int i=0; i < spaceSize; i++ )  result.append ( '\t' );
+        for ( int i=0; i < spaceSize; i++ )  result.append ( sep );
 
         return result.toString();
     }
