@@ -118,7 +118,11 @@ public class ConvertToFB2 extends AbstractConvertFunction {
         } else {
             // простой текст.
             // - Это текст в середине абзаца - ???
+            // Но если по каким-то причинам этот текст не попадает внутрь тегов <p>...</p>, то он хоть в файле и
+            // будет, но в электронной книге не отобразится. Поэтому все равно добавляем тег P.
+            writeStr ( "<p>" );
             writeStr ( text );
+            writeStr ( "</p>" );
         }
     }
 
@@ -163,6 +167,9 @@ public class ConvertToFB2 extends AbstractConvertFunction {
 
         writeStr("<body>\n");
 
+        // Устанавливаем рабочие параметры в исходное состояние.
+        // А то если два раза подряд сконвертировать, то во втором файле будет ошибка.
+        oldLevel = -1;
     }
 
     @Override
