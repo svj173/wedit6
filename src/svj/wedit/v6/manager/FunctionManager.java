@@ -251,6 +251,7 @@ public class FunctionManager
         add ( new ConvertToDoc() );
         add ( new ConvertToTxt() );
         add ( new ConvertToFB2() );
+        add ( new ConvertSelectToFB2() );
 
         add ( new SimpleSearchFunction() );
 

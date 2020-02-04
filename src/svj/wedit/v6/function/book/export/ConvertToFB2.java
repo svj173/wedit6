@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
+ * Конвертировать книгу в формат FB2.
  * <BR/>
  * <BR/> User: svj
  * <BR/> Date: 07.11.2019 14:26
@@ -27,6 +28,14 @@ public class ConvertToFB2 extends AbstractConvertFunction {
     /* Текст для красной строки - &nbsp;&nbsp; */
     private final SimpleParameter redLineParam;
 
+
+    public ConvertToFB2(FunctionId functionId, String functionName, String iconFile, boolean multiSelect) {
+        super ( functionId, functionName, iconFile, multiSelect );
+
+        redLineParam = new SimpleParameter ( RED_LINE_PARAM, "<dd>&nbsp;&nbsp;&nbsp;", true );
+        redLineParam.setValue ( "&nbsp;&nbsp;&nbsp;" );
+        redLineParam.setRuName ( "Красная строка" );
+    }
 
     public ConvertToFB2() {
         super ( FunctionId.CONVERT_TO_FB2, "Преобразовать книгу в FB2", "to_fb2.png", false );
