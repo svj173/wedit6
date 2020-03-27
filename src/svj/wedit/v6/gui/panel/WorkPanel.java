@@ -5,10 +5,14 @@ import svj.wedit.v6.WCons;
 import svj.wedit.v6.function.FunctionId;
 import svj.wedit.v6.gui.panel.card.CardPanel;
 import svj.wedit.v6.gui.tabs.TabsPanel;
+import svj.wedit.v6.gui.tree.TreePanel;
 import svj.wedit.v6.logger.Log;
+import svj.wedit.v6.obj.Editable;
+import svj.wedit.v6.obj.book.BookContent;
 import svj.wedit.v6.obj.function.Function;
 
 import javax.swing.*;
+
 import java.awt.*;
 import java.util.Map;
 
@@ -97,9 +101,21 @@ public class WorkPanel<T extends EditablePanel> extends RewritePanel
             {
                 ep = cp.getCurrentTabPanel();
                 // По идее - сюда же выводить и имя файла (директории - для проекта).
-                //cp.getCurrent ().get
-                Log.l.debug ( "(%s) --- CurrentTabPanel = %s",getName(), ep );
-                if ( ep != null ) titleField.setText ( ep.getName() ); // ep.getName() getTitle
+                if ( ep != null ) {
+                    // Если брать титл из табика, то он там убдет урезанный - если так отображен на вкладках.
+                    // Берем полный титл.
+                    if ( ep instanceof TreePanel)  {
+                        TreePanel treePanel = (TreePanel) ep;
+                        Editable eb = treePanel.getObject();
+                        if ( eb instanceof BookContent) {
+                            BookContent bookContent = (BookContent) eb;
+                            titleField.setText ( bookContent.getName() );
+                        }
+                    } else {
+                        // так небывает
+                        titleField.setText ( ep.getName() ); // ep.getName() getTitle
+                    }
+                }
             }
         }
         else

@@ -19,6 +19,9 @@ public class BookStatus  implements Comparable<BookStatus>, IName
 {
     public static final BookStatus DEFAULT_STATUS = BookStatus.WORK;
 
+    public static final BookStatus RELEASE_FB2      = new BookStatus ( "Реализована (FB-2)", "Завершено создание "
+            + "книги. Перечитано в FB2",
+            "book_release_fb2.png", true );        // ярко-зеленый с надписью - FB2
     public static final BookStatus RELEASE      = new BookStatus ( "Реализована", "Завершено создание книги.", "book_release_2.png", true );        // ярко-зеленый
     public static final BookStatus RELEASE_2    = new BookStatus ( "Очередная редакция", "Завершено создание книги, но продолжает правиться.", "book_release.png", true );    // светло-зеленый
     public static final BookStatus TEMPLATE     = new BookStatus ( "Болванка", "Самое начало создания книги, исходная заготовка.", "book_template.png", true );     // светло-желтый
@@ -28,6 +31,7 @@ public class BookStatus  implements Comparable<BookStatus>, IName
     public static final Collection<BookStatus> statusList = new TreeSet<BookStatus> ();   // для сортировки
     static
     {
+        statusList.add ( RELEASE_FB2 );
         statusList.add ( RELEASE );
         statusList.add ( RELEASE_2 );
         statusList.add ( TEMPLATE );
