@@ -249,6 +249,7 @@ public class FunctionManager
         add ( new SelectedToHtmlFunction ()      );
         add ( new ConvertContentToRtfFunction() );
         add ( new ConvertToDoc() );
+        add ( new ConvertToDocForLitres() );
         add ( new ConvertToTxt() );
         add ( new ConvertToFB2() );
         add ( new ConvertSelectToFB2() );

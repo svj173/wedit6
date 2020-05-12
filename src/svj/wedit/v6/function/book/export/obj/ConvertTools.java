@@ -48,7 +48,7 @@ public class ConvertTools
     {
         TypeHandleType handleType;
 
-        Log.l.info("getType: elementType = %s; types = %s", elementType, types );
+        Log.l.debug ("getType: elementType = %s; types = %s", elementType, types );
 
         if ( elementType == null ) return TypeHandleType.WRITE;
         // todo hardcode -- по идее где-то должен быть мап нулевого типа на имеющиеся типы элементов.
@@ -58,13 +58,13 @@ public class ConvertTools
             // elementType = release; type = служебный -- в разных языках.
             // todo найти в списках типов Элемент по его англ имени
 
-            Log.l.info("getType: elementType = %s; type = %s", elementType, type.getName() );
+            Log.l.debug("getType: elementType = %s; type = %s", elementType, type.getName() );
             if ( type.getName().equals ( elementType ) )
             {
                 // Тип анализируемого элемента присутсвует в списке разрешенных.
                 // Получить значение типа
                 handleType = ConvertTools.getType ( type.getValue() );
-                Log.l.info(" handleType = %s; elementType = %s; type = %s", handleType, elementType, type.getName() );
+                Log.l.debug(" handleType = %s; elementType = %s; type = %s", handleType, elementType, type.getName() );
                 return handleType;
             }
         }
@@ -79,7 +79,7 @@ public class ConvertTools
         // Могут прийти: elementType = release; type = служебный -- в разных языках.
         // todo найти в списках типов Элемент по его англ имени
 
-        Log.l.info("getType: elementType = %s; types = %s", elementType, types );
+        Log.l.debug("getType: elementType = %s; types = %s", elementType, types );
 
         // todo hardcode -- по идее где-то должен быть мап нулевого типа элемента (по-умолчанию) на имеющиеся типы
         // элементов.
@@ -91,7 +91,7 @@ public class ConvertTools
         for ( SimpleParameter type : types )
         {
 
-            Log.l.info("-- getType: type = %s", type.getName() );
+            Log.l.debug("-- getType: type = %s", type.getName() );
 
             b = false;
             // Сначала проверяем на руское имя.
@@ -112,7 +112,7 @@ public class ConvertTools
                 // Тип анализируемого элемента присутсвует в списке разрешенных.
                 // Получить значение типа
                 handleType = ConvertTools.getType ( type.getValue() );
-                Log.l.info("-- handleType = %s; elementType = %s; type = %s",handleType,elementType,type.getName() );
+                Log.l.debug("-- handleType = %s; elementType = %s; type = %s",handleType,elementType,type.getName() );
                 return handleType;
             }
         }

@@ -109,6 +109,9 @@ public class WEMenuBar extends JMenuBar
         menu    = getMenu ( FunctionId.CONVERT_TO_DOC );
         if ( menu != null )  result.add ( menu );
 
+        menu    = getMenu ( FunctionId.CONVERT_TO_DOC_LITRES );
+        if ( menu != null )  result.add ( menu );
+
         menu    = getMenu ( FunctionId.CONVERT_TO_TXT );
         if ( menu != null )  result.add ( menu );
 

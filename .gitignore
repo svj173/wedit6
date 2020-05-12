@@ -4,6 +4,8 @@ WEdit6.iml
 WEdit_6.ipr
 WEdit_6.iws
 
+wedit6.iml
+
 **/*~
 
 ant/build.number

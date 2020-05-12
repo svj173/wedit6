@@ -15,10 +15,7 @@ import svj.wedit.v6.obj.WTreeObj;
 import svj.wedit.v6.obj.WType;
 import svj.wedit.v6.obj.book.*;
 import svj.wedit.v6.obj.book.element.WBookElement;
-import svj.wedit.v6.tools.BookTools;
-import svj.wedit.v6.tools.Convert;
-import svj.wedit.v6.tools.DialogTools;
-import svj.wedit.v6.tools.Utils;
+import svj.wedit.v6.tools.*;
 
 import java.awt.event.ActionEvent;
 import java.io.FileOutputStream;
@@ -356,7 +353,7 @@ public abstract class AbstractConvertFunction  extends FileWriteFunction
 
             // Заключительная строка
             str = cp.getEndTextParam().getValue ();
-            if ( str != null )
+            if ( ! StringTools.isEmpty ( str ) )
             {
                 writeStr ( str );
                 // перевод строки
@@ -742,4 +739,10 @@ public abstract class AbstractConvertFunction  extends FileWriteFunction
         return redLineValue;
     }
 
+    /*
+    public boolean isPreviosIsTitle ()
+    {
+        return previosIsTitle;
+    }
+*/
 }
