@@ -30,6 +30,7 @@ public abstract class FileWriteFunction extends SimpleBookFunction
     {
         //if ( fos == null )  return;
         if ( fos == null )  throw new RuntimeException ( "FOS is absent!" );
+        if ( str == null )  return;
 
         try
         {

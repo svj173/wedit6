@@ -83,6 +83,7 @@ public class ConvertToFB2 extends AbstractConvertFunction {
     }
 
     private void closeSection(int level) {
+        //Log.file.debug("closeSection. nodeLevel = %d", level);
         int ic = oldLevel - level;
         if ( ic > 0 )  {
             for ( int i=0; i<ic+1; i++) {
@@ -163,9 +164,11 @@ public class ConvertToFB2 extends AbstractConvertFunction {
         writeStr(getBookContent().getName());
         writeStr("</book-title>\n");
 
-        writeStr("<annotation><p>");
-        writeStr(getBookContent().getAnnotation());
-        writeStr("</p></annotation>\n");
+        if (getBookContent().getAnnotation() != null ){
+            writeStr("<annotation><p>");
+            writeStr(getBookContent().getAnnotation());
+            writeStr("</p></annotation>\n");
+        }
         
         writeStr("<lang>ru</lang>\n");
         //writeStr("<date value='2019-11-08'>2019-11-08</date>\n");
@@ -182,9 +185,11 @@ public class ConvertToFB2 extends AbstractConvertFunction {
     }
 
     @Override
-    protected void finishConvert(ConvertParameter cp) throws WEditException {
+    protected void finishConvert(ConvertParameter cp, int currentLevel) throws WEditException {
 
-        closeSection(0);
+        // В режиме "Конвертация выбранного" этот уровень будет уровнем выбранного элемента, а не 0.
+        //closeSection(0);
+        closeSection(currentLevel);
 
         writeStr("</body>\n");
 

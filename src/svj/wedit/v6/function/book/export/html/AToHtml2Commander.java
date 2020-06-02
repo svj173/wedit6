@@ -316,7 +316,7 @@ public abstract class AToHtml2Commander extends AbstractConvertFunction
 
     }
 
-    protected void finishConvert ( ConvertParameter cp ) throws WEditException
+    protected void finishConvert(ConvertParameter cp, int currentLevel) throws WEditException
     {
         // Заключительная строка - уже скинуто
         //String str = cp.getEndTextParam().getValue();

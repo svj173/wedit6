@@ -74,7 +74,7 @@ public abstract class AbstractConvertFunction  extends FileWriteFunction
 
     protected abstract void initConvert ( ConvertParameter cp ) throws WEditException;
 
-    protected abstract void finishConvert ( ConvertParameter cp ) throws WEditException;
+    protected abstract void finishConvert(ConvertParameter cp, int currentLevel) throws WEditException;
 
     protected abstract String getNewLineSymbol ();
 
@@ -169,11 +169,11 @@ public abstract class AbstractConvertFunction  extends FileWriteFunction
             }
             else if ( otherConvertParams != null )
             {
-                Log.l.info ( "<M-10>" );
+                //Log.l.info ( "<M-10>" );
                 // Посмотреть, есть ли упоминания о Locale парметрах. Если нет - прописать дефолтные.
                 if ( ! bookmarksParameter.hasLocaleParams() )
                 {
-                    Log.l.info ( "<M-15>" );
+                    //Log.l.info ( "<M-15>" );
                     for ( FunctionParameter p : otherConvertParams )
                     {
                         for ( ConvertParameter cp : bookmarksParameter.getList() )
@@ -248,7 +248,11 @@ public abstract class AbstractConvertFunction  extends FileWriteFunction
                     // Конвертим книгу согласно имеющимся настройкам
                     save ( cp, selectNodes );
 
-                    finishConvert ( cp );
+                    // Получить макс номер элемента. Если книга - то это 0. Если выбранные элементы,
+                    // то то что выше всех.
+                    int currentLevel = getRealLevel(selectNodes);
+
+                    finishConvert ( cp, currentLevel );
 
                     // Показать диалог об окончании работы
                     showTotalDialog ( bookStructure );
@@ -274,6 +278,26 @@ public abstract class AbstractConvertFunction  extends FileWriteFunction
         }
 
         Log.file.debug ( "Finish. bookmarksParameter = %s", bookmarksParameter );
+    }
+
+    /**
+     * Выбрать из списка элементов элемент с наивысшем уровнем.
+     * @param selectNodes Список
+     * @return            Уровень.
+     */
+    private int getRealLevel(TreeObj[] selectNodes) {
+
+        if (selectNodes == null)  return 0;
+
+        int result = 100;
+        int ic;
+        BookNode bookNode;
+        for ( TreeObj to : selectNodes ) {
+            bookNode = (BookNode) to.getWTreeObj();
+            ic = bookNode.getLevel();
+            if (ic < result) result = ic;
+        }
+        return result;
     }
 
     private void closeConvert ()
@@ -348,7 +372,8 @@ public abstract class AbstractConvertFunction  extends FileWriteFunction
             for ( TreeObj treeObj : selectNodes )
             {
                 bookNode = (BookNode) treeObj.getWTreeObj();
-                convertNode ( cp, bookNode, 0 );
+                //convertNode ( cp, bookNode, 0 );
+                convertNode ( cp, bookNode, bookNode.getLevel() );
             }
 
             // Заключительная строка
@@ -392,6 +417,8 @@ public abstract class AbstractConvertFunction  extends FileWriteFunction
         TitleViewMode           titleViewMode;
         ElementConvertParameter elementParam;
         TypeHandleType          handleType;
+
+        //Log.file.debug("Start_Node. nodeLevel = %d; title = %s", level, nodeObject.getName());
 
         phase       = "start";     // шаг процесса - для отладки
         try
@@ -470,8 +497,10 @@ public abstract class AbstractConvertFunction  extends FileWriteFunction
                     title   = elementParam.getName() + ". " + nodeObject.getName();
                     break;
                 case NUMBER_AND_POINT_ONLY:
-                    // выводить номер заголовка с точкой и название титла. Например: "1. Введение"
+                    // выводить номер заголовка с точкой - без названия титла. Например: "1."
                     title   = getNumber ( nodeLevel ) + ".";
+                    //Log.file.info("title = %s; nodeLevel = %d; result_title = %s", nodeObject.getName(), nodeLevel,
+                    //        title);
                     break;
                 case NUMBER_AND_POINT_WITH_NAME:
                     // выводить номер заголовка с точкой и название титла. Например: "1. Введение"
@@ -539,7 +568,10 @@ public abstract class AbstractConvertFunction  extends FileWriteFunction
                 for ( WTreeObj obj : childs )
                 {
                     bo  = ( BookNode ) obj;
-                    convertNode ( cp, bo, level + 1 );
+                    // Нельзя так, так как при конвертации выделеных элементов, здесь они будут нумероваться от 0,
+                    // а вся инфа о них будет находиться в мапах, в реальной нумерации.
+                    //convertNode ( cp, bo, level + 1 );
+                    convertNode ( cp, bo, bo.getLevel() );
                 }
             }
 
@@ -553,17 +585,19 @@ public abstract class AbstractConvertFunction  extends FileWriteFunction
     }
 
     /**
-     * скидываем в 1 все номера, кроме текущего уровня.
+     * скидываем в 0 все номера, кроме текущего уровня, и все что выше его (Выше - это к 0).
      * @param level    Текущий уровень.
      */
     private void clearNumbers ( int level )
     {
+        //Log.file.info("Start_Clear. nodeLevel = %d; numbers = %s", level, numbers);
         int lev;
         for ( Map.Entry<Integer,Integer> entry : numbers.entrySet() )
         {
             lev = entry.getKey ();
             if ( lev > level )  numbers.put ( lev, 0 );
         }
+        //Log.file.info("Finish_Clear. nodeLevel = %d; numbers = %s", level, numbers);
     }
 
     private void addTitleStat ( int level )
@@ -629,13 +663,16 @@ public abstract class AbstractConvertFunction  extends FileWriteFunction
         String   result;
         Integer  i1;
 
+        //Log.file.info("Start. nodeLevel = %d; numbers = %s", nodeLevel, numbers);
         i1      = numbers.get ( nodeLevel );
+        //Log.file.info("nodeLevel = %d; i1 = %d", nodeLevel, i1);
         if ( i1 != null )
             i1 = i1 + 1;
         else
             i1 = 1;
 
         numbers.put ( nodeLevel, i1 );
+        //Log.file.info("Finish. nodeLevel = %d; numbers = %s", nodeLevel, numbers);
         result  = i1.toString();
         return result;
     }

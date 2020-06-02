@@ -2,9 +2,7 @@ package svj.wedit.v6.function.book.export;
 
 
 import org.apache.poi.util.Units;
-import org.apache.poi.xwpf.model.XWPFHeaderFooterPolicy;
 import org.apache.poi.xwpf.usermodel.*;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.*;
 import svj.wedit.v6.WCons;
 import svj.wedit.v6.exception.WEditException;
 import svj.wedit.v6.function.FunctionId;
@@ -13,21 +11,14 @@ import svj.wedit.v6.function.params.FunctionParameter;
 import svj.wedit.v6.logger.Log;
 import svj.wedit.v6.obj.book.BookNode;
 import svj.wedit.v6.obj.book.TextObject;
-import svj.wedit.v6.obj.book.WEditStyle;
-import svj.wedit.v6.obj.book.element.StyleName;
-import svj.wedit.v6.obj.book.element.StyleType;
 import svj.wedit.v6.obj.function.AbstractConvertFunction;
-import svj.wedit.v6.tools.BookStructureTools;
 import svj.wedit.v6.tools.FileTools;
 import svj.wedit.v6.tools.StringTools;
 
 import javax.swing.*;
-import javax.swing.text.AttributeSet;
-import javax.swing.text.MutableAttributeSet;
-import javax.swing.text.StyleConstants;
+
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.math.BigInteger;
 import java.util.Collection;
 
 /**
@@ -410,7 +401,7 @@ public class ConvertToDocForLitres extends AbstractConvertFunction
     }
 
     @Override
-    protected void finishConvert ( ConvertParameter cp ) throws WEditException
+    protected void finishConvert(ConvertParameter cp, int currentLevel) throws WEditException
     {
         //Log.l.info ( "DOC: Start." );
         try

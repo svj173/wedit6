@@ -365,7 +365,7 @@ public class ConvertToDoc  extends AbstractConvertFunction
     }
 
     @Override
-    protected void finishConvert ( ConvertParameter cp ) throws WEditException
+    protected void finishConvert(ConvertParameter cp, int currentLevel) throws WEditException
     {
         //Log.l.info ( "DOC: Start." );
         try
