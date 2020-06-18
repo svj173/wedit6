@@ -105,16 +105,25 @@ public class NewProjectFunction extends SimpleFunction
             {
                 // взять имя выбранной директории
                 projectDir  = chooser.getSelectedFile();
-                Log.l.debug ( "selected Dir = %s", projectDir );
+                Log.l.info ( "selected Dir = %s", projectDir );
                 projectRootDir  = projectDir.getAbsolutePath() + '/';
-                Log.l.debug ( "projectRootDir = %s", projectRootDir );
+                Log.l.info ( "projectRootDir = %s", projectRootDir );
 
                 // Имя Сборника (русский)
                 projectName = paramsPanel.getProjectName();
-                Log.l.debug ( "projectName = '%s'", projectName );
+                Log.l.info ( "projectName = '%s'", projectName );
                 if ( (projectName == null) || projectName.isEmpty() )    
                     throw new WEditException ( "Не задано имя нового Сборника." );
 
+                // Создать полный путь до директории нового Сборника
+                projectDir = new File(projectDir, projectName);
+                Log.l.info ( "new project Dir = %s", projectDir );
+                /*
+ selected Dir = /home/svj/Projects/SVJ/GitHub/stories
+ projectRootDir = /home/svj/Projects/SVJ/GitHub/stories/
+ projectName = 'Test2'
+
+                 */
                 // создать обьект Project
                 project     = new Project ( projectDir );
                 project.setName ( projectName );
