@@ -69,6 +69,9 @@ public class TextConvertListener implements ActionListener {
                 break;
         }
 
+        map.put('\n', '\n');
+        map.put('\r', '\r');
+
         //Log.l.info ( "map = " + map );
 
         if ( map.size() > 0 ) {
