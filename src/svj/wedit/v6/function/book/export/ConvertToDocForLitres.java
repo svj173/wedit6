@@ -3,6 +3,8 @@ package svj.wedit.v6.function.book.export;
 
 import org.apache.poi.util.Units;
 import org.apache.poi.xwpf.usermodel.*;
+import org.openxmlformats.schemas.drawingml.x2006.chart.CTStyle;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTStyles;
 import svj.wedit.v6.WCons;
 import svj.wedit.v6.exception.WEditException;
 import svj.wedit.v6.function.FunctionId;
@@ -49,7 +51,7 @@ import java.util.Collection;
  * <BR/> - Смайлы
  * <BR/>
  * <BR/>  Учет пустых строк.
- * <BR/> todo Пользуемся функциоей isPreviosIsTitle, а также счетчиком пустых строк, чтобы не не былобольше одной.
+ * <BR/> todo Пользуемся функциоей isPreviosIsTitle, а также счетчиком пустых строк, чтобы не не было больше одной.
  * <BR/>
  * <BR/> https://www.tutorialspoint.com/apache_poi_word/apache_poi_word_quick_guide.htm
  * <BR/>
@@ -63,6 +65,9 @@ import java.util.Collection;
  */
 public class ConvertToDocForLitres extends AbstractConvertFunction
 {
+    private static final String  TITLE_PREFIX = "Заголовок ";
+    //private static final String  TITLE_PREFIX = "heading ";
+
 
     private XWPFDocument        doc;
 
@@ -250,10 +255,18 @@ public class ConvertToDocForLitres extends AbstractConvertFunction
 
         isTitle = true;
 
-        // Взять стиль Заголовка
-        styleName = "Заголовок "+ level;  // книга = 0, А название книги не отмечаем как заголовок.
+        // Взять стиль Заголовка    -- "Heading1" -- CTStyle ctStyle = CTStyle.Factory.newInstance();
+        // - в файле Windows имя стиля прописано как 'heading 1'
+        styleName = TITLE_PREFIX+ level;  // книга = 0, А название книги не отмечаем как заголовок.
 
-        result = doc.createParagraph ();
+        /*
+        // Применяется если предаврительно закачали стили из реального windows.docx файла.
+        if ( doc.getStyles().getStyleWithName(styleName) == null) {
+            throw new RuntimeException("Отсутствует стиль '" + styleName + "'.");
+        }
+        */
+
+        result = doc.createParagraph();
         result.setStyle(styleName);
 
         // Красная строка - для заголовка не нужна
@@ -386,6 +399,7 @@ public class ConvertToDocForLitres extends AbstractConvertFunction
 
         try
         {
+            // error: ClassNotFoundException: org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream
             doc = new XWPFDocument ();
 
             isTitle = true;
@@ -393,6 +407,38 @@ public class ConvertToDocForLitres extends AbstractConvertFunction
             wasEmpty = false;
 
             //Log.l.info ( "DOC: Create DOC = %s", doc );
+
+            /*
+            String titleName;
+            XWPFStyle st;
+            XWPFStyles styles;
+
+
+            // Попытка закачать реальный windows.docx и взять его стили
+            // -- Не помогло для litres-конвертера - не берет мой docx.
+            String windowsFile;
+            //windowsFile = "/home/svj/Serg/Stories/release_books/Litres/gn_okean_w.docx";
+            windowsFile = "/home/svj/Serg/Stories_OLD/release_books/Litres/sudak_xxx_win7.docx";
+
+            XWPFDocument windowsDoc = new XWPFDocument(new FileInputStream(windowsFile) );
+            styles = windowsDoc.createStyles();
+            titleName = TITLE_PREFIX + "1";
+            st = styles.getStyleWithName(titleName);
+            Log.l.info ( "DOC: Title style (%s) = %s", titleName, st );      // null
+            if (st == null) {
+                // Заголовок 1 -- ????
+                throw new WEditException( "В эталонном файле стилей Windows заголовков\n ("
+                        +windowsFile + ")\n отсутствует стиль '" + titleName + "'."  );
+            }
+            // Занести Windows стили заголовков в наш документ.
+            XWPFStyles newStyles = doc.createStyles();
+            newStyles.setStyles(windowsDoc.getStyle());
+
+            org.openxmlformats.schemas.wordprocessingml.x2006.main.CTStyles ctStyles = windowsDoc.getStyle();
+            for ( org.openxmlformats.schemas.wordprocessingml.x2006.main.CTStyle stl : ctStyles.getStyleList() ) {
+                Log.l.info ( "-- DOCX: Title style name = %s", stl.getName() );
+            }
+            */
 
         } catch ( Throwable e )       {
             Log.l.error ( "error. cp = "+cp, e );

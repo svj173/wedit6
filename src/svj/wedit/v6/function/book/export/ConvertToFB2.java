@@ -1,5 +1,7 @@
 package svj.wedit.v6.function.book.export;
 
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.poi.xwpf.usermodel.XWPFRun;
 import svj.wedit.v6.Par;
 import svj.wedit.v6.exception.WEditException;
 import svj.wedit.v6.function.FunctionId;
@@ -10,6 +12,7 @@ import svj.wedit.v6.logger.Log;
 import svj.wedit.v6.obj.Author;
 import svj.wedit.v6.obj.book.*;
 import svj.wedit.v6.obj.function.AbstractConvertFunction;
+import svj.wedit.v6.tools.Convert;
 import svj.wedit.v6.tools.StringTools;
 
 import java.util.ArrayList;
@@ -27,6 +30,21 @@ public class ConvertToFB2 extends AbstractConvertFunction {
 
     /* Текст для красной строки - &nbsp;&nbsp; */
     private final SimpleParameter redLineParam;
+
+    // ----- Для пропуска пустых строк в конце главы. ---------
+    /**
+     * Уст в TRUE - был выведен титл (в т.ч. и пустой титл).
+     * В FALSE - был выведен простой текст (не пустая строка).
+     */
+    private boolean isTitle = true;
+
+    /** Вывели пустую строку. Устанавливается в TRUE когда реально выведена упстая строка.
+     * FALSE -  когда выведена не пустая, либо заголовок. */
+    private boolean wasEmpty = false;
+
+    /** Надо будет вывести пустую строку. Уст в TRUE - появилась пустая строка текста.
+     * FALSE - вывели любой текст, в т.ч. и пустую строку. */
+    private boolean needEmpty = true;
 
 
     public ConvertToFB2(FunctionId functionId, String functionName, String iconFile, boolean multiSelect) {
@@ -52,16 +70,43 @@ public class ConvertToFB2 extends AbstractConvertFunction {
 
     @Override
     protected void processEmptyTitle(ConvertParameter cp) {
-        writeStr("<br/><br/>\n");
+        if ( ! isTitle )
+        {
+            createEmptyLine();
+        }
+        isTitle = true;
+        //writeStr("<br/><br/>\n");
     }
 
     @Override
     protected void processTitle(String title, int level, ConvertParameter cp, BookNode nodeObject) {
 
+        wasEmpty = false;
+
+        if (title != null) {
+            //if ( title.contains ( WCons.NEW_LINE ) )  title = title.replace ( "\n", "" );
+
+            title = title.trim();
+            if (title.endsWith ( "\n" ) ) {
+                title = title.substring ( 0, title.length()-2 );
+                title = title.trim();
+            }
+        }
+
+        if ( StringTools.isEmpty ( title ) && isTitle ) {
+            // титл пустой. Если уже был перед этим пустой титл - этот игнорировать.
+            // следовательно и тег НЕ закрываем - т.к. следующий титл не будет открываться тегом (точно?)
+            return;
+        }
+
+        isTitle = true;
+
         // Если предыдущий уровень равен или больше текущего - закрыть секцию (на кол-во = разнице)
         closeSection(level);
 
+
         if (level == 0) {
+            /*
             // Это заголовок книги - выводим и автора
             writeStr("<section><title>");
             Author author = Par.GM.getAuthor();
@@ -70,6 +115,7 @@ public class ConvertToFB2 extends AbstractConvertFunction {
                 writeStr(author.getFullName());
                 writeStr("</p>");
             }
+            */
         } else {
             // вывести заголовок
             writeStr(StringTools.createFirst(level, ' '));
@@ -85,11 +131,16 @@ public class ConvertToFB2 extends AbstractConvertFunction {
     private void closeSection(int level) {
         //Log.file.debug("closeSection. nodeLevel = %d", level);
         int ic = oldLevel - level;
+        writeStr("\n");
         if ( ic > 0 )  {
-            for ( int i=0; i<ic+1; i++) {
+            //for ( int i=0; i<ic+1; i++) {
+            for ( int i=0; i<ic; i++) {   // Игнорируем уровень 0
                 writeStr(StringTools.createFirst(level-ic,' '));
                 writeStr("</section>\n");
             }
+        } else if ( level == 0 ) {
+            // закрывашка для уровня книги - для Литрес не используется.
+            return;
         } else if ( ic == 0 ) {
             writeStr(StringTools.createFirst(level-ic,' '));
             writeStr("</section>\n");
@@ -105,8 +156,29 @@ public class ConvertToFB2 extends AbstractConvertFunction {
         Log.l.info ( "FB2: processText = %s", textObj );
 
         if ( textObj instanceof EolTextObject ) {
-            writeStr ( "<br/>" );
-            return;
+            // пустая строка
+            if ( isTitle )
+            {
+                return;
+            }
+            else  if ( needEmpty )
+            {
+                return;
+            }
+            else  if ( wasEmpty )
+            {
+                // Две подряд пустых строки выводить нельзя.
+                return;
+            }
+            else
+            {
+                // Если же после текста будет заголовок - то вообще ни одной пустой нельзя.
+                // - запоминаем что надо было вывести пустую строку
+                needEmpty = true;
+                return;
+            }
+            //writeStr ( "<br/>" );
+            //return;
         }
 
         if ( textObj instanceof ImgTextObject) {
@@ -119,7 +191,17 @@ public class ConvertToFB2 extends AbstractConvertFunction {
             return;
         }
 
-        text    = textObj.getText ();
+        text    = textObj.getText();
+
+        if (needEmpty &&(!isTitle)) {
+            // выводим пустую
+            createEmptyLine();
+        }
+
+        wasEmpty = false;
+        isTitle = false;
+        needEmpty = false;
+
         if ( textObj instanceof SlnTextObject) {
             writeStr ( "<p>" );
             writeStr ( getRedLineValue(cp) );
@@ -136,8 +218,18 @@ public class ConvertToFB2 extends AbstractConvertFunction {
         }
     }
 
+    private void createEmptyLine ()
+    {
+        writeStr ( "<empty-line/>" );
+        wasEmpty = true;
+    }
+
     @Override
     protected void initConvert(ConvertParameter cp) throws WEditException {
+
+        isTitle = true;
+        needEmpty = true;
+        wasEmpty = false;
 
         writeStr("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
         writeStr("<FictionBook xmlns:l=\"http://www.w3.org/1999/xlink\" xmlns=\"http://www.gribuser"
@@ -146,7 +238,18 @@ public class ConvertToFB2 extends AbstractConvertFunction {
 
         writeStr("<title-info>\n");
 
+        // жанр книги - можно перечеслить несколько
+        /*
+children                Детское
+child_tale              Сказки
+child_verse             Детские Стихи
+child_prose             Детская Проза
+child_sf                Детская Фантастика
+child_det               Детские Остросюжетные
+child_adv               Детские Приключения
+         */
         //writeStr("<genre>literature_su_classics</genre><genre>mystery</genre>");
+        writeStr("<genre>child_sf</genre>\n");       // antique = Старинная Литература: Прочее
 
         Author author = Par.GM.getAuthor();
         if (author != null) {
@@ -169,9 +272,16 @@ public class ConvertToFB2 extends AbstractConvertFunction {
             writeStr(getBookContent().getAnnotation());
             writeStr("</p></annotation>\n");
         }
-        
+
+        // date
+        if ( getBookContent().getBookAttrs().get("last_change_date") != null ) {
+            writeStr("<date>"+ getBookContent().getBookAttrs().get("last_change_date")+"</date>\n");
+            //writeStr("<date value='2019-11-08'>2019-11-08</date>\n");
+        } else {
+            writeStr("<date>2020</date>\n");
+        }
+
         writeStr("<lang>ru</lang>\n");
-        //writeStr("<date value='2019-11-08'>2019-11-08</date>\n");
 
         writeStr("</title-info>\n");
 

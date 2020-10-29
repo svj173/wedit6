@@ -27,7 +27,7 @@
         <!--pathelement location="./"/-->
         <!--pathelement path="%classpath%"/-->
         <!--pathelement path="${classes}"/-->
-        <fileset dir="${lib}" includes="**/*.jar, **/*.zip" />
+        <fileset dir="${lib}" includes="**/*.jar, **/*.zip" excludes="*.txt"/>
     </path>
 
     <!--
@@ -87,9 +87,11 @@
                 <attribute name="Main-Class" value="svj.wedit.v6.WEdit6" />
                 <attribute name="Class-Path" value="${project}.jar log4j-api-2.0-beta9.jar
                  log4j-core-2.0-beta9.jar itext-2.0.6.jar dom4j-2.0.0-RC1.jar
-                 poi/poi-3.17.jar  poi/ooxml-schemas-1.1.jar
-                 poi/poi-ooxml-3.17.jar poi/poi-scratchpad-3.17.jar
-                 poi/xmlbeans-2.6.0.jar  poi/poi-ooxml-schemas-3.17.jar
+                 poi/poi-4.1.2.jar  poi/ooxml-schemas-1.1.jar
+                 poi/poi-ooxml-4.1.2.jar poi/poi-scratchpad-4.1.2.jar
+                 poi/xmlbeans-3.1.0.jar  poi/poi-ooxml-schemas-4.1.2.jar
+                 poi/poi-excelant-4.1.2.jar  poi/commons-compress-1.20.jar
+                 poi/commons-collections4-4.4.jar
                  spell/jortho.jar
                 " />
                 <attribute name="Implementation-Version" value="${version}-b${build.number}"/>

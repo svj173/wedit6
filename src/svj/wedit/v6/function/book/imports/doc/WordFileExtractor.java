@@ -13,7 +13,7 @@ import org.apache.poi.hwpf.usermodel.*;
 import org.apache.poi.poifs.filesystem.DirectoryEntry;
 import org.apache.poi.poifs.filesystem.DirectoryNode;
 import org.apache.poi.poifs.filesystem.Entry;
-import org.apache.poi.poifs.filesystem.NPOIFSFileSystem;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.xml.sax.helpers.AttributesImpl;
 import svj.wedit.v6.exception.WEditException;
 import svj.wedit.v6.function.book.imports.IFileExtractor;
@@ -52,7 +52,7 @@ public class WordFileExtractor  implements IFileExtractor
     public static void main ( String[] args )
     {
         WordFileExtractor       handler;
-        NPOIFSFileSystem        filesystem;
+        POIFSFileSystem        filesystem;
         IBookContentCreator xhtml;
         String                  fileName;
 
@@ -64,7 +64,7 @@ public class WordFileExtractor  implements IFileExtractor
 
         try
         {
-            filesystem  = new NPOIFSFileSystem ( new File (fileName));
+            filesystem  = new POIFSFileSystem ( new File (fileName));
             handler.parse ( filesystem, xhtml );
 
             System.out.println ( xhtml.getResult() );
@@ -77,13 +77,13 @@ public class WordFileExtractor  implements IFileExtractor
     public void parse ( String fileName, IBookContentCreator xhtml )
             throws WEditException
     {
-        NPOIFSFileSystem fileSystem;
+        POIFSFileSystem fileSystem;
         File file;
 
         try
         {
             file        = new File ( fileName );
-            fileSystem  = new NPOIFSFileSystem ( file );
+            fileSystem  = new POIFSFileSystem ( file );
         } catch ( Exception e )        {
             Log.l.error ( "Create NPOIFSFileSystem error", e );
             throw new WEditException ( e, "Create NPOIFSFileSystem error", e );
@@ -95,11 +95,11 @@ public class WordFileExtractor  implements IFileExtractor
     public void parse ( File file, IBookContentCreator xhtml)
             throws WEditException
     {
-        NPOIFSFileSystem fileSystem;
+        POIFSFileSystem fileSystem;
 
         try
         {
-            fileSystem  = new NPOIFSFileSystem ( file );
+            fileSystem  = new POIFSFileSystem ( file );
         } catch ( Exception e )        {
             Log.l.error ( "Create NPOIFSFileSystem error", e );
             throw new WEditException ( e, "Create NPOIFSFileSystem error", e );
@@ -113,7 +113,7 @@ public class WordFileExtractor  implements IFileExtractor
     {
     }
 
-    protected void parse ( NPOIFSFileSystem filesystem, IBookContentCreator xhtml )
+    protected void parse ( POIFSFileSystem filesystem, IBookContentCreator xhtml )
             throws WEditException
     {
         parse ( filesystem.getRoot(), xhtml );
@@ -730,7 +730,7 @@ r.getCTR().toString().contains("<w:br w:type=\"page\"/>")
         }
     }
 
-    protected void parseWord6 ( NPOIFSFileSystem filesystem, IBookContentCreator xhtml )
+    protected void parseWord6 ( POIFSFileSystem filesystem, IBookContentCreator xhtml )
             throws WEditException
     {
         parseWord6 ( filesystem.getRoot(), xhtml );

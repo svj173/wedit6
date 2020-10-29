@@ -1,0 +1,168 @@
+
+DOCX, PPTX, XLSX
+
+
+docx4j-core-8.2.3.jar
+docx4j-openxml-objects-8.2.3.jar
+jaxb-api-2.4.0-b180830.0359.jar
+jaxp-api-1.4.5.jar
+
+3/3/5 - Jun 30, 2017
+
+
+1) зависимости
+
+для 3.3.5 - jaxb-api = 2.2.1
+
+<dependency>
+<groupId>
+org.slf4j
+</
+groupId
+>
+<
+artifactId
+>
+sl
+f4j
+-
+api
+</
+artifactId
+>
+<
+version
+>
+1.7.5
+</
+version
+>
+</
+dependency
+>
+If you want to use
+lo
+gback
+, then include it
+:
+<dependency>
+<groupId>ch.qos.logback</groupId>
+<artifactId>logback
+-
+classic</artifactId>
+<version>1.3.0
+-
+alpha4<
+/version>
+</dependency>
+If you want to use log4j, then include it, and:
+<
+dependency
+>
+<
+groupId
+>
+org.slf4j
+</
+groupId
+>
+<
+artifactId
+>
+slf4j
+-
+log4j12
+</
+artifactId
+>
+<
+version
+>
+1.7.5
+</
+version
+>
+</
+dependency
+>
+
+2) load
+
+WordprocessingMLPackage wordMLPackage =
+   WordprocessingMLPackage.load(new java.io.File(inputfilepath));
+
+You can use the façade:
+WordprocessingMLPackage wordMLPackage = Docx4J.load(new java.io.File(inputfilepath));
+
+3)
+
+You can then get the main document part (word/document.xml):
+ MainDocumentPart  documentPart = wordMLPackage.getMainDocumentPart();
+
+4)
+
+java -cp docx4j-3.0.1.jar:log4j-1.2.17.jar;slf4j-api-1.7.5.jar;slf4j-log4j12-1.7.5.jar
+    org.docx4j.samples.CreateDocx [input.docx]
+
+5)
+
+public File savePdf(WordprocessingMLPackage wordMLPackage) throws Exception {
+
+    File file = new File(genFilePath() + ".pdf");
+
+    OutputStream os = new java.io.FileOutputStream(file);
+
+    Docx4J.toPDF(wordMLPackage, os);
+
+    os.flush();
+    os.close();
+
+    if (logger.isDebugEnabled()) {
+        logger.debug("Save to [.pdf]: {}", file.getAbsolutePath());
+    }
+    return file;
+}
+
+6)
+
+Загрузить файл и рапсечатать его содержимое
+
+File doc = new File("helloWorld.docx");
+WordprocessingMLPackage wordMLPackage = WordprocessingMLPackage
+  .load(doc);
+MainDocumentPart mainDocumentPart = wordMLPackage
+  .getMainDocumentPart();
+String textNodesXPath = "//w:t";
+List<Object> textNodes= mainDocumentPart
+  .getJAXBNodesViaXPath(textNodesXPath, true);
+for (Object obj : textNodes) {
+    Text text = (Text) ((JAXBElement) obj).getValue();
+    String textValue = text.getValue();
+    System.out.println(textValue);
+}
+
+7)
+
+pom.xml
+
+
+
+<dependency>
+    <groupId>org.docx4j</groupId>
+    <artifactId>docx4j</artifactId>
+    <version>3.3.5</version>
+</dependency>
+
+<dependency>
+    <groupId>javax.xml.bind</groupId>
+    <artifactId>jaxb-api</artifactId>
+    <version>2.1</version>
+</dependency>
+
+
+8)
+
+WordprocessingMLPackage wordMLPackage = WordprocessingMLPackage.createPackage();
+wordMLPackage.getMainDocumentPart().addStyledParagraphOfText("Title", "Hello Word!");
+wordMLPackage.getMainDocumentPart().addStyledParagraphOfText("Subtitle", "This is a subtitle!");
+wordMLPackage.save(new java.io.File("src/main/files/HelloWord2.docx"));
