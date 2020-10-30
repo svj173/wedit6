@@ -102,6 +102,8 @@ public class ConvertToFB2 extends AbstractConvertFunction {
         isTitle = true;
 
         // Если предыдущий уровень равен или больше текущего - закрыть секцию (на кол-во = разнице)
+        // - перед тем как вывести текущий титл
+        //Log.file.info("current level = %d; oldLevel = %d; title = '%s'", level, oldLevel, title);
         closeSection(level);
 
 
@@ -128,24 +130,31 @@ public class ConvertToFB2 extends AbstractConvertFunction {
         oldLevel = level;
     }
 
+    /**
+     * Закрыть секцию (на кол-во = разнице) - перед тем как вывести текущий титл.
+     * @param level  Уровень текущего титли, который собираемся вывести в документ.
+     */
     private void closeSection(int level) {
         //Log.file.debug("closeSection. nodeLevel = %d", level);
+
+        // закрывашка для уровня книги - для Литрес не используется.
+        if ( level == 0 ) return;
+
         int ic = oldLevel - level;
         writeStr("\n");
         if ( ic > 0 )  {
-            //for ( int i=0; i<ic+1; i++) {
-            for ( int i=0; i<ic; i++) {   // Игнорируем уровень 0
+            // т.е. закрываем эпизод, более верхний чем предыдущий
+            // (например: Часть, а до этого была ПодГлава. Значит надо закрыть Подглаву, Главу, Часть-предыдущую)
+            for ( int i=0; i<ic+1; i++) {
+            //for ( int i=0; i<ic; i++) {   // Игнорируем уровень 0 - Для структуры: Часть, Глава
                 writeStr(StringTools.createFirst(level-ic,' '));
                 writeStr("</section>\n");
             }
-        } else if ( level == 0 ) {
-            // закрывашка для уровня книги - для Литрес не используется.
-            return;
         } else if ( ic == 0 ) {
             writeStr(StringTools.createFirst(level-ic,' '));
             writeStr("</section>\n");
         }
-        // else - Предыдущий уровень глубже текущего (нового). - Ничего не делаем.
+        // else - Предыдущий уровень выше текущего (нового). - Ничего не делаем. Т.к. углубляемся вниз.
     }
 
     @Override
@@ -294,11 +303,26 @@ child_adv               Детские Приключения
         oldLevel = -1;
     }
 
+    /**
+     * Конец конвертации. Закрыть все Элементы.
+     *
+     * @param cp               Не исп.
+     * @param currentLevel     Уровень закрываемого эелемента. В режиме Книги это 0, а в режиме "Конвертация
+     *                         выбранного" этот уровень будет уровнем выбранного элемента, а не 0.
+     * @throws WEditException  Проблемы вывода в документ.
+     */
     @Override
     protected void finishConvert(ConvertParameter cp, int currentLevel) throws WEditException {
 
+        // currentLevel = 0
+        //Log.file.info("finishConvert: currentLevel = %d", currentLevel);
+
         // В режиме "Конвертация выбранного" этот уровень будет уровнем выбранного элемента, а не 0.
-        //closeSection(0);
+
+        // +1 - иначе будет закрыт и уровень книги = 0. А мы его в титле не выводим - игнорируем,
+        // поэтому и не закрываем.
+        if (currentLevel == 0)  currentLevel = 1;
+
         closeSection(currentLevel);
 
         writeStr("</body>\n");
