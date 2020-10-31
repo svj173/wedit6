@@ -50,7 +50,7 @@ public class EditBookParamsDialog extends WValidateDialog<BookContent, BookConte
         Log.l.debug ( "Create edit book params dialog." );
 
         titleWidth   = 110;
-        valueWidth   = 220;
+        valueWidth   = 420;
 
         panel = new JPanel();
         panel.setLayout ( new BoxLayout(panel, BoxLayout.PAGE_AXIS) );
@@ -68,12 +68,12 @@ public class EditBookParamsDialog extends WValidateDialog<BookContent, BookConte
         //nameWidget.setValue ( "none empty" );
         panel.add ( titleWidget );
 
-        annotationWidget = new TextWidget ( "Аннотация", 3 );
+        annotationWidget = new TextWidget ( "Аннотация", 14 );
         annotationWidget.setTitleWidth ( titleWidth );
         annotationWidget.setValueWidth ( valueWidth );
         panel.add ( annotationWidget );
 
-        synopsisWidget = new TextWidget ( "Синопсис", 10 );
+        synopsisWidget = new TextWidget ( "Синопсис", 14 );
         synopsisWidget.setTitleWidth ( titleWidth );
         synopsisWidget.setValueWidth ( valueWidth );
         panel.add ( synopsisWidget );

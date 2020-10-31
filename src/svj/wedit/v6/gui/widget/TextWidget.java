@@ -18,9 +18,9 @@ import java.awt.event.MouseListener;
 public class TextWidget extends AbstractWidget<String>
 {
     private final JTextArea     textField;
-    /* Максимальная длина поля. Иначе не занесется в БД. */
-    //private int                 maxSize;
 
+    // -- Попытка проявить ползунок - не прошла.
+    //private JPanel panel;
 
     public TextWidget ( String titleName, boolean hasEmpty, int rows )
     {
@@ -39,9 +39,32 @@ public class TextWidget extends AbstractWidget<String>
         textField.setLineWrap ( true );
         textField.setWrapStyleWord ( false );
         textField.setRows ( rows );
+        textField.setWrapStyleWord ( true );
         textField.setBorder ( BorderFactory.createEtchedBorder() );
         //textField.setColumns ( maxSize );   // выкл - делает почему-то шире чем задано символов (svj, 2010-10-12)
-        add ( textField );
+
+        // todo Проблема - нет ползунка у Скролла. Не смог его проявить.
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.setEnabled ( true );
+        scrollPane.getVerticalScrollBar().setUnitIncrement(15);
+
+        /*
+        // -- Попытка проявить ползунок - не прошла.
+        panel = new JPanel(new BorderLayout());
+        panel.add(textField, BorderLayout.CENTER);
+        scrollPane.setViewportView ( panel );
+        //*/
+
+        scrollPane.setViewportView ( textField );
+
+        add ( scrollPane );
+        /*
+        if (rows == 0)
+            add ( new JScrollPane(textField) );
+        else
+            add ( textField );
+        */
     }
 
     public TextWidget ( String titleName, String value, int rows )
@@ -161,6 +184,15 @@ public class TextWidget extends AbstractWidget<String>
 
         //if ( (value != null) && (value.length() > maxSize) )  value = value.substring ( 0, maxSize-1 );
         textField.setText ( value );
+
+        /*
+        // -- Попытка проявить ползунок - не прошла.
+        final Dimension d = new Dimension(panel.getWidth(), panel.getHeight() + 2);
+        panel.setPreferredSize(d);
+
+        panel.revalidate();
+        panel.repaint();
+        */
     }
 
 }

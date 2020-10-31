@@ -318,7 +318,7 @@ public class BookContent   extends XmlAvailable  implements IId, Editable, Compa
         if ( annotation == null )
             annotation  = text;
         else
-            annotation = Convert.concatObj ( getAnnotation(), '\n', text );
+            annotation = getAnnotation() + '\n' + text;
     }
 
     public String getSynopsis ()
