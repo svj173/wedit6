@@ -9,7 +9,7 @@ import svj.wedit.v6.obj.TreeObj;
 import java.awt.event.ActionEvent;
 
 /**
- * Акция по работе с отметкой неизменяемых элементов (у которых не добавляются Глава и прочее).
+ * Акция по работе с отметкой Неизменяемых элементов (у которых к титлу не добавляются 'Глава' и прочее).
  * <BR/>
  * <BR/> User: svj
  * <BR/> Date: 03.07.2018 19:05
@@ -32,7 +32,7 @@ public class StrongSelectListener extends WActionListener
         String      cmd, str;
         TreeObj[]   selected;
 
-        // Взять из дерева отмеченыне обьекты
+        // Взять из дерева отмеченные обьекты
         selected = treePanel.getAllSelectNodes ();
         if ( selected == null )  return;
 

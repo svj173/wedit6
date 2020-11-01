@@ -81,13 +81,6 @@ public class BookNode  extends WTreeObj implements Comparable<BookNode>, IId
         if ( name != null )  name = name.replace ( '\"', '\'' );
         setName ( name );
 
-        /*
-        if ( parentNode != null )
-            level      = parentNode.getLevel() + 1;
-        else
-            level   = 0;
-            */
-
         bookContent = null;
 
         nodes       = new ArrayList<BookNode>();
@@ -95,25 +88,14 @@ public class BookNode  extends WTreeObj implements Comparable<BookNode>, IId
 
         // зачем? - какая-то путаница в парентах.
         setParent ( parentNode );
-
-        //id  = Convert.concatObj ( name, "_", System.currentTimeMillis() );
     }
-
-    /*
-    @Deprecated
-    public BookNode ( String name, int level, BookNode parentNode )
-    {
-        this ( name, parentNode );
-
-        //this.level      = level;
-    }
-    */
 
     public BookNode clone ()
     {
         BookNode result;
 
         result  = new BookNode ( getName(), getParentNode() );
+        result.setId ( getId() );
 
         // nodes
         for ( BookNode node : nodes )
@@ -378,55 +360,6 @@ public class BookNode  extends WTreeObj implements Comparable<BookNode>, IId
         setAnnotation ( node.getAnnotation() );
     }
 
-    /* result = Сказ01/rootName/
-     * - todo переделать в индексы - ниже 
-     */
-    /*
-    public String getFullPath ()
-    {
-        StringBuilder   result;
-        BookNode        node;
-
-        result  = new StringBuilder(128);
-
-        node    = this;
-        while ( node != null )
-        {
-            //Log.l.debug ( "----- node = ", node );
-            result.append ( node.getName() );
-            result.append ( WCons.SEP );
-            node    = node.getParentNode();
-        }
-
-        //Log.l.debug ( "--- result = ", result );
-        return result.toString();
-    }
-    */
-
-    /**
-     * Выдать индексы родительских узлов, считая от 0 (от корня).
-     * - 2,5,1,2
-     * @return Строка с полным путем в виде индексов обьектов, разделенных запятой.
-     */
-    /*
-    public String getFullPath ()
-    {
-        StringBuilder   result;
-        BookNode        tn;
-        int             ic;
-
-        result  = new StringBuilder ( 32 );
-        tn      = this;
-        while ( tn != null  )
-        {
-            ic  = tn.getIndex();
-            result.insert ( 0, Convert.concatObj ( ic, WCons.COMMA ) );
-            tn  = tn.getParentNode();
-        }
-        return result.toString();
-    }
-    */
-
     // Выдать полный путь на основе индексов дочерних элементов через разделитель - запятая.
     public String getFullPath ()
     {
@@ -501,7 +434,8 @@ public class BookNode  extends WTreeObj implements Comparable<BookNode>, IId
     }
 
 
-    // По идее - лучше уникальный ИД который генерится при создании обьекта. А полный путь - высчитывается, т.к. он может меняться.
+    // По идее - лучше уникальный ИД который генерится при начальном создании обьекта.
+    // А полный путь - высчитывается, т.к. он может меняться.
     @Override
     public String getId ()
     {

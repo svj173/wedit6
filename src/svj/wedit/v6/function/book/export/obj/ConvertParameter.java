@@ -62,8 +62,10 @@ public class ConvertParameter     extends FunctionParameter<Object>   implements
     private SimpleParameter     contentWidthParam;
 
 
-    /* Тексты - сигнализировать о наличии в тексте произведения данных символов. Через запятую. todo - Описание в тул-тип. */
+    /* Тексты - сигнализировать о наличии в тексте произведения данных символов. Через запятую.
+    todo Описание - в тул-тип. */
     private SimpleParameter     warnTextParam;
+
     /* Заключительный текст. Например: Продолжение следует. */
     private SimpleParameter     endTextParam;
 
@@ -183,6 +185,8 @@ public class ConvertParameter     extends FunctionParameter<Object>   implements
     public void toXml ( int level, OutputStream out ) throws WEditException
     {
         int    ic1, ic2;
+
+        Log.l.debug ( "[STRONG] ConvertParameter: toXml: name = %s", getName() );
 
         try
         {
@@ -360,8 +364,6 @@ public class ConvertParameter     extends FunctionParameter<Object>   implements
     public OrderListParameter getStrongParameter ()
     {
         // Параметр должен быть всегда.
-        //if ( strongParameter == null )  strongParameter = new SimpleParameter ( "strongTitleParam", "", true );
-        //return strongParameter;
         if ( strongParameter == null )  strongParameter = new OrderListParameter ( ConfigParam.STRONG_TITLE  );
         return strongParameter;
     }
@@ -400,8 +402,12 @@ public class ConvertParameter     extends FunctionParameter<Object>   implements
 
     public SimpleParameter getEndTextParam ()
     {
+        String defaultValue;
+        //defaultValue = "<center><i>(продолжение следует)</i></center><br/>";
+        defaultValue = "";
+
         // Параметр должен быть всегда.
-        if ( endTextParam == null )  endTextParam = new SimpleParameter ( "endText", "<center><i>(продолжение следует)</i></center><br/>", true );
+        if ( endTextParam == null )  endTextParam = new SimpleParameter ( "endText", defaultValue, true );
         return endTextParam;
     }
 

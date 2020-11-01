@@ -3,6 +3,7 @@ package svj.wedit.v6.gui.tree;
 
 import svj.wedit.v6.WCons;
 import svj.wedit.v6.exception.WEditException;
+import svj.wedit.v6.function.book.export.obj.StrongSelectListener;
 import svj.wedit.v6.gui.listener.TreeObjSelectionListener;
 import svj.wedit.v6.gui.panel.EditablePanel;
 import svj.wedit.v6.gui.panel.WPanel;
@@ -605,61 +606,38 @@ public class TreePanel<T extends Editable>  extends EditablePanel  //implements 
     public void selectNode ( String nodeId  )
     {
         TreeObj  obj;
-        //TreePath path;
 
-        Log.l.debug ( "%s: selectNode: Start. new nodeId = %s", getName(), nodeId );
+        //Log.l.info ( "%s: selectNode: Start. new nodeId = %s", getName(), nodeId );
 
         if ( nodeId == null )  return;
 
-        // todo Смотреть, есть ли такой массив
+        // Находим обьект в дереве по его ИД.
 
         obj = TreeObjTools.getObjectInNodeById ( getRoot(), nodeId );
-        Log.l.debug ( "%s: selectNode: nodeId = %s; find obj = %s", getName(), nodeId, obj );
 
+        // Отметить обьект в дереве
         selectNode ( obj, false );
 
-        /*
-        if ( obj == null )  obj = getRoot();
-        if ( obj != null )
-        {
-            path = new TreePath ( obj.getPath() );
-            tree.expandPath ( path );
-            // выбрать объект - run action
-            tree.setSelectionPath ( path );
-        }
-        */
         Log.l.debug ( "%s: selectNode: Finish. currentObj = %s", getName(), currentObj );
     }
 
-    /*
-    public void selectNode ( DefaultMutableTreeNode node  )
-    {
-        // Установить заданный элемент выбранным
-        Log.l.debug ( "Select TreeObj node = %s", node );
+    /**
+     * Отметить в дереве заданные по ИД обьекты указанным цветом.
+     * @param listId       Список ИД.
+     * @param selectColor  Цвет выборки обьекта в дереве.
+     */
+    public void selectNodes(Collection<String> listId, String selectColor) {
+        if (listId == null) return;
 
-        if ( node == null )
-        {
-            currentObj = null;
-        }
-        else
-        {
-            if ( node instanceof TreeObj )
-                currentObj = (TreeObj) node;
-            else
-            {
-                currentObj = null;
-                Log.l.error ( "Select not TreeObj node = %s; node class", node, node );
-            }
+        TreeObj obj;
+        for ( String id : listId ) {
+            obj = TreeObjTools.getObjectInNodeById ( getRoot(), id );
+
+            //Log.l.info ( "[STRONG] selectNodes (%s): nodeId = %s; find obj = %s", getName(), id, obj );
+            if (obj != null)
+                obj.setSubType ( selectColor );
         }
     }
-    */
-
-    /*
-    public void scrollPathToVisible ( TreePath path )
-    {
-        tree.scrollPathToVisible ( path );
-    }
-    */
 
 
     /* Развернуть узел дерева */

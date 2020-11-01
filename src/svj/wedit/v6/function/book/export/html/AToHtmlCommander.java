@@ -159,7 +159,6 @@ public abstract class AToHtmlCommander  extends FileWriteFunction implements Tre
         BookContent         bookContent;
         BookNode            bookNode;
         String              fileName, str;
-        boolean             tornOnHeader;
         BookNode[]          selectNodes;
 
         Log.file.debug ( "Start. convert parameter = %s", cp );
@@ -180,16 +179,7 @@ public abstract class AToHtmlCommander  extends FileWriteFunction implements Tre
 
             // Взять корневой узел книги
             bookNode    = bookContent.getBookNode();
-        /*
-            // html head -- если флаг включен
-            //tornOnHeader   = false;
-            tornOnHeader   = cp.getTornOffHtmlTitle().getValue();
-            if ( tornOnHeader )
-                writeStr ( fos, "<HTML>\n<HEAD>\n<META http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n<TITLE>"+bookNode.getName()+"</TITLE>\n</HEAD>\n\n<BODY>" );
 
-            // Имя файла и дата - как коментарий
-            writeStr ( fos, "\n<!--\nfile : "+fileName+"\ndate : " + new Date() + "\n-->\n" );
-        */
             previosIsTitle = false;
 
             // Взять выделенный элемент - но только верхнего уровня.
@@ -207,12 +197,8 @@ public abstract class AToHtmlCommander  extends FileWriteFunction implements Tre
             // Скинуть рекурсивно
             for ( BookNode node : selectNodes )
             {
-                //node2html ( cp, ( BookNode ) node.getUserObject(), fos, 0 );  // selected
-                node2html ( cp, node, fos, 0 );   // book
+                node2html ( cp, node, fos, 0 );
             }
-
-            // Скинуть рекурсивно
-            //node2html ( cp, bookNode, fos, 0 );
 
             // Заключительная строка
             str = cp.getEndTextParam().getValue();
@@ -746,6 +732,16 @@ public abstract class AToHtmlCommander  extends FileWriteFunction implements Tre
     @Override
     public void rewrite ()
     {
+    }
+
+    private void writeStr ( FileOutputStream fos, String str )
+    {
+        try
+        {
+            fos.write ( str.getBytes ( WCons.CODE_PAGE ));
+        } catch ( Exception e )         {
+            Log.file.error ( Convert.concatObj ( "Save string error: '", str, "'" ), e);
+        }
     }
 
 

@@ -76,11 +76,11 @@ public class ConvertDialog extends WValidateDialog<BookmarksParameter,ConvertPar
 
     private Collection<FunctionParameter> localeParams;
 
-    /** Для - Неизменяемые заголовки. */
+    /** Для - Неизменяемые заголовки. Чтобы создать клон древа книги - для выборки неизменяемых элементов. */
     private BookNode rootBookNode = null;
 
-    /** Цвет элементво, заголвоки которых нельзя переделывать (добавлять слова Глава и прочее). */
-    private String strongColor = "#70AE70";
+    /** Цвет элементов, заголовки которых нельзя переделывать (добавлять слова Глава и прочее). */
+    private final String STRONG_COLOR = "#70AE70";
 
 
 
@@ -331,7 +331,6 @@ public class ConvertDialog extends WValidateDialog<BookmarksParameter,ConvertPar
         // Кнопка "Конвертить" доступна только если есть выбранная закладка.
         setOkButtonText ( "Преобразовать" );
 
-        Font font;
         JPanel centerPanel;
 
         centerPanel      = new JPanel();
@@ -344,7 +343,6 @@ public class ConvertDialog extends WValidateDialog<BookmarksParameter,ConvertPar
         //centerPanel.add ( new JScrollPane ( cp ), BorderLayout.CENTER );
 
         TabsPanel<EditablePanel>    tabsPanel;
-        EditablePanel               tabPanel;
         String                      tabsName;
         TabsChangeListener          tabsListener;
 
@@ -614,7 +612,7 @@ public class ConvertDialog extends WValidateDialog<BookmarksParameter,ConvertPar
                 for ( FunctionParameter fp : parameter.getLocaleParams () )
                 {
                     widget = GuiTools.createWidget ( fp, titleWidth, valueWidth );
-                    Log.l.info ( "[Locale]\n  param = %s;\n  create widget = %s", fp, widget );
+                    Log.l.debug ( "[Locale]\n  param = %s;\n  create widget = %s", fp, widget );
                     if ( widget == null )
                     {
                         // Создать Ошибочный виджет
@@ -638,6 +636,12 @@ public class ConvertDialog extends WValidateDialog<BookmarksParameter,ConvertPar
         fileWidget.setEditable ( false );  // запрещаем редактирование
     }
 
+    /**
+     * Взять из Конверт-параметра данные о Неизменяемых титлах элементов, создать панель с деревом Элементов,
+     * и отметить в дереве выбранные Неизменяемые титлы.
+     * @param parameter  Конверт-параметр
+     * @return           Панель с деревом Элементов.
+     */
     private Component createStrongTitlesPanel ( ConvertParameter parameter )
     {
         TreePanel           treePanel;
@@ -653,6 +657,7 @@ public class ConvertDialog extends WValidateDialog<BookmarksParameter,ConvertPar
 
         // Взять параметр, отвечающий за данные значения. Если его нет - создать.
         strongTitleParameter = parameter.getStrongParameter();
+        Log.l.debug ( "[STRONG] Create strongTitlesPanel: get strongTitleParameter = %s", strongTitleParameter );
         result.setObject ( strongTitleParameter );
 
         try
@@ -664,22 +669,19 @@ public class ConvertDialog extends WValidateDialog<BookmarksParameter,ConvertPar
 
             // TreeObj root, T object
             treePanel   = new TreePanel ( cloneTree, null );
+            treePanel.setName("Tree_ConvertDialog_StrongTitle");
             //treePanel.getTree().setRootVisible ( true );
             treePanel.setSelectionMode ( TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION );
             treePanel.addRenderer ( TreeObjType.BOOK_NODE, new BookNodeCellRenderer() );
 
-            // todo Взять из параметра значения выбранных узлов дерева и отметить их.
+            // Взять из параметра значения выбранных узлов дерева и отметить их.
             // - value: 1=scroll|ppp;2=Не вошедшее     -- НЕТ, храним nodeID
             value = strongTitleParameter.getValue();
             // param1=id; param2=level
-            Log.l.info ( "[STRONG] strongTitlesPanel: get value = %s", value );
+            //Log.l.info ( "[STRONG] strongTitlesPanel: get value = %s", value );
 
             // Распарсить их.
             // Отметить на дереве.
-            //treePanel.selectNode ( value );
-            // scroll_2018_02_09_17_11_47_398
-        //    selectStrong ( treePanel, value );
-        //    treePanel.selectNode ( "scroll_2018_02_09_17_07_40_864" );
             selected ( treePanel, value );
 
             scrollPane  = new JScrollPane ( treePanel );
@@ -690,7 +692,7 @@ public class ConvertDialog extends WValidateDialog<BookmarksParameter,ConvertPar
             result.add ( buttonPanel, BorderLayout.SOUTH );
 
             //WButton button;
-            ActionListener actionListener = new StrongSelectListener ( treePanel, strongColor );
+            ActionListener actionListener = new StrongSelectListener ( treePanel, STRONG_COLOR);
             int buttonWidth = 150;
             //button = GuiTools.createButton ( "Отметить", null, WCons.IMG_B_ADD, buttonWidth, actionListener,
             //    "select" );
@@ -720,13 +722,12 @@ public class ConvertDialog extends WValidateDialog<BookmarksParameter,ConvertPar
      * @param params     Значения. param1=id; param2=level
      */
     private void selected ( TreePanel treePanel, List<WPair<String, String>> params) {
-        JTree tree = treePanel.getTree();
-        //JTree tree = treePanel.getTreeModel().get;
         // Пробегаем рекурсивно и отмечаем
+        Collection<String> listId = new ArrayList<>();
         for ( WPair<String, String> pair : params ) {
-            // По ИД.
-            treePanel.selectNode ( pair.getParam1() );
+            listId.add(pair.getParam1());
         }
+        treePanel.selectNodes ( listId, STRONG_COLOR );
     }
 
     /**
@@ -1126,9 +1127,10 @@ public class ConvertDialog extends WValidateDialog<BookmarksParameter,ConvertPar
             }
 
             // ----------------- Неизменяемые заголовки ------------------------
-            // todo Взять отмеченные элементы дерева и сохранить их в виде пары: Уровень - Наименование.
+            // Взять отмеченные элементы дерева и сохранить их в Параметре в виде пары: ИД=Уровень.
+            // - Хотя Уровень пока не используется.
             strongTitlesPanel.setEnabled ( false );
-            setStrongTitlesToParam ();      // todo не доработана!
+            setStrongTitlesToParam();
 
             // ----------------- Оcтальные параметры ------------------------
 
@@ -1191,12 +1193,12 @@ public class ConvertDialog extends WValidateDialog<BookmarksParameter,ConvertPar
         Component[] cList;
 
         cList = strongTitlesPanel.getComponents();      // Всего один компонент - SimpleEditablePanel
-        Log.l.info ( "strongTitlesPanel: cList.size = %d", cList.length );
+        Log.l.debug ( "strongTitlesPanel: cList.size = %d", cList.length );
         int ic = 0;
         if ( cList.length >= 1 )
         {
             // - 0 - SimpleEditablePanel
-            Log.l.info ( "strongTitlesPanel: cList.class = %s", cList[0].getClass().getName() );
+            Log.l.debug ( "strongTitlesPanel: cList.class = %s", cList[0].getClass().getName() );
             if ( cList[0] instanceof WPanel )
             {
                 WPanel              panel;
@@ -1210,21 +1212,18 @@ public class ConvertDialog extends WValidateDialog<BookmarksParameter,ConvertPar
                 //List<WPair<String,String>> strongValue = strongTitleParameter.getValue();
 
                 Component[] c = panel.getComponents();
-                Log.l.info ( "strongTitlesPanel: c.class = %s", c[0].getClass().getName() );
+                Log.l.debug ( "strongTitlesPanel: c.class = %s", c[0].getClass().getName() );
                 if ( c[0] instanceof JScrollPane )
                 {
-                    //String str;
-                    StringBuilder value = new StringBuilder ( 32 );
                     JScrollPane pane = ( JScrollPane ) c[0];
                     Component comp = pane.getViewport ().getView ();
                     TreePanel treePanel = ( TreePanel ) comp;
 
                     // Взять отмеченные любых уровней.
-                    //TreeObj[] selected = treePanel.getAllSelectNodes();
                     Collection<TreeObj> strongSelected = getStrong ( treePanel );
-                    Log.l.info ( "[STRONG] strongTitlesPanel: selected = %s", DumpTools.printCollection ( strongSelected, '\n' ) );
+                    Log.l.debug ( "[STRONG] strongTitlesPanel: selected = %s", DumpTools.printCollection ( strongSelected, '\n' ) );
 
-                    // Преобразовтаь их к виду  - List<WPair<String,String>> - Уровень, Название.
+                    // Преобразовать их к виду  - List<WPair<String,String>> - Уровень, Название.
 
                     List<WPair<String,String>> list = new ArrayList<>();
                     WPair<String,String> pair;
@@ -1237,43 +1236,12 @@ public class ConvertDialog extends WValidateDialog<BookmarksParameter,ConvertPar
                         //value.append ( treeObj.getId() );
                     }
 
-                    Log.l.info ( "[STRONG] strongTitlesPanel: list = %s", list );
+                    Log.l.debug ( "[STRONG] strongTitlesPanel: list = %s", list );
                     strongTitleParameter.setValue ( list );
-
-                    /*
-                    String str;
-                    Map<Integer,String> map = new HashMap<Integer,String>();
-                    for ( TreeObj treeObj : strongSelected )
-                    {
-                        str = map.get ( treeObj.getLevel() );
-                        if ( str != null )
-                            str = str + "|" + treeObj.getName();
-                        else
-                            str = treeObj.getName();
-                        map.put ( treeObj.getLevel(), str );
-                    }
-
-                    // Преобразовать их в строку вида: 1=Вступление|Эпилог;2=Общее
-                    StringBuilder value = new StringBuilder ( 32 );
-                    for ( Map.Entry<Integer,String> entry : map.entrySet() )
-                    {
-                        if ( ic != 0 ) value.append ( ';' );
-                        value.append ( entry.getKey() );
-                        value.append ( '=' );
-                        value.append ( entry.getValue() );
-                        ic++;
-                    }
-
-                    Log.l.info ( "strongTitlesPanel: create value = %s", value );
-
-                    // Занести новое значение
-                    strongTitleParameter.setValue ( value.toString() );
-                    //throw new WEditException ( "selected = " + DumpTools.printArray ( selected, ';' ) );
-                    */
+                    Log.l.debug ( "[STRONG] strongTitleParameter = %s", strongTitleParameter );
                 }
             }
         }
-        //if ( ic >= 0 ) throw new WEditException ( "ic = "+ic );
     }
 
     private Collection<TreeObj> getStrong ( TreePanel treePanel )
@@ -1282,9 +1250,9 @@ public class ConvertDialog extends WValidateDialog<BookmarksParameter,ConvertPar
 
         result = new ArrayList<> ();
 
-        // strongColor
-        // Пробегаем по всему дереву и ищем обьекты с subType=strongColor
-        TreeObjTools.getObjectsInNodeBySubtype ( treePanel.getRoot(), strongColor, result );
+        // STRONG_COLOR
+        // Пробегаем по всему дереву и ищем обьекты с subType=STRONG_COLOR
+        TreeObjTools.getObjectsInNodeBySubtype ( treePanel.getRoot(), STRONG_COLOR, result );
 
         return result;
     }
@@ -1477,7 +1445,7 @@ public class ConvertDialog extends WValidateDialog<BookmarksParameter,ConvertPar
                 */
             }
         } catch ( Exception e )        {
-            Log.l.error ( Convert.concatObj (  "widget = ", widget ), e);
+            Log.l.error ( "widget = " + widget, e);
         }
     }
 
@@ -1566,9 +1534,9 @@ public class ConvertDialog extends WValidateDialog<BookmarksParameter,ConvertPar
         name = name.trim();
         if ( name.isEmpty() )  return;
 
-        Log.l.info ( "[CREATE] localeParams = %s", localeParams );
+        Log.l.debug ( "[CREATE] localeParams = %s", localeParams );
         cp = createDefaultCp ( name );
-        Log.l.info ( "[CREATE] cp = %s", cp );
+        Log.l.debug ( "[CREATE] cp = %s", cp );
         getBookmarkParameter().addNew ( cp );
         listPanel.addItem ( cp );
         listPanel.rewrite();
@@ -1677,7 +1645,7 @@ public class ConvertDialog extends WValidateDialog<BookmarksParameter,ConvertPar
     public boolean checkFile ()
     {
         boolean result;
-        String  fileName;
+        String  fileName = null;
         File    file;
         int     ic;
 
@@ -1701,7 +1669,7 @@ public class ConvertDialog extends WValidateDialog<BookmarksParameter,ConvertPar
             }
         } catch ( Exception e )        {
             result = false;
-            Log.l.error ( "Ошибка проверки существования файла.", e );
+            Log.l.error ( "Ошибка проверки существования файла '" + fileName + "'.", e );
         }
 
         Log.l.debug ( "Finish.checkFile: result = %b", result );

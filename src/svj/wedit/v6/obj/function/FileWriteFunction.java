@@ -28,7 +28,6 @@ public abstract class FileWriteFunction extends SimpleBookFunction
 
     protected void writeStr ( String str )
     {
-        //if ( fos == null )  return;
         if ( fos == null )  throw new RuntimeException ( "FOS is absent!" );
         if ( str == null )  return;
 
@@ -37,18 +36,7 @@ public abstract class FileWriteFunction extends SimpleBookFunction
             // todo codeType - По идее - тип кодировки файла тоже можно задавать индивидуально для данной Ковертации.
             fos.write ( str.getBytes ( WCons.CODE_PAGE ));
         } catch ( Exception e )         {
-            Log.file.error ( Convert.concatObj ( "Save string error: '", str, "'" ), e);
-        }
-    }
-
-    @Deprecated
-    protected void writeStr ( FileOutputStream fos, String str )
-    {
-        try
-        {
-            fos.write ( str.getBytes ( WCons.CODE_PAGE ));
-        } catch ( Exception e )         {
-            Log.file.error ( Convert.concatObj ( "Save string error: '", str, "'" ), e);
+            Log.file.error ( "Save string error: '" + str + "'.", e);
         }
     }
 

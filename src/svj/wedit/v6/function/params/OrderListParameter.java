@@ -9,6 +9,7 @@ import svj.wedit.v6.tools.Convert;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 
@@ -112,6 +113,15 @@ public class OrderListParameter   extends FunctionParameter<List<WPair<String,St
         return list;
     }
 
+    public Collection<String> getIdList ()
+    {
+        Collection<String> result = new ArrayList<>();
+        for (WPair<String, String> pair : list) {
+            result.add(pair.getParam1());
+        }
+        return result;
+    }
+
     public void toXml ( int level, String tagName, OutputStream out ) throws WEditException
     {
         int    ic1, ic2;
@@ -144,7 +154,7 @@ public class OrderListParameter   extends FunctionParameter<List<WPair<String,St
     {
         int    ic1, ic2;
 
-        Log.l.info ( "[STRONG] (%s) toXml: list = %s", getName(), list );
+        Log.l.debug ( "[STRONG] toXml: name = %s; list = %s", getName(), list );
 
         try
         {
@@ -157,6 +167,7 @@ public class OrderListParameter   extends FunctionParameter<List<WPair<String,St
 
             for ( WPair<String,String> wp : list )
             {
+                //Log.l.debug ( "[STRONG] (%s) toXml: list = %s", getName(), wp );
                 // name - имя проекта. value - имя файла проекта.
                 outTag ( ic2, "item", wp.getParam1(), wp.getParam2(), out );
             }
@@ -169,9 +180,11 @@ public class OrderListParameter   extends FunctionParameter<List<WPair<String,St
         }
     }
 
+    /*
     public void getFromXml ( InputStream in ) throws WEditException
     {
     }
+    */
 
     public boolean delete ( WPair<String, String> wp )
     {

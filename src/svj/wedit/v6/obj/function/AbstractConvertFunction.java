@@ -368,12 +368,15 @@ public abstract class AbstractConvertFunction  extends FileWriteFunction
 
             previosIsTitle = false;
 
-            // Скинуть рекурсивно
+            // - Получить список Неизменяемых ИД.
+            Collection<String> idStrongList = cp.getStrongParameter().getIdList();
+
+            // Скинуть Элементы рекурсивно
             for ( TreeObj treeObj : selectNodes )
             {
                 bookNode = (BookNode) treeObj.getWTreeObj();
                 //convertNode ( cp, bookNode, 0 );
-                convertNode ( cp, bookNode, bookNode.getLevel() );
+                convertNode ( cp, bookNode, bookNode.getLevel(), idStrongList );
             }
 
             // Заключительная строка
@@ -401,12 +404,12 @@ public abstract class AbstractConvertFunction  extends FileWriteFunction
 
     /**
      * Последние пробелы НЕ скидывать в файл. Хранить - вдруг их придется удалять?
-     *
-     * @param cp                Сложный параметр, описывающий принятый набор параметров конвертации книги.
+     *  @param cp                Сложный параметр, описывающий принятый набор параметров конвертации книги.
      * @param nodeObject        Узел (обьект) книги для ковертации.
-     * @param level             Уровень вложенности анализа
+     * @param level             Уровень вложенности анализа.
+     * @param idStrongList      Список ИД для Неизменяемых элементов.
      */
-    private void convertNode ( ConvertParameter cp, BookNode nodeObject, int level )
+    private void convertNode(ConvertParameter cp, BookNode nodeObject, int level, Collection<String> idStrongList)
             throws WEditException
     {
         BookNode                bo;
@@ -461,55 +464,63 @@ public abstract class AbstractConvertFunction  extends FileWriteFunction
             // ------------- Заголовок -------------
             phase       = "title";
 
-            titleViewMode   = cp.getTitleViewType ( nodeLevel );
-            Log.file.debug ( "------ title = %s; titleViewMode = '%s'", nodeObject.getName(), titleViewMode );
-
-            switch ( titleViewMode )
+            // Проверка на Неизменяемый титл - по ИД
+            if ( idStrongList.contains ( nodeObject.getId() ) )
             {
-                default:
-                case NOTHING:
-                    // не выводить заголовок
-                    title = null;
-                    break;
-                case TREE_STARS:
-                    // три звездочки
-                    // - Не выводить если перед этим также выводился заголовок, а из текста - только пустые строки.
-                    // -- т.е. ситуация когда два заголовка подряд. Учесть что пустые строки между заголовками считаются выводом текста.
-                    if ( previosIsTitle )
+                // Обработать Неизменяемый заголовок без увеличения счетчика Глав и пр.
+                title = nodeObject.getName();
+            }
+            else
+            {
+                titleViewMode = cp.getTitleViewType(nodeLevel);
+                Log.file.debug("------ title = %s; titleViewMode = '%s'", nodeObject.getName(), titleViewMode);
+
+                switch (titleViewMode) {
+                    default:
+                    case NOTHING:
+                        // не выводить заголовок
                         title = null;
-                    else
-                        title = "* * *";
-                    break;
-                case ONLY_NAME:
-                    // выводить только название титла. Например: "Введение"
-                    title   = nodeObject.getName();
-                    break;
-                case ONLY_TITLE_WITH_NUMBER:
-                    // выводить только тип заголовка (например, глава) с нумерацией. Например: "Глава 1."
-                    title   = elementParam.getName() + " " + getNumber(nodeLevel) + ".";
-                    break;
-                case TITLE_WITH_NUMBER_AND_NAME:
-                    // выводить тип заголовка (например, глава) с нумерацией и с названием титла. Например: "Глава 1. Введение"
-                    title   = elementParam.getName() + " " + getNumber(nodeLevel) + ". " + nodeObject.getName();
-                    break;
-                case TITLE_WO_NUMBER_AND_NAME:
-                    // выводить тип заголовка (например, глава) без нумерации и с названием титла. Например: "Глава. Введение"
-                    title   = elementParam.getName() + ". " + nodeObject.getName();
-                    break;
-                case NUMBER_AND_POINT_ONLY:
-                    // выводить номер заголовка с точкой - без названия титла. Например: "1."
-                    title   = getNumber ( nodeLevel ) + ".";
-                    //Log.file.info("title = %s; nodeLevel = %d; result_title = %s", nodeObject.getName(), nodeLevel,
-                    //        title);
-                    break;
-                case NUMBER_AND_POINT_WITH_NAME:
-                    // выводить номер заголовка с точкой и название титла. Например: "1. Введение"
-                    title   = getNumber ( nodeLevel ) + ". " + nodeObject.getName();
-                    break;
-                case NUMBER_AND_BR_WITH_NAME:
-                    // выводить номер заголовка со скобкой и название титла. Например: "1) Введение"
-                    title   = getNumber ( nodeLevel ) + ") " + nodeObject.getName();
-                    break;
+                        break;
+                    case TREE_STARS:
+                        // три звездочки
+                        // - Не выводить если перед этим также выводился заголовок, а из текста - только пустые строки.
+                        // -- т.е. ситуация когда два заголовка подряд. Учесть что пустые строки между заголовками считаются выводом текста.
+                        if (previosIsTitle)
+                            title = null;
+                        else
+                            title = "* * *";
+                        break;
+                    case ONLY_NAME:
+                        // выводить только название титла. Например: "Введение"
+                        title = nodeObject.getName();
+                        break;
+                    case ONLY_TITLE_WITH_NUMBER:
+                        // выводить только тип заголовка (например, глава) с нумерацией. Например: "Глава 1."
+                        title = elementParam.getName() + " " + getNumber(nodeLevel) + ".";
+                        break;
+                    case TITLE_WITH_NUMBER_AND_NAME:
+                        // выводить тип заголовка (например, глава) с нумерацией и с названием титла. Например: "Глава 1. Введение"
+                        title = elementParam.getName() + " " + getNumber(nodeLevel) + ". " + nodeObject.getName();
+                        break;
+                    case TITLE_WO_NUMBER_AND_NAME:
+                        // выводить тип заголовка (например, глава) без нумерации и с названием титла. Например: "Глава. Введение"
+                        title = elementParam.getName() + ". " + nodeObject.getName();
+                        break;
+                    case NUMBER_AND_POINT_ONLY:
+                        // выводить номер заголовка с точкой - без названия титла. Например: "1."
+                        title = getNumber(nodeLevel) + ".";
+                        //Log.file.info("title = %s; nodeLevel = %d; result_title = %s", nodeObject.getName(), nodeLevel,
+                        //        title);
+                        break;
+                    case NUMBER_AND_POINT_WITH_NAME:
+                        // выводить номер заголовка с точкой и название титла. Например: "1. Введение"
+                        title = getNumber(nodeLevel) + ". " + nodeObject.getName();
+                        break;
+                    case NUMBER_AND_BR_WITH_NAME:
+                        // выводить номер заголовка со скобкой и название титла. Например: "1) Введение"
+                        title = getNumber(nodeLevel) + ") " + nodeObject.getName();
+                        break;
+                }
             }
 
             if ( title != null )
@@ -571,7 +582,7 @@ public abstract class AbstractConvertFunction  extends FileWriteFunction
                     // Нельзя так, так как при конвертации выделеных элементов, здесь они будут нумероваться от 0,
                     // а вся инфа о них будет находиться в мапах, в реальной нумерации.
                     //convertNode ( cp, bo, level + 1 );
-                    convertNode ( cp, bo, bo.getLevel() );
+                    convertNode ( cp, bo, bo.getLevel(), idStrongList);
                 }
             }
 

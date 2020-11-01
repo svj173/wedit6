@@ -73,11 +73,10 @@ public class BookNodeStaxParser extends WEditStaxParser
         TextObject              to;
         BookNode                bookNode, bNode;
         int                     level, eventType;
-        //AttributeSet            attrStyle;
         WEditStyle              attrStyle;
         Characters              characters;
 
-        Log.file.debug ( "NodeParser.Start: rootBookNode = ", rootBookNode );
+        Log.file.debug ( "NodeParser.Start: rootBookNode = %s", rootBookNode );
 
         try
         {
@@ -186,7 +185,10 @@ public class BookNodeStaxParser extends WEditStaxParser
                         {
                             // читаем текст
                             str = getText ( eventReader );
-                            if ( StringTools.isEmpty ( str ) )  str = BookTools.createBookNodeId ( bookNode.getName() );
+                            if ( StringTools.isEmpty ( str ) ) {
+                                //Log.file.debug ( "[STRONG] id is NULL. title = '%s'", str, bookNode.getName() );
+                                str = BookTools.createBookNodeId ( bookNode.getName() );
+                            }
                             bookNode.setId ( str );
                             continue;
                         }
@@ -278,7 +280,7 @@ public class BookNodeStaxParser extends WEditStaxParser
             Log.file.error ( "err", e );
             throw new  WEditException ( e, "Ошибка загрузки файла описания Структуры книги '",rootBookNode.getName(),"' :\n", e );
         } finally      {
-            Log.file.debug ( "NodeParser.Finish: rootBookNode = ", rootBookNode );
+            Log.file.debug ( "NodeParser.Finish: rootBookNode = %s", rootBookNode );
         }
     }
 
