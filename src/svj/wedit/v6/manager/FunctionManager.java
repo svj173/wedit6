@@ -43,6 +43,7 @@ import svj.wedit.v6.function.project.edit.book.EditBookTitleFunction;
 import svj.wedit.v6.function.project.edit.book.MoveBookFunction;
 import svj.wedit.v6.function.project.edit.book.create.CreateBookFunction;
 import svj.wedit.v6.function.project.edit.book.open.OpenBookFunction;
+import svj.wedit.v6.function.project.edit.paste.CutProjectNodeFunction;
 import svj.wedit.v6.function.project.edit.section.AddSectionAfterFunction;
 import svj.wedit.v6.function.project.edit.section.AddSectionInFunction;
 import svj.wedit.v6.function.project.edit.section.DeleteSectionFunction;
@@ -56,6 +57,7 @@ import svj.wedit.v6.function.statistic.StatAllOpenFunction;
 import svj.wedit.v6.function.statistic.StatEditBookInfoFunction;
 import svj.wedit.v6.function.system.MemoryCheckFunction;
 import svj.wedit.v6.function.text.*;
+import svj.wedit.v6.gui.GuiCreator;
 import svj.wedit.v6.logger.Log;
 import svj.wedit.v6.obj.function.Function;
 import svj.wedit.v6.tools.Convert;
@@ -163,109 +165,7 @@ public class FunctionManager
 
     public void init ()
     {
-        // ---------------- Project ---------------
-        add ( new SyncProjectFunction()     );
-        add ( new ArchiveProjectFunction()  );
-        add ( new NewProjectFunction()      );
-        add ( new OpenProjectFunction()     );
-        add ( new CloseProjectFunction()    );
-        add ( new ReopenProjectFunction()   );
-        add ( new SaveAllProjectsFunction() );
-        add ( new SaveAbsoluteAllProjectsFunction() );
-        add ( new ZipAllProjectsFunction()  );
-
-        add ( new AddSectionAfterFunction() );
-        add ( new AddSectionInFunction()    );
-        add ( new EditSectionFunction()     );
-        add ( new EditBookTitleFunction()   );
-        add ( new EditBookParamsFunction()  );
-        add ( new DeleteSectionFunction()   );
-
-        add ( new CreateBookFunction()      );
-        add ( new OpenBookFunction()        );
-        add ( new DeleteBookFunction()      );
-
-        // Перенос книги или раздела.
-        add ( new MoveBookFunction()        );
-
-        // ---------------- Book -----------------------
-
-        add ( new ReloadBookFunction()        );
-
-        // - элементы книги
-        add ( new AddBookNodeInFunction()       );
-        add ( new AddBookNodeAfterFunction()    );
-        add ( new CopyBookNodeFunction()        );
-        add ( new CutBookNodeFunction()         );
-        add ( new PasteBookNodeInFunction()     );
-        add ( new PasteBookNodeAfterFunction()  );
-        add ( new DeleteBookNodeFunction()      );
-        add ( new EditBookNodeFunction()        );
-
-
-        // ---------------- Контекстное меню на дереве книги -----------------------
-        add ( new GroupEditNodeTypeFunction()   );
-
-        // - Описание элементов книги
-        add ( new EditDescElementFunction()     );
-        add ( new EditDescElementsFunction()    );
-
-        // - Tools For Current Book
-        add ( new TrimBookTextFunction()        );
-        add ( new ReplaceTextFunction()         );
-        add ( new ReplaceBlockTextFunction()    );
-
-        // ------------------ Options ------------------------
-        add ( new DecoratorFunction()               );
-        add ( new ChangeToolBarIconSizeFunction()   );
-        add ( new ChangePanelIconSizeFunction()     );
-        add ( new ChangeMenuIconSizeFunction()      );
-
-        // ---------------- Text -----------------------
-        add ( new OpenTextFunction()        );
-        add ( new SaveTextFunction()        );
-        add ( new CloseTextFunction()       );
-        add ( new CloseAllTextTabFunction() );
-        add ( new InfoElementTypeFunction() );
-        add ( new SelectElementFunction()   );
-        add ( new SelectAlignFunction()     );
-        add ( new SelectStyleFunction()     );
-        add ( new SelectImageFunction()     );
-        add ( new UndoFunction()            );
-        add ( new RedoFunction()            );
-        add ( new ViewTreeFromTabFunction() );
-        add ( new InsertTableFunction()     );
-        add ( new SetAllTextAsSimpleFunction()     );
-
-        // ---------------- Statistic -----------------------
-        add ( new StatAllOpenFunction()         );
-        add ( new StatAllBookFunction()         );
-        add ( new StatEditBookInfoFunction()    );
-
-        // ---------------- Convert -----------------------
-        add ( new SaveAsRTFSelectFunction()     );
-        add ( new ConvertToRtfFunction()        );
-        add ( new ConvertToHtmlFunction ()       );
-        add ( new SelectedToHtmlFunction ()      );
-        add ( new ConvertContentToRtfFunction() );
-        add ( new ConvertToDoc() );
-        add ( new ConvertToDocForLitres() );
-        add ( new ConvertToTxt() );
-        add ( new ConvertToFB2() );
-        add ( new ConvertSelectToFB2() );
-
-        add ( new SimpleSearchFunction() );
-
-        // ----------------- System -----------------------
-        add ( new MemoryCheckFunction()     );
-
-        // ----------------- Import -----------------------
-        add ( new ImportFromWe1Function()           );
-        add ( new ImportBookFromTxtFunction()       );
-        add ( new ImportBookFromDocFunction()       );
-
-        add ( new BookmarkFunction()       );
-
+        GuiCreator.initFunctions (this);
     }
 
     /**

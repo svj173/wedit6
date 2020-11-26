@@ -2,6 +2,7 @@ package svj.wedit.v6.function.book.edit.paste;
 
 
 import svj.wedit.v6.exception.WEditException;
+import svj.wedit.v6.obj.Section;
 import svj.wedit.v6.obj.function.SimpleFunction;
 import svj.wedit.v6.obj.book.BookNode;
 import svj.wedit.v6.util.Buffer;
@@ -53,18 +54,18 @@ public abstract class PasteBookFunction extends SimpleFunction
         JLabel          result;
         StringBuilder   msg;
         int             ic;
-        BookNode        bookNode;
+        Section         section;
 
-        bookNode = (BookNode) selectNode.getUserObject();
+        section = (Section) selectNode.getUserObject();
 
         msg = new StringBuilder();
 
         // Вы действительно желаете вставить след элементы? (перечислить) В обьект ""?
         msg.append ( "<HTML><body>\n" );
-        msg.append ( "<h2>Вы действительно желаете<br/> вставить элементы " );
+        msg.append ( "<h2>Вы действительно желаете<br/> вставить обьекты " );
         msg.append ( mode );
-        msg.append ( " '" );
-        msg.append ( bookNode.getName() );
+        msg.append ( " в '" );
+        msg.append ( section.getName() );
         msg.append ( "' ?</h2>" );
 
         msg.append ( "Уровень : " );
@@ -77,15 +78,14 @@ public abstract class PasteBookFunction extends SimpleFunction
 
         for ( DefaultMutableTreeNode node : pasteNodes )
         {
-            bookNode = (BookNode) node.getUserObject();
             msg.append ( "<tr><td align='right'>&nbsp;" );
             msg.append ( ic );
             msg.append ( "&nbsp;</td><td><font color='green'>&nbsp;" );
-            msg.append ( bookNode.getName() );
+            msg.append ( section.getName() );
             msg.append ( "&nbsp;</td><td align='right'>&nbsp;" );
-            msg.append ( bookNode.getSize() );
+            msg.append ( section.getSize() );
             msg.append ( "&nbsp;</td><td align='center'>&nbsp;" );
-            msg.append ( bookNode.getChildSize() );
+            msg.append ( "-" );
             msg.append ( "&nbsp;</td>" );
             msg.append ( "</tr>" );
             ic++;

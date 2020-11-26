@@ -13,7 +13,8 @@ import java.awt.event.ActionEvent;
 
 /**
  * Копировать выбранные узлы книги во внутреннйи буфер.
- * <BR/> Если узлов несколько - они долны быть одноуровневыми.  -- НЕТ, копируем только один узел. Если отмечено несколько - берем последний отмеченный.
+ * <BR/> Если узлов несколько - они долны быть одноуровневыми.  -- НЕТ, копируем только один узел.
+ * Если отмечено несколько - берем последний отмеченный.
  * <BR/> Допустимость использования корневого элемента: ДА.
  * <BR/>
  * <BR/> User: svj
@@ -36,7 +37,7 @@ public class CopyBookNodeFunction extends SimpleFunction
         // Взять отмеченный
         selectNode  = BookTools.getSelectedNode();
         // Создать копию обьекта
-        copyNode    = BookTools.createClone ( selectNode );
+        copyNode    = BookTools.createClone ( selectNode, true );
         // Занести в буфер
         Buffer.setBuffer ( copyNode );
     }

@@ -422,9 +422,10 @@ public class BookTools
      * Создать копию узла.
      *
      * @param node    Исходный узел.
+     * @param copy    TRUE - значит копирвоание обьекта и значит необходимо ему сгенерить уникальный ИД.
      * @return        Новый узел - копия исходного.
      */
-    public static DefaultMutableTreeNode createClone ( DefaultMutableTreeNode node )
+    public static DefaultMutableTreeNode createClone ( DefaultMutableTreeNode node, boolean copy )
     {
         DefaultMutableTreeNode  result, child, cloneChild;
         Enumeration             en;
@@ -435,7 +436,9 @@ public class BookTools
         //result  = new DefaultMutableTreeNode ();
         //result.setParent ( null );
         bookNode = ( BookNode ) node.getUserObject ();
-        result.setUserObject ( bookNode.clone () );
+        BookNode cloneBook = bookNode.clone();
+        if (copy) cloneBook.setId(BookTools.createBookNodeId(cloneBook.getName()));
+        result.setUserObject ( cloneBook );
 
         // скопировать чилдренов
         // ??? - порядок следования сохраняется?
@@ -444,7 +447,7 @@ public class BookTools
         {
             //
             child = ( DefaultMutableTreeNode ) en.nextElement ();
-            cloneChild = createClone ( child );
+            cloneChild = createClone ( child, copy );
             //cloneChild  = (DefaultMutableTreeNode) child.clone ();
             result.add ( cloneChild );
         }

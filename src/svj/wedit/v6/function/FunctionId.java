@@ -19,6 +19,8 @@ public enum FunctionId
     EDIT_DESC_ALL_ELEMENTS,
     DECORATOR, CHANGE_TOOL_BAR_ICON_SIZE, CHANGE_PANEL_ICON_SIZE, CHANGE_MENU_ICON_SIZE,
     MOVE_BOOK,
+    // Копировать-Вырезать-Вставить (Секцию, Книгу, либо несколько, но однородных для верхнего уровня)
+    COPY_PROJECT_ELEMENT, PASTE_PROJECT_ELEMENT_IN, PASTE_PROJECT_ELEMENT_AFTER, CUT_PROJECT_ELEMENT,
 
     // Book tree - toolbar
     EDIT_NODE_TYPE,

@@ -11,6 +11,7 @@ import svj.wedit.v6.logger.Log;
 import svj.wedit.v6.obj.ConfigParam;
 import svj.wedit.v6.obj.Project;
 import svj.wedit.v6.obj.Section;
+import svj.wedit.v6.obj.TreeObj;
 import svj.wedit.v6.obj.book.BookContent;
 import svj.wedit.v6.obj.book.BookNode;
 import svj.wedit.v6.obj.book.BookTitle;
@@ -18,6 +19,9 @@ import svj.wedit.v6.obj.project.IProjectParser;
 import svj.wedit.v6.obj.project.IProjectSectionParser;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map;
 
 
 /**
@@ -27,6 +31,140 @@ import java.io.File;
  */
 public class ProjectTools
 {
+    /* Из всех выделенных берем только одноуровневые - самого высокого уровня.
+     Проверки и ругания - внутри вызовов. */
+    public static TreeObj[] getSelectedNodesForCut (boolean useRoot )
+            throws WEditException
+    {
+        TreePanel<Project>  currentProjectContentPanel;
+        TreeObj[]               result;
+
+        Log.l.debug ( "Start" );
+
+        // Взять текущую книгу - TreePanel
+        currentProjectContentPanel = Par.GM.getFrame().getCurrentProjectPanel ();
+        if ( currentProjectContentPanel == null )
+            throw new WEditException ( "Книга не открыта." );
+
+        result  = currentProjectContentPanel.getSelectedNodesForCut ( useRoot );
+
+        return result;
+    }
+
+    public static void checkOpenBooks ( TreeObj[] treeNodes )  throws WEditException
+    {
+        Object                bookNode;
+
+        for ( TreeObj treeNode : treeNodes )
+        {
+            bookNode    = treeNode.getUserObject();
+            checkOpenBook ( bookNode );
+        }
+    }
+
+
+    public static void checkOpenBook ( Object node )  throws WEditException
+    {
+        Map<String, TabsPanel<TreePanel<BookContent>>> tabsPanels;
+        BookNode                bookNode;
+
+        // Или по ИД?
+
+        //Log.l.info ( "[CUT] Start. node = %s", node );
+        if (node == null)  return;
+
+        // Собрать в names все открытые книги
+
+        Collection<String> names = new ArrayList<>();
+
+        if (node instanceof Section)
+        {
+            // Взять все книги Секции (Раздела), в т.ч. и из вложенных под-секций.
+            Section section = (Section) node;
+            Collection<BookTitle> titles = loadAllBooks ( section );
+            for (BookTitle bookTitle : titles )
+            {
+                // Если нет BookContent, значит данная книга НЕ открыта.
+                if (bookTitle.getBookContent() != null)
+                    names.add ( bookTitle.getName() );
+            }
+        }
+        else if (node instanceof BookTitle)
+        {
+            BookTitle bookTitle = (BookTitle) node;
+            if (bookTitle.getBookContent() != null ) {
+                // Взять название книги
+                names.add(bookTitle.getBookContent().getName());
+            }
+        }
+
+        //Log.l.info ( "[CUT] names = %s", names );
+        if (names.isEmpty())  return;
+
+
+        // Берем все табики открытых книг. Ищем в них наш узел, или его родителей.
+        tabsPanels   = Par.GM.getFrame().getBookTabsPanel();
+        if ( tabsPanels != null )
+        {
+            BookContent bookContent;
+
+            // Перебор указанных книг для проверки
+            for (String bookName : names)
+            {
+                //Log.l.info("- [CUT] bookName for check = '%s'", bookName);
+
+                // Перебор всех открытых Сборников
+                for (Map.Entry<String, TabsPanel<TreePanel<BookContent>>> tp : tabsPanels.entrySet())
+                {
+                    // key = /home/svj/Projects/SVJ/GitHub/stories/SvjStores
+                    // value = TabsPanel
+
+                    //Log.l.info("-- [CUT] Project = '%s'", tp.getValue().getName());
+
+                    // Перебор всех открытых книг Сборника
+                    for (TreePanel<BookContent> tree : tp.getValue().getPanels())
+                    {
+                        bookContent = tree.getObject();
+                        //Log.l.info("---- [CUT] book = '%s'", bookContent.getName());
+                        // - bookNode открыта? Если ДА - исключение.
+                        if (bookName.equals(bookContent.getName()))
+                            throw new WEditException(true, "Книга '", bookName, "' открыта в\n Сборнике '",
+                                    bookContent.getProject().getName(), "'.");
+                    }
+                }
+            }
+        }
+    }
+
+    private static Collection<BookTitle> loadAllBooks ( Section section ) {
+
+        Collection<BookTitle> result = new ArrayList<>();
+
+        if (section == null)  return result;
+
+        result.addAll(section.getBooks());
+
+        for (Section st : section.getSections())
+        {
+            loadAllBooks ( st, result );
+        }
+
+        return result;
+    }
+
+    private static void loadAllBooks(Section section, Collection<BookTitle> result) {
+
+        if (section == null)  return;
+
+        result.addAll(section.getBooks());
+
+        for (Section st : section.getSections())
+        {
+            loadAllBooks ( st, result );
+        }
+    }
+
+
     /**
      * Выдать дефолтный список типов книг.
      *    -- draft   - черновик

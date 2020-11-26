@@ -15,6 +15,7 @@ import svj.wedit.v6.function.project.CloseProjectFunction;
 import svj.wedit.v6.function.project.edit.book.BookPopupMenu;
 import svj.wedit.v6.function.project.edit.section.AddSectionPopupMenu;
 import svj.wedit.v6.function.text.CloseTextTabFunction;
+import svj.wedit.v6.gui.GuiCreator;
 import svj.wedit.v6.gui.WComponent;
 import svj.wedit.v6.gui.menu.WEMenuBar;
 import svj.wedit.v6.gui.menu.WEMenuItem;
@@ -123,6 +124,7 @@ public class ContentFrame    extends JFrame   implements WComponent
         projectSplitPane.setOneTouchExpandable ( true );
 
         additionalPanel = new TabsPanel<EditablePanel>();
+        additionalPanel.setName("Bottom_Tabs");
         additionalPanel.getAccessibleContext().setAccessibleName ( "Bottom_Tabs" );
         // Другой цвет на всю нижнюю панель - чтобы отличалась от верхней.
         additionalPanel.setBackground ( WCons.BOTTOM_TABS );
@@ -138,10 +140,10 @@ public class ContentFrame    extends JFrame   implements WComponent
         CardPanel<TabsPanel<TreePanel<Project>>> cardPanel = new CardPanel<TabsPanel<TreePanel<Project>>>();
         projectsPanel   = new WorkPanel<TreePanel<Project>>( "Work_projectPanel", null, cardPanel, "Книжные сборники" );
         projectsPanel.setId ( "Work_projectPanel" );
+
         // - Добавить функции в тул-бар Сборника
-        projectsPanel.addIconFunction ( Par.GM.getFm().get ( FunctionId.OPEN_PROJECT ) );
-        projectsPanel.addIconFunction ( Par.GM.getFm().get ( FunctionId.MOVE_BOOK ) );
-        projectsPanel.addIconFunction ( Par.GM.getFm().get ( FunctionId.CLOSE_PROJECT ) );
+        GuiCreator.createProjectToolBar(projectsPanel);
+
 
         booksPanel              = createBooksAndTextPanel ();
 
@@ -159,7 +161,8 @@ public class ContentFrame    extends JFrame   implements WComponent
         editFlag.setOpaque(true);
 
         // toolBar
-        createToolBar();
+        toolbar = GuiCreator.createToolBar();
+        getContentPane().add ( toolbar, BorderLayout.NORTH );
 
         //vertSplitPane.setDividerLocation ( 0.2 );   // до pack - не влияет на расположение -- по-середине.
         pack();
@@ -169,17 +172,6 @@ public class ContentFrame    extends JFrame   implements WComponent
         // нижнюю панель показать на чуть-чуть.  0.7 - сильно вверху; 0.2 - еще выше
         // -- Почему-то дробные (проценты) не хотят работать - юзаем пикселя.
         vertSplitPane.setDividerLocation ( Par.SCREEN_SIZE.height );
-    }
-
-    private void createToolBar ()
-    {
-        toolbar = new BrowserToolBar();    // IconsPanel ???
-        getContentPane().add ( toolbar, BorderLayout.NORTH );
-
-        // Наполнить функциями
-        toolbar.addFunction ( FunctionId.SAVE_ALL_PROJECTS );
-        toolbar.addFunction ( FunctionId.SAVE_ABSOLUTE_ALL_PROJECTS );
-        toolbar.addFunction ( FunctionId.ZIP_ALL_PROJECTS );
     }
 
     private JPanel createBooksAndTextPanel () throws WEditException
@@ -312,7 +304,7 @@ public class ContentFrame    extends JFrame   implements WComponent
         projectPanel.addRenderer ( TreeObjType.BOOK, renderer );
 
         // Создать контекстное меню Проектов
-        createProjectPopUpMenu ( projectPanel );
+        GuiCreator.createProjectPopUpMenu ( projectPanel );
 
         // Взять из текущего card - tabsPanel по ИД
         tabsPanel   = projectsPanel.getTabsPanel ( "project" );
@@ -322,6 +314,7 @@ public class ContentFrame    extends JFrame   implements WComponent
             Log.l.debug ( "--- Create new book tabsPanel" );
             // создать
             tabsPanel = new TabsPanel<TreePanel<Project>>();
+            tabsPanel.setName ( project.getName() );
             //tabsPanel.setParentId ( "project" );
             // наполнить таб панель именем и листенером
             createTabsPanel ( tabsPanel, "project" );
@@ -375,6 +368,7 @@ public class ContentFrame    extends JFrame   implements WComponent
         //bookPanel    = new TreeCardPanel<BookContent> ( root, bookContent, bookTextCardPanel, bookContent.getId() );
         bookPanel    = new TreePanel<BookContent> ( root, bookContent );
         bookPanel.setId ( bookContent.getId() );
+        //bookPanel.setTitle ( bookContent.getName() );
         // Имя равно имени обьекта, ради которого эта панель открыта. Для отображениии в титле над другой (связной) панелью.
         bookPanel.setName ( bookContent.getName() );
 
@@ -398,6 +392,7 @@ public class ContentFrame    extends JFrame   implements WComponent
             // создать
             tabsPanel = new TabsPanel<TreePanel<BookContent>>();
             tabsPanel.setParentId ( project.getId() );
+            tabsPanel.setName( bookContent.getName() );
             // наполнить таб панель именем и листенером
             createTabsPanel ( tabsPanel, "BookContents_"+project.getName() );
             booksPanel.addTabsPanel ( project.getId(), tabsPanel );
@@ -679,6 +674,7 @@ public class ContentFrame    extends JFrame   implements WComponent
             // создать новую табс-панель
             tabsPanel = new TabsPanel<TextPanel>();
             tabsPanel.setParentId ( bookContent.getId() );
+            tabsPanel.setName ( bookContent.getName() );
             // наполнить таб панель именем и листенером
             createTabsPanel ( tabsPanel, "BookNodes_"+bookContent.getId() );
             textsPanel.addTabsPanel ( bookContent.getId(), tabsPanel );
@@ -784,65 +780,6 @@ public class ContentFrame    extends JFrame   implements WComponent
         bookPanel.addPopupMenu ( menuItem );
         bookPanel.setDoubleClickAction ( function );
 
-    }
-
-    private void createProjectPopUpMenu ( TreePanel<Project> projectPanel )
-    {
-        WEMenuItem  menuItem;
-        Function    function;
-
-        function    = Par.GM.getFm().get ( FunctionId.ADD_SECTION_AFTER );
-        menuItem    = new AddSectionPopupMenu ( function, false );
-        //menuItem.addActionListener ( function );
-        //menuItem.setText ( function.getName() );
-        projectPanel.addPopupMenu ( menuItem );
-
-        function    = Par.GM.getFm().get ( FunctionId.ADD_SECTION_IN );
-        menuItem    = new AddSectionPopupMenu ( function, true );
-        projectPanel.addPopupMenu ( menuItem );
-
-        function    = Par.GM.getFm().get ( FunctionId.EDIT_SECTION );
-        menuItem    = new AddSectionPopupMenu ( function, true );
-        projectPanel.addPopupMenu ( menuItem );
-
-        function    = Par.GM.getFm().get ( FunctionId.DELETE_SECTION );
-        menuItem    = new AddSectionPopupMenu ( function, false );
-        projectPanel.addPopupMenu ( menuItem );
-
-        // -------------- separator -------------
-        projectPanel.addPopupSeparator();
-
-        function    = Par.GM.getFm().get ( FunctionId.CREATE_BOOK );
-        menuItem    = new AddSectionPopupMenu ( function, true );
-        projectPanel.addPopupMenu ( menuItem );
-
-        function    = Par.GM.getFm().get ( FunctionId.EDIT_BOOK_TITLE );
-        menuItem    = new BookPopupMenu ( function );
-        projectPanel.addPopupMenu ( menuItem );
-
-        function    = Par.GM.getFm().get ( FunctionId.OPEN_BOOK );
-        menuItem    = new BookPopupMenu ( function );
-        projectPanel.addPopupMenu ( menuItem );
-        projectPanel.setDoubleClickAction ( function );
-
-        function    = Par.GM.getFm().get ( FunctionId.DELETE_BOOK );
-        menuItem    = new BookPopupMenu ( function );
-        projectPanel.addPopupMenu ( menuItem );
-
-        function    = Par.GM.getFm().get ( FunctionId.MOVE_BOOK );
-        menuItem    = new BookPopupMenu ( function );
-        projectPanel.addPopupMenu ( menuItem );
-
-        projectPanel.addPopupSeparator();
-
-        // imports
-        function    = Par.GM.getFm().get ( FunctionId.IMPORT_FROM_WE1_BOOK );
-        menuItem    = new AddSectionPopupMenu ( function, true );
-        projectPanel.addPopupMenu ( menuItem );
-
-        function    = Par.GM.getFm().get ( FunctionId.IMPORT_FROM_TXT );
-        menuItem    = new AddSectionPopupMenu ( function, true );
-        projectPanel.addPopupMenu ( menuItem );
     }
 
     @Override
@@ -999,6 +936,11 @@ public class ContentFrame    extends JFrame   implements WComponent
     public TabsPanel<TreePanel<BookContent>> getCurrentBookTabsPanel ()
     {
         return booksPanel.getCurrent();
+    }
+
+    public Map<String, TabsPanel<TreePanel<BookContent>>> getBookTabsPanel ()
+    {
+        return booksPanel.getTabsPanels();
     }
 
     public CardPanel<TabsPanel<TreePanel<BookContent>>> getBookContentPanel()

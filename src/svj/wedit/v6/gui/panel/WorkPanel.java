@@ -146,6 +146,11 @@ public class WorkPanel<T extends EditablePanel> extends RewritePanel
         return cardPanel.get(tabsId);
     }
 
+    public Map<String,TabsPanel<T>> getTabsPanels ()
+    {
+        return cardPanel.getPanels();
+    }
+
     public void deleteTabsPanel ( String tabsId )
     {
         cardPanel.delete ( tabsId );

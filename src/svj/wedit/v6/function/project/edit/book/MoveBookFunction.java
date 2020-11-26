@@ -45,6 +45,8 @@ import java.util.Enumeration;
  * <BR/> +2) Имя файла - заносить в bookContent при парсинге файла.
  * <BR/> +3) BookTitle - также генерить уникальную ИД книги, которая будет заноситься в BookContent
  * <BR/>
+ * <BR/>  Не используем - заменили на CUT-PASTE
+ * <BR/>
  * <BR/> User: svj
  * <BR/> Date: 28.12.2015 15:51
  */
@@ -95,7 +97,9 @@ public class MoveBookFunction  extends AbstractSaveProjectFunction // SimpleFunc
             //Log.l.info ( "Project tree = %s", DumpTools.printTreeSimple ( root ) );
 
             // Сформировать дерево из одних только Секций - без Книг
-            targetTree = createTree ( (WTreeObj) root.getWTreeObj() );
+            //targetTree = createTree ( (WTreeObj) root.getWTreeObj() );
+            targetTree = root.clone();
+
             //DialogTools.showHtml ( "Tree", "<html><pre>"+DumpTools.printTreeSimple ( root ) + "</pre><br/><br/></html>" );
 
             // Создать таргет-панель с деревом
@@ -110,6 +114,9 @@ public class MoveBookFunction  extends AbstractSaveProjectFunction // SimpleFunc
             label = new JLabel ( "<html><font color=red>&nbsp;&nbsp;&nbsp;Напоминаем, что если вы переносите книгу, <br/>то она не должна быть открыта. <br/>А если переносите Раздел, то не <br/>должно быть открытых книг из этого Раздела. <br/>Иначе эти книги просто пропадут!</font></html>" );
             panel.add ( label );
 
+            // todo В Диалоге выводить и книги - чтоыб можно было добавлять после указанной книги.
+            // todo - отказаться от этого и делать через cut-paste
+
             dialog.pack();
             dialog.showDialog();
 
@@ -119,11 +126,6 @@ public class MoveBookFunction  extends AbstractSaveProjectFunction // SimpleFunc
                 // - Берем таргет-секцию. (куда переносим)
                 targetSection   = targetTreePanel.getCurrentObj();
                 if ( targetSection == null )  throw new MessageException ( "Не выбран раздел для переноса." );
-
-                // currentBook      == currentBook.getWTreeObj -- BookTitle (currentBook.getType==BOOK) or Section  (currentBook.getType==SECTION)
-                // targetSection    == targetSection.getWTreeObj -- Section  (targetSection.getType==SECTION)
-                //throw new MessageException ( targetSection );
-                //throw new WEditException ( "currentBook : " + currentBook + "; targetSection = " + targetSection );
 
                 // todo Остались Проблемы:
                 // -1) При переносе книги - в дереве старое исчезает, а новое не появляется.
@@ -138,10 +140,16 @@ public class MoveBookFunction  extends AbstractSaveProjectFunction // SimpleFunc
                 // - Переносим файл (имя.book или Раздел) в новую директорию  - физически.
                 if ( moveFile ( srcFile, targetFile ) )
                 {
+                    // Файл успешно перемещен
+
+                    // todo Может применять cut-paste и перемещать и в другие Проекты?
+                    // - в буфере вешать флаг - было коипрвоание, не было копирования из буфера - чтобы при закрытии
+                    // напоминать что сотался подвешенный обьект.
+
+                    // 1) Изменяем Структуру проекта
                     Section  section, parentSec;
                     WTreeObj currentObj, newObj, parent;
 
-                    // Изменяем в структуре проекта
                     section     = (Section) targetSection.getWTreeObj();
                     //BookTitle bookTitle     = (BookTitle) currentBook.getWTreeObj();
                     currentObj  = (WTreeObj) currentBook.getWTreeObj();
@@ -169,6 +177,8 @@ public class MoveBookFunction  extends AbstractSaveProjectFunction // SimpleFunc
                     // todo Меняем имена файлов в открытых проектах.
                     // Искать среди открытых книг такой BookContent. Если нашли - изменить в нем полный путь файла.
                     changeFileName ();
+
+                    // todo Может у старого обьекта просто поменять парент? И доабвитьчилдреном новому паренту?
 
                     // - Добавить в дерево - в отмеченный раздел первым.
                     //TreeObj newNode = new TreeObj();
