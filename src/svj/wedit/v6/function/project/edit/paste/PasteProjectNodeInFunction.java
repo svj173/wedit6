@@ -63,14 +63,14 @@ public class PasteProjectNodeInFunction extends PasteBookFunction
 
         switch (selectNodes.length) {
             case 0:
-                throw new WEditException("Выбрано больше одного.");
+                throw new WEditException("Ничего не выбрано.");
 
             case 1:
                 selectNode = selectNodes[0];
                 break;
 
             default: // больше 1
-                throw new WEditException("Выбрано больше одного.");
+                throw new WEditException("Выбрано больше одного (" + selectNodes.length + ")." );
         }
 
         selectSection    = (Section) selectNode.getUserObject();
