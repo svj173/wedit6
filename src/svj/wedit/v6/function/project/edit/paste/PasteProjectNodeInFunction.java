@@ -9,9 +9,7 @@ import svj.wedit.v6.gui.tree.TreePanel;
 import svj.wedit.v6.obj.Project;
 import svj.wedit.v6.obj.Section;
 import svj.wedit.v6.obj.TreeObj;
-import svj.wedit.v6.obj.book.BookContent;
-import svj.wedit.v6.obj.book.BookNode;
-import svj.wedit.v6.tools.BookTools;
+import svj.wedit.v6.obj.book.BookTitle;
 import svj.wedit.v6.tools.Convert;
 import svj.wedit.v6.tools.DialogTools;
 import svj.wedit.v6.tools.ProjectTools;
@@ -87,11 +85,21 @@ public class PasteProjectNodeInFunction extends PasteBookFunction
         // Взять текущую книгу - TreePanel
         currentProjectContentPanel = Par.GM.getFrame().getCurrentProjectPanel();
 
+        Object node;
         for ( int i=0; i<newNodes.length; i++ )
         {
-            // todo Вставить в дерево
-            selectSection.addBookNode ( i, (BookNode) newNodes[i].getUserObject() );
-            // todo Вставить в ГУИ-дерево Сборника
+            node = newNodes[i].getUserObject();
+            if ( node instanceof BookTitle)
+            {
+                // Вставить Книгу в основное дерево
+                selectSection.addBook ( i, (BookTitle) node );
+            }
+            else if ( node instanceof Section)
+            {
+                // Вставить Секцию в основное дерево
+               selectSection.addSection ( i, (Section) node );
+            }
+            // Вставить в ГУИ-дерево Сборника
             currentProjectContentPanel.insertNode ( newNodes[i], selectNode, i );
         }
 

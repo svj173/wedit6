@@ -10,12 +10,8 @@ import svj.wedit.v6.logger.Log;
 import svj.wedit.v6.obj.Project;
 import svj.wedit.v6.obj.Section;
 import svj.wedit.v6.obj.TreeObj;
-import svj.wedit.v6.obj.book.BookContent;
-import svj.wedit.v6.obj.book.BookNode;
-import svj.wedit.v6.tools.BookTools;
-import svj.wedit.v6.tools.Convert;
-import svj.wedit.v6.tools.DialogTools;
-import svj.wedit.v6.tools.ProjectTools;
+import svj.wedit.v6.obj.book.BookTitle;
+import svj.wedit.v6.tools.*;
 import svj.wedit.v6.util.Buffer;
 
 import javax.swing.*;
@@ -52,9 +48,6 @@ public class PasteProjectNodeAfterFunction extends PasteBookFunction
         TreeObj selectNode = null;
         Section   parentNode;
 
-        // Взять обьект из буфера
-        newNodes    = parseBuffer();
-
         // Взять отмеченный - Книгу или Раздел -- Обязательно один, а не много
         selectNodes  = ProjectTools.getSelectedNodesForCut(false);
         if (selectNodes == null)
@@ -80,14 +73,15 @@ public class PasteProjectNodeAfterFunction extends PasteBookFunction
         if ( !(selectNode.getUserObject() instanceof Section))
             throw new WEditException("Должен быть выбран Раздел.");
         
+        // Взять обьект из буфера
+        newNodes    = parseBuffer();
+
         // Стартовый диалог
         label       = createLabel ( selectNode, newNodes, "после" );
         ic          = DialogTools.showConfirmDialog ( Par.GM.getFrame(), Convert.concatObj ( "Вставить ", newNodes.length, " после" ), label );
 
         if ( ic != 0 )  return;
 
-        // Взять родителя отмеченного элемента
-        //parentNode  = BookTools.getParentNode ( selectNode );
         // Взять родителя отмеченного элемента
         parentObj   = ( TreeObj ) selectNode.getParent();
         parentNode  = (Section)  parentObj.getUserObject();
@@ -101,19 +95,23 @@ public class PasteProjectNodeAfterFunction extends PasteBookFunction
         // Взять панель текущего Проекта - TreePanel
         currentProjectContentPanel = Par.GM.getFrame().getCurrentProjectPanel();
 
+        Object node;
         for ( DefaultMutableTreeNode pasteNode : newNodes )
         {
-            // todo Обьекты для Вставления - Могут быть как Книги так и Разделы
-
-            // todo Добавить в parentNode
-
-            // todo Section -- BookTitle - надо различать их?
-            
-            bookNode    = ( BookNode ) pasteNode.getUserObject();
+            node    = pasteNode.getUserObject();
 
             inum++;
             // Добавить - после отмеченного
-            parentNode.addBookNode ( inum, bookNode );
+            //parentNode.addBookNode ( inum, bookNode );
+
+            if ( node instanceof BookTitle) {
+                // Вставить Книгу в основное дерево - после отмеченного
+                parentNode.addBook ( inum, (BookTitle) node );
+            }
+            else if ( node instanceof Section) {
+                // Вставить Секцию в основное дерево
+                parentNode.addSection ( inum, (Section) node );
+            }
 
             // todo Добавить в дерево после отмеченного - в самом конце, когда все действия прошли успешно
             //  (создание директории, перезапись project.xml и т.д.)

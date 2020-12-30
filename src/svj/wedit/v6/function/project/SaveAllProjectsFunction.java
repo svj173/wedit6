@@ -15,6 +15,8 @@ import svj.wedit.v6.tools.Convert;
 import svj.wedit.v6.tools.DialogTools;
 import svj.wedit.v6.tools.FileTools;
 
+import javax.swing.*;
+
 import java.awt.event.ActionEvent;
 import java.util.Date;
 import java.util.Map;
@@ -149,7 +151,7 @@ public class SaveAllProjectsFunction extends Function
         if ( useDialog )
         {
             if ( ic > 1 )
-                DialogTools.showHtml ( Convert.concatObj ( "Сохранение ", (ic-1), " книг." ), msg.toString() );
+                DialogTools.showHtml ( "Сохранение " + (ic-1) + " книг.", JOptionPane.CANCEL_OPTION, msg.toString(), 2 );
             else
                 DialogTools.showMessage ( "Сохранение", "Нет изменений." );
         }

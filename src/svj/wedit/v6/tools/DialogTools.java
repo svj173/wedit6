@@ -91,10 +91,16 @@ public class DialogTools
 
     public static void showHtml ( String title, String htmlText, int widthDiv )
     {
+        showHtml ( title, JOptionPane.OK_OPTION, htmlText, widthDiv );
+    }
+
+    public static void showHtml ( String title, int buttonType, String htmlText, int widthDiv )
+    {
         ShowHtmlDialog dialog = new ShowHtmlDialog ( title, widthDiv );
         try
         {
             dialog.init ( htmlText );
+            dialog.setDefaultButton(buttonType);
         } catch ( WEditException e )         {
             Log.l.error ( "err", e );
         }

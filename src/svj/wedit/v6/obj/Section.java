@@ -9,9 +9,7 @@ import svj.wedit.v6.tools.Convert;
 import svj.wedit.v6.tools.Utils;
 
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 
 /**
@@ -44,7 +42,7 @@ public class Section    extends WTreeObj implements Comparable<Section>
     private final List<Section>         sections;     // List - т.к. нужен get
 
     /* Список книг, входящих в данную секцию. */
-    private final Collection<BookTitle> bookTitles;
+    private final List<BookTitle> bookTitles;
 
 
     public Section ( String name )
@@ -216,6 +214,11 @@ public class Section    extends WTreeObj implements Comparable<Section>
     public void addBook ( BookTitle bookTitle )
     {
         bookTitles.add ( bookTitle );
+        bookTitle.setParent ( this );
+    }
+
+    public void addBook (int position, BookTitle bookTitle) {
+        bookTitles.add ( position, bookTitle );
         bookTitle.setParent ( this );
     }
 

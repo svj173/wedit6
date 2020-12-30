@@ -4,9 +4,11 @@ package svj.wedit.v6.gui.dialog;
 import svj.wedit.v6.Par;
 import svj.wedit.v6.WCons;
 import svj.wedit.v6.exception.WEditException;
+import svj.wedit.v6.logger.Log;
 import svj.wedit.v6.tools.Convert;
 
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -120,17 +122,52 @@ public class ShowHtmlDialog extends WDialog<String,Void>
         setCancelButtonText ( "Закрыть" );
         //setCancelButtonText(Msg.getMessage("system.gui.dialog.button.close"));
 
+        // Привзяываем к этой кнопке акцию по-умолчанию (по нажатию Enter)
+
+        /*
+        setOptionType(JOptionPane.OK_CANCEL_OPTION);
+
+        JOptionPane.showConfirmDialog (UserReference.this,
+                                                                   "Удалить текущего пользователя?",
+                                                                   "Удалить",
+                                                                   JOptionPane.YES_NO_OPTION);
+        */
+    }
+
+    public void setDefaultButton (int typeButton) {
+
         // Вешаем на диалог - слушатель клавиатуры для Enter - когда диалог в фокусе.
         // - а то что-то слушатель в родительском диалоге не срабатывает.
-        ActionListener listener = new ActionListener () {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                doOk();
-            }
-        };
-        // не прошло
-        getRootPane().registerKeyboardAction ( listener, KeyStroke.getKeyStroke( KeyEvent.VK_ENTER, 0), JComponent.WHEN_IN_FOCUSED_WINDOW );
 
+        Log.l.info("[BUTTON] set type = %d", typeButton);
+
+        ActionListener listener;
+
+        switch (typeButton) {
+            case JOptionPane.CANCEL_OPTION:
+                // Cancel
+                listener = new ActionListener () {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        Log.l.info("[BUTTON] Cancel");
+                        doCancel();
+                    }
+                };
+                getRootPane().registerKeyboardAction ( listener, KeyStroke.getKeyStroke( KeyEvent.VK_ENTER, 0), JComponent.WHEN_IN_FOCUSED_WINDOW );
+                break;
+
+            case JOptionPane.OK_OPTION:
+                // OK
+                listener = new ActionListener () {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        Log.l.info("[BUTTON] OK");
+                        doOk();
+                    }
+                };
+                getRootPane().registerKeyboardAction ( listener, KeyStroke.getKeyStroke( KeyEvent.VK_ENTER, 0), JComponent.WHEN_IN_FOCUSED_WINDOW );
+                break;
+        }
     }
 
     protected void createDialogSize ()
