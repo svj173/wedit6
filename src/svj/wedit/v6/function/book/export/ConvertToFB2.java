@@ -1,25 +1,25 @@
 package svj.wedit.v6.function.book.export;
 
-import org.apache.poi.xwpf.usermodel.XWPFParagraph;
-import org.apache.poi.xwpf.usermodel.XWPFRun;
 import svj.wedit.v6.Par;
 import svj.wedit.v6.exception.WEditException;
 import svj.wedit.v6.function.FunctionId;
 import svj.wedit.v6.function.book.export.obj.ConvertParameter;
 import svj.wedit.v6.function.params.FunctionParameter;
-import svj.wedit.v6.function.params.SimpleParameter;
 import svj.wedit.v6.logger.Log;
 import svj.wedit.v6.obj.Author;
 import svj.wedit.v6.obj.book.*;
 import svj.wedit.v6.obj.function.AbstractConvertFunction;
-import svj.wedit.v6.tools.Convert;
 import svj.wedit.v6.tools.StringTools;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
 
 /**
  * Конвертировать книгу в формат FB2.
+ * <BR/>
+ * <BR/> Формат для Литрес:
+ * <BR/> 1) Не применять красную строку (абзацы там обворачиваются тегами P)
+ * <BR/> 2) После тега BODY не должно быть пустой строки (уточнить)
+ * <BR/> 3) в тег DATE заносить только год.
  * <BR/>
  * <BR/> User: svj
  * <BR/> Date: 07.11.2019 14:26
@@ -28,8 +28,8 @@ public class ConvertToFB2 extends AbstractConvertFunction {
 
     private int oldLevel = -1;
 
-    /* Текст для красной строки - &nbsp;&nbsp; */
-    private final SimpleParameter redLineParam;
+    /* Текст для красной строки - &nbsp;&nbsp; - здесь не нужен*/
+    //private final SimpleParameter redLineParam;
 
     // ----- Для пропуска пустых строк в конце главы. ---------
     /**
@@ -49,18 +49,20 @@ public class ConvertToFB2 extends AbstractConvertFunction {
 
     public ConvertToFB2(FunctionId functionId, String functionName, String iconFile, boolean multiSelect) {
         super ( functionId, functionName, iconFile, multiSelect );
-
+        /*
         redLineParam = new SimpleParameter ( RED_LINE_PARAM, "<dd>&nbsp;&nbsp;&nbsp;", true );
         redLineParam.setValue ( "&nbsp;&nbsp;&nbsp;" );
         redLineParam.setRuName ( "Красная строка" );
+        */
     }
 
     public ConvertToFB2() {
         super ( FunctionId.CONVERT_TO_FB2, "Преобразовать книгу в FB2", "to_fb2.png", false );
-
+        /*
         redLineParam = new SimpleParameter ( RED_LINE_PARAM, "<dd>&nbsp;&nbsp;&nbsp;", true );
         redLineParam.setValue ( "&nbsp;&nbsp;&nbsp;" );
         redLineParam.setRuName ( "Красная строка" );
+        */
     }
 
     @Override
@@ -162,7 +164,7 @@ public class ConvertToFB2 extends AbstractConvertFunction {
         //writeStr("<p>");
         String text;
 
-        Log.l.info ( "FB2: processText = %s", textObj );
+        Log.l.debug ( "FB2: processText = %s", textObj );
 
         if ( textObj instanceof EolTextObject ) {
             // пустая строка
@@ -203,7 +205,7 @@ public class ConvertToFB2 extends AbstractConvertFunction {
         text    = textObj.getText();
 
         if (needEmpty &&(!isTitle)) {
-            // выводим пустую
+            // выводим пустую строку
             createEmptyLine();
         }
 
@@ -211,6 +213,7 @@ public class ConvertToFB2 extends AbstractConvertFunction {
         isTitle = false;
         needEmpty = false;
 
+        /*
         if ( textObj instanceof SlnTextObject) {
             writeStr ( "<p>" );
             writeStr ( getRedLineValue(cp) );
@@ -225,6 +228,13 @@ public class ConvertToFB2 extends AbstractConvertFunction {
             writeStr ( text );
             writeStr ( "</p>" );
         }
+        */
+
+        // Не исп красную строку в любом случае.
+        writeStr ( "<p>" );
+        writeStr ( text );
+        writeStr ( "</p>" );
+
     }
 
     private void createEmptyLine ()
@@ -283,9 +293,9 @@ child_adv               Детские Приключения
         }
 
         // date
-        if ( getBookContent().getBookAttrs().get("last_change_date") != null ) {
-            writeStr("<date>"+ getBookContent().getBookAttrs().get("last_change_date")+"</date>\n");
-            //writeStr("<date value='2019-11-08'>2019-11-08</date>\n");
+        String dateStr = getBookContent().getBookAttrs().get("last_change_date");
+        if ( dateStr != null ) {
+            writeStr("<date>"+ getYear(dateStr) +"</date>\n");
         } else {
             writeStr("<date>2020</date>\n");
         }
@@ -296,11 +306,24 @@ child_adv               Детские Приключения
 
         writeStr("</description>\n");
 
-        writeStr("<body>\n");
+        //writeStr("<body>\n");
+        writeStr("<body>");
 
         // Устанавливаем рабочие параметры в исходное состояние.
         // А то если два раза подряд сконвертировать, то во втором файле будет ошибка.
         oldLevel = -1;
+    }
+
+    /**
+     * Выделить год.
+     * @param dateStr Строковое представление даты, в виде 2019-11-08
+     * @return  Год в виде 2019
+     */
+    private String getYear (String dateStr) {
+        if (dateStr.length() > 4)
+            return dateStr.substring(0,4);
+        else
+            return "2021";
     }
 
     /**
@@ -343,12 +366,15 @@ child_adv               Детские Приключения
     @Override
     protected Collection<FunctionParameter> getOtherConvertParams ()
     {
+        /*
         Collection<FunctionParameter> result;
 
         result = new ArrayList<FunctionParameter>();
         result.add ( redLineParam );
 
         return result;
+        */
+        return null;
     }
 
 }
