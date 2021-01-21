@@ -26,48 +26,43 @@ import java.util.*;
  */
 public class ConvertToFB2 extends AbstractConvertFunction {
 
+    /* Начальный уровень секций, с которого реально начинается вывод Заголовков.
+     * Используется при закрытии книги. */
+    private int startLevel = 1000;
+
+    // Уровень последней закрытой секции.
     private int oldLevel = -1;
 
-    /* Текст для красной строки - &nbsp;&nbsp; - здесь не нужен*/
-    //private final SimpleParameter redLineParam;
+    // Текст для красной строки - здесь не нужен
 
-    // ----- Для пропуска пустых строк в конце главы. ---------
+    // ----- Параметры - Для пропуска пустых строк в конце главы. ---------
+
     /**
      * Уст в TRUE - был выведен титл (в т.ч. и пустой титл).
      * В FALSE - был выведен простой текст (не пустая строка).
      */
     private boolean isTitle = true;
 
-    /** Вывели пустую строку. Устанавливается в TRUE когда реально выведена упстая строка.
+    /** Вывели пустую строку. Устанавливается в TRUE когда реально выведена пустая строка.
      * FALSE -  когда выведена не пустая, либо заголовок. */
     private boolean wasEmpty = false;
 
-    /** Надо будет вывести пустую строку. Уст в TRUE - появилась пустая строка текста.
+    /** Флаг - Надо вывести пустую строку или не надо. Установили в TRUE - появилась пустая строка текста.
      * FALSE - вывели любой текст, в т.ч. и пустую строку. */
     private boolean needEmpty = true;
 
 
     public ConvertToFB2(FunctionId functionId, String functionName, String iconFile, boolean multiSelect) {
         super ( functionId, functionName, iconFile, multiSelect );
-        /*
-        redLineParam = new SimpleParameter ( RED_LINE_PARAM, "<dd>&nbsp;&nbsp;&nbsp;", true );
-        redLineParam.setValue ( "&nbsp;&nbsp;&nbsp;" );
-        redLineParam.setRuName ( "Красная строка" );
-        */
     }
 
     public ConvertToFB2() {
         super ( FunctionId.CONVERT_TO_FB2, "Преобразовать книгу в FB2", "to_fb2.png", false );
-        /*
-        redLineParam = new SimpleParameter ( RED_LINE_PARAM, "<dd>&nbsp;&nbsp;&nbsp;", true );
-        redLineParam.setValue ( "&nbsp;&nbsp;&nbsp;" );
-        redLineParam.setRuName ( "Красная строка" );
-        */
     }
 
     @Override
     protected void processImage(String imgFileName, ConvertParameter cp) {
-
+        // todo
     }
 
     @Override
@@ -77,7 +72,6 @@ public class ConvertToFB2 extends AbstractConvertFunction {
             createEmptyLine();
         }
         isTitle = true;
-        //writeStr("<br/><br/>\n");
     }
 
     @Override
@@ -130,11 +124,18 @@ public class ConvertToFB2 extends AbstractConvertFunction {
         writeStr("</p></title>\n");
 
         oldLevel = level;
+
+        // вычисляем начальный уровень секций, с которого реально начинается вывод Заголовков.
+        if (startLevel > oldLevel)  startLevel = oldLevel;
     }
 
     /**
      * Закрыть секцию (на кол-во = разнице) - перед тем как вывести текущий титл.
-     * @param level  Уровень текущего титли, который собираемся вывести в документ.
+     *
+     * Здесь учитываем уровень пердыдыущей закрытой секции, и если он был гораздо меньше, то применяем недостающие
+     * закрывающие теги, подтягивающие структуру книги до последней секции.
+     *
+     * @param level  Уровень текущего (нового) титла, который только собираемся вывести в документ.
      */
     private void closeSection(int level) {
         //Log.file.debug("closeSection. nodeLevel = %d", level);
@@ -142,6 +143,22 @@ public class ConvertToFB2 extends AbstractConvertFunction {
         // закрывашка для уровня книги - для Литрес не используется.
         if ( level == 0 ) return;
 
+        /*
+        Варианты
+        1) for ( int i=0; i<ic+1; i++) {
+        - Не срабатывает когда не выводим титлы Книги и Части.
+        В этом случае в самом конце работы появляется лишний /section
+        - Работает для структур Книга-Глава, когда не выводится только титл Книги
+
+        2) for ( int i=0; i<ic; i++) {
+
+
+        А если у Глава есть подглавы, но они также не выводятся.
+        И тогда в самом конце у нас oldLevel и currentLevel равны 5, а азкрыть надо до уровня 2 (Глава)
+        НЕТ. oldLevel отмечается толкьо для тех титлов, которые выводятся.
+
+        
+         */
         int ic = oldLevel - level;
         writeStr("\n");
         if ( ic > 0 )  {
@@ -153,6 +170,7 @@ public class ConvertToFB2 extends AbstractConvertFunction {
                 writeStr("</section>\n");
             }
         } else if ( ic == 0 ) {
+            // Новый эпизод того же уровня что и предыдущий.
             writeStr(StringTools.createFirst(level-ic,' '));
             writeStr("</section>\n");
         }
@@ -312,12 +330,13 @@ child_adv               Детские Приключения
         // Устанавливаем рабочие параметры в исходное состояние.
         // А то если два раза подряд сконвертировать, то во втором файле будет ошибка.
         oldLevel = -1;
+        startLevel = 1000;
     }
 
     /**
      * Выделить год.
-     * @param dateStr Строковое представление даты, в виде 2019-11-08
-     * @return  Год в виде 2019
+     * @param dateStr Строковое представление даты, в виде 2019-11-28
+     * @return  Год в виде четырех цифр. Например, 2019.
      */
     private String getYear (String dateStr) {
         if (dateStr.length() > 4)
@@ -330,7 +349,10 @@ child_adv               Детские Приключения
      * Конец конвертации. Закрыть все Элементы.
      *
      * @param cp               Не исп.
-     * @param currentLevel     Уровень закрываемого эелемента. В режиме Книги это 0, а в режиме "Конвертация
+     * @param currentLevel     Уровень закрываемого элемента. Вычисляется как самый максимальный
+     *                         из выбранных для конвертации Элементов.
+     *                         Не учитывает, что верхние Элементы могут не выводить свои титлы, что является ошибкой.
+     *                         В режиме Книги это 0, а в режиме "Конвертация
      *                         выбранного" этот уровень будет уровнем выбранного элемента, а не 0.
      * @throws WEditException  Проблемы вывода в документ.
      */
@@ -340,13 +362,20 @@ child_adv               Детские Приключения
         // currentLevel = 0
         //Log.file.info("finishConvert: currentLevel = %d", currentLevel);
 
+        /*
+
+        Анализировать oldLevel - уровень самого последнего закрытого элемента
+
+         */
+
         // В режиме "Конвертация выбранного" этот уровень будет уровнем выбранного элемента, а не 0.
 
         // +1 - иначе будет закрыт и уровень книги = 0. А мы его в титле не выводим - игнорируем,
         // поэтому и не закрываем.
-        if (currentLevel == 0)  currentLevel = 1;
+        //if (currentLevel == 0)  currentLevel = 1;
 
-        closeSection(currentLevel);
+        //closeSection(currentLevel);
+        closeSection(startLevel);
 
         writeStr("</body>\n");
 
