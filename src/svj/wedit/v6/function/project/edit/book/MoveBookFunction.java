@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.Enumeration;
 
 /**
- * Раздел "Сборник" - переместить книгу в пределах Сборника.
+ * Раздел "Сборник" - переместить книгу в пределах Сборников.
  * <BR/> Открывается диалог, в котором отображается дерево Сборника - куда перенести.
  * <BR/> Такой подход гарантирует, что выкушенная из Сборника книга будет занесена в другое место, не потеряется и не забудется в буфере обмена.
  * <BR/>
@@ -45,12 +45,17 @@ import java.util.Enumeration;
  * <BR/> +2) Имя файла - заносить в bookContent при парсинге файла.
  * <BR/> +3) BookTitle - также генерить уникальную ИД книги, которая будет заноситься в BookContent
  * <BR/>
- * <BR/>  Не используем - заменили на CUT-PASTE
+ * <BR/>  НЕ используем - заменили на CUT-PASTE - т.к. можно переносить в другие Сборники и пр.
+ * CutProjectNodeFunction
+ *
+ * <BR/> Минус - можно выкусить книгу и забыть.
+ * <BR/>
+ * <BR/> Эту функцию НЕ исп.
  * <BR/>
  * <BR/> User: svj
  * <BR/> Date: 28.12.2015 15:51
  */
-public class MoveBookFunction  extends AbstractSaveProjectFunction // SimpleFunction
+public class MoveBookFunction  extends AbstractSaveProjectFunction
 {
     public MoveBookFunction ()
     {
@@ -178,7 +183,7 @@ public class MoveBookFunction  extends AbstractSaveProjectFunction // SimpleFunc
                     // Искать среди открытых книг такой BookContent. Если нашли - изменить в нем полный путь файла.
                     changeFileName ();
 
-                    // todo Может у старого обьекта просто поменять парент? И доабвитьчилдреном новому паренту?
+                    // todo Может у старого обьекта просто поменять парент? И доабвить чилдреном новому паренту?
 
                     // - Добавить в дерево - в отмеченный раздел первым.
                     //TreeObj newNode = new TreeObj();

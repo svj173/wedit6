@@ -6,17 +6,15 @@ import svj.wedit.v6.exception.WEditException;
 import svj.wedit.v6.function.FunctionId;
 import svj.wedit.v6.gui.tree.TreePanel;
 import svj.wedit.v6.logger.Log;
+import svj.wedit.v6.obj.Project;
 import svj.wedit.v6.obj.Section;
 import svj.wedit.v6.obj.TreeObj;
-import svj.wedit.v6.obj.book.BookContent;
-import svj.wedit.v6.obj.book.BookNode;
 import svj.wedit.v6.obj.book.BookTitle;
 import svj.wedit.v6.obj.function.Function;
 import svj.wedit.v6.tools.*;
 import svj.wedit.v6.util.Buffer;
 
 import javax.swing.*;
-import javax.swing.tree.DefaultMutableTreeNode;
 
 import java.awt.event.ActionEvent;
 
@@ -42,10 +40,10 @@ public class CutProjectNodeFunction extends Function
     @Override
     public void handle ( ActionEvent event ) throws WEditException
     {
-        TreeObj[]               selectNodes;
-        TreePanel<BookContent>  currentBookContentPanel;
-        JLabel                  label;
-        int                     ic;
+        TreeObj[]           selectNodes;
+        TreePanel<Project>  projectTreePanel;
+        JLabel              label;
+        int                 ic;
 
         // Взять отмеченные
         // Не проверяем на отсутствие выделения, т.к. если не было отмеченных то
@@ -82,25 +80,24 @@ public class CutProjectNodeFunction extends Function
         // Занести в буфер
         Buffer.setBuffer ( selectNodes );
 
-        /*
         // Удалить в дереве    todo - После успешного Paste
-
-        // Взять текущую книгу - TreePanel
-        currentBookContentPanel = Par.GM.getFrame().getCurrentBookContentPanel();
+        /*
+        // Взять панель дерева текущего Сборника
+        projectTreePanel = Par.GM.getFrame().getCurrentProjectPanel();
 
         for ( DefaultMutableTreeNode node : selectNodes )
         {
-            Log.f.info ( "--- removeNode = ", node );
+            Log.f.info ( "--- removeNode = %s", node );
             //currentBookContentPanel.removeNode ( node );
             // удаляем и во внутреннем дереве и в gui-дереве.
-            BookTools.removeNode ( currentBookContentPanel, node );
+            BookTools.removeBook ( projectTreePanel, node );
         }
 
-        // Отметить что было изменение
-        currentBookContentPanel.setEdit ( true );
-        currentBookContentPanel.getObject().setEdit ( true ); // BookContent - т.к. через него флаг рисуется.
-        */
+        // Отметить что было изменение  -- НЕ надо. Там ведь все уже поменяно. И по Save ничего не произойдет.
+        projectTreePanel.setEdit ( true );
+        projectTreePanel.getObject().setEdit ( true ); // BookContent - т.к. через него флаг рисуется.
         //Log.f.debug ( "Finish" );
+        */
     }
 
     private JLabel createLabel ( TreeObj[] selectNodes )

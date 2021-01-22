@@ -23,10 +23,14 @@ import java.awt.event.ActionEvent;
 
 /**
  * Вставить обьект из буфера внутрь отмеченного обьекта (части) первым.
- * <BR> Если в обьекте из буфера есть подобьекты, уровень которых при изменении ошибочен (т.е. нет элементов
- *  такого уровня, что приведет к потере) - то НЕ ругаться, а запросить создание описания элементов, либо создать их автоматом и сообщить об этом.
- * <BR/> Эта проверка - в todo BookTools.treatLevel
  * <BR/> Допустимость использования корневого элемента: ДА.
+ * <BR/>
+ * <BR/> todo Только для Секций - т.к. вставить в Книгу другую Книгу или Секцию нельзя!!!
+ * <BR/>
+ * <BR/> todo При переносе  - Прописать полный алгоритм
+ * 1) перенести старый файл в новую директорию
+ * 2) в Новом обьекте изменить путь его файла
+ * 3) еще что-то...
  * <BR/>
  * <BR/> User: svj
  * <BR/> Date: 07.11.2020 18:06:04
@@ -71,6 +75,12 @@ public class PasteProjectNodeInFunction extends PasteBookFunction
                 throw new WEditException("Выбрано больше одного (" + selectNodes.length + ")." );
         }
 
+        Object obj = selectNode.getUserObject();
+
+        if ( ! (obj instanceof Section) )  {
+            throw new WEditException("Выбранный обьект не является Секцией." );
+        }
+
         selectSection    = (Section) selectNode.getUserObject();
 
         // Проверить, может выбранный узел (сам или в составе вышестоящего узла) уже открыт
@@ -80,7 +90,9 @@ public class PasteProjectNodeInFunction extends PasteBookFunction
         label       = createLabel ( selectNode, newNodes, "в" );
         ic          = DialogTools.showConfirmDialog ( Par.GM.getFrame(), Convert.concatObj ( "Вставить ", newNodes.length, " в" ), label );
 
-        if ( ic != 0 )  return;
+        if ( ic != 0 )  return;  // Отказ от вставки
+
+        // todo В переносимом обьекте изменить путь файла
 
         // Взять текущую книгу - TreePanel
         currentProjectContentPanel = Par.GM.getFrame().getCurrentProjectPanel();

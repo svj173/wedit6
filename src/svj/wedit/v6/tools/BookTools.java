@@ -8,9 +8,7 @@ import svj.wedit.v6.gui.panel.TextPanel;
 import svj.wedit.v6.gui.tabs.TabsPanel;
 import svj.wedit.v6.gui.tree.TreePanel;
 import svj.wedit.v6.logger.Log;
-import svj.wedit.v6.obj.Project;
-import svj.wedit.v6.obj.TreeObj;
-import svj.wedit.v6.obj.WTreeObj;
+import svj.wedit.v6.obj.*;
 import svj.wedit.v6.obj.book.*;
 import svj.wedit.v6.obj.book.element.StyleName;
 import svj.wedit.v6.obj.book.element.StyleType;
@@ -496,6 +494,25 @@ public class BookTools
         bookNode    = (BookNode) node.getUserObject();
         parentNode  = bookNode.getParentNode ();
         parentNode.delete ( bookNode );
+
+        // удаляем в gui-дереве
+        //node.removeFromParent();
+        bookContentPanel.removeNode ( node );
+    }
+
+    public static void removeBook ( TreePanel<Project> bookContentPanel, DefaultMutableTreeNode node )
+    {
+        WTreeObj book, parent;
+        Object obj;
+
+        // удаляем во внутреннем дереве
+        book    = (WTreeObj) node.getUserObject();
+        parent  = book.getParent();
+
+        if (parent instanceof Section) {
+            Section section = (Section) parent;
+            section.delete(book);
+        }
 
         // удаляем в gui-дереве
         //node.removeFromParent();

@@ -6,17 +6,17 @@ import svj.wedit.v6.exception.WEditException;
 import svj.wedit.v6.function.FunctionId;
 import svj.wedit.v6.gui.tree.TreePanel;
 import svj.wedit.v6.logger.Log;
-import svj.wedit.v6.obj.function.Function;
 import svj.wedit.v6.obj.TreeObj;
 import svj.wedit.v6.obj.book.BookContent;
 import svj.wedit.v6.obj.book.BookNode;
+import svj.wedit.v6.obj.function.Function;
 import svj.wedit.v6.tools.BookTools;
-import svj.wedit.v6.tools.Convert;
 import svj.wedit.v6.tools.DialogTools;
 import svj.wedit.v6.util.Buffer;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
+
 import java.awt.event.ActionEvent;
 
 
@@ -78,13 +78,13 @@ public class CutBookNodeFunction extends Function
         // Взять родителя
         //parentNode  = (DefaultMutableTreeNode) selectNodes[0].getParent();
 
-        // Взять текущую книгу - TreePanel
+        // Взять текущую книгу - TreePanel - панель дерева книги
         currentBookContentPanel = Par.GM.getFrame().getCurrentBookContentPanel();
 
         // Удалить в дереве
         for ( DefaultMutableTreeNode node : selectNodes )
         {
-            Log.f.debug ( "--- removeNode = ", node );
+            Log.f.debug ( "--- removeNode = %s", node );
             //currentBookContentPanel.removeNode ( node );
             // удаляем и во внутреннем дереве и в gui-дереве.
             BookTools.removeNode ( currentBookContentPanel, node );
