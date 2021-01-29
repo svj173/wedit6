@@ -4,6 +4,7 @@ package svj.wedit.v6.function.project.edit.section;
 import svj.wedit.v6.exception.WEditException;
 import svj.wedit.v6.gui.dialog.WValidateDialog;
 import svj.wedit.v6.gui.widget.StringFieldWidget;
+import svj.wedit.v6.obj.Project;
 import svj.wedit.v6.obj.Section;
 
 import javax.swing.*;
@@ -19,10 +20,13 @@ import javax.swing.*;
 public class CreateSectionDialog extends WValidateDialog<Section, Section>
 {
     private StringFieldWidget   nameWidget, fileNameWidget;
+    private Project project;
 
-    public CreateSectionDialog ( String title, boolean editFileName ) throws WEditException
+    public CreateSectionDialog(Project project, String title, boolean editFileName) throws WEditException
     {
         super ( title );
+
+        this.project = project;
 
         JPanel  panel;
         int     width;
@@ -98,7 +102,7 @@ public class CreateSectionDialog extends WValidateDialog<Section, Section>
     {
         Section section;
 
-        section = new Section ( nameWidget.getValue() );
+        section = new Section ( nameWidget.getValue(), project );
         section.setFileName ( fileNameWidget.getValue() );
         
         return section;

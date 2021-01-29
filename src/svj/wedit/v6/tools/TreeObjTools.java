@@ -180,6 +180,7 @@ public class TreeObjTools
         TreeObj parent;
         Object  wo;
         Section section;
+        BookTitle bookTitle;
 
         Log.l.debug ( "--- treeObj = '", treeObj, "'" );
 
@@ -192,6 +193,12 @@ public class TreeObjTools
             section = (Section) wo;
             filePath.insert ( 0, section.getFileName() );
             filePath.insert ( 0, '/' );
+        }
+        else if ( wo instanceof BookTitle)
+        {
+            bookTitle = (BookTitle) wo;
+            filePath.append ( '/' );
+            filePath.append ( bookTitle.getFileName() );
         }
 
         parent = (TreeObj) treeObj.getParent();
@@ -207,7 +214,7 @@ public class TreeObjTools
         WTreeObj parent;
         Section section;
 
-        Log.l.debug ( "--- treeObj = '", treeObj, "'" );
+        Log.l.debug ( "--- treeObj = '%s'", treeObj );
 
         if ( treeObj == null )          return;
         if ( treeObj.getLevel() == 0 )  return;
@@ -221,10 +228,11 @@ public class TreeObjTools
         else if ( treeObj instanceof BookTitle )
         {
             BookTitle bookTitle = (BookTitle) treeObj;
-            filePath.insert ( 0, bookTitle.getFileName() );
-            //filePath.insert ( 0, '/' );
+            filePath.append ( '/' );
+            filePath.append ( bookTitle.getFileName() );
         }
 
+        // Пробегаем по секциям вверх до корня, пока не закончатся.
         parent = treeObj.getParent();
 
         if ( parent != null )

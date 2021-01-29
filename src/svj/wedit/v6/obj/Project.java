@@ -71,6 +71,22 @@ public class Project   extends XmlAvailable   implements IId, Editable
         this.projectDir = projectDir;
     }
 
+    public Project clone ()
+    {
+        Project result;
+
+        result = new Project ( getProjectDir() );
+        result.setName ( getName() );
+        result.setAuthor ( getAuthor() );
+        result.setAnnotation ( getAnnotation() );
+        result.setRootSection ( getRootSection().clone() );
+        result.setCreateDate ( new Date(getCreateDate().getTime()) );
+        result.setEdit ( isEdit() );
+
+        return result;
+    }
+
+
     public String toString()
     {
         StringBuilder result;

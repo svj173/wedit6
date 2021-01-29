@@ -5,24 +5,23 @@ import svj.wedit.v6.Par;
 import svj.wedit.v6.WCons;
 import svj.wedit.v6.exception.WEditException;
 import svj.wedit.v6.logger.Log;
-import svj.wedit.v6.obj.Project;
-import svj.wedit.v6.obj.TreeObj;
-import svj.wedit.v6.obj.WPair;
+import svj.wedit.v6.obj.*;
 import svj.wedit.v6.obj.book.BookContent;
 import svj.wedit.v6.obj.book.BookTitle;
 
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URI;
 import java.net.URL;
-import java.util.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipException;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipOutputStream;
+import java.util.*;
+import java.util.zip.*;
+
 
 /**
  * Сервисные утилиты по работе с файлами и их именами.
@@ -698,7 +697,7 @@ public class FileTools
         // - Сложить директории по парентам Разделов, исключая корневой (т.к. он уже входит в путь Проекта).
         filePath    = new StringBuilder (128);
         TreeObjTools.createFilePath ( selectNode, filePath );
-        Log.l.debug ( "filePath 1 = '", filePath, "'" );
+        Log.l.debug ( "filePath 1 = '%s'", filePath );
 
         filePath.insert ( 0, projectDir.getAbsolutePath() );
 
@@ -1024,6 +1023,88 @@ public class FileTools
             } catch ( IOException e )             {
             }
         }
+    }
+
+    public static String createFullFileName(Project project, TreeObj parentNode, WTreeObj wObj) throws WEditException
+    {
+        File projectDir = project.getProjectDir();
+        if ( projectDir == null )
+            throw new WEditException ( null, "У Сборника '", project.getName(), "' отсутствует описание на корневой файл." );
+
+        // - Сложить директории по парентам Разделов, исключая корневой (т.к. он уже входит в путь Проекта).
+        StringBuilder   filePath;
+        filePath    = new StringBuilder (128);
+        TreeObjTools.createFilePath ( parentNode, filePath );
+        Log.l.debug ( "filePath 1 = '", filePath, "'" );
+
+        filePath.insert ( 0, projectDir.getAbsolutePath() );
+
+        if ( wObj != null) {
+            filePath.append('/');
+            if (wObj instanceof Section) {
+                Section section = (Section) wObj;
+                filePath.append(section.getFileName());
+            }
+            else if (wObj instanceof BookTitle) {
+                BookTitle bookTitle = (BookTitle) wObj;
+                filePath.append(bookTitle.getFileName());
+            }
+        }
+
+        return filePath.toString();
+    }
+
+    public static String createFullFileName(Project project, TreeObj node) throws WEditException
+    {
+
+        File projectDir = project.getProjectDir();
+        if ( projectDir == null )
+            throw new WEditException ( null, "У Сборника '", project.getName(), "' отсутствует описание на корневой файл." );
+
+        // - Сложить директории по парентам Разделов, исключая корневой (т.к. он уже входит в путь Проекта).
+        StringBuilder   filePath;
+        filePath    = new StringBuilder (128);
+        TreeObjTools.createFilePath ( node, filePath );
+        Log.l.debug ( "filePath 1 = '", filePath, "'" );
+
+        filePath.insert ( 0, projectDir.getAbsolutePath() );
+
+        return filePath.toString();
+    }
+
+    public static String createFullFileName(Project project, WTreeObj node) throws WEditException
+    {
+
+        File projectDir = project.getProjectDir();
+        if ( projectDir == null )
+            throw new WEditException ( null, "У Сборника '", project.getName(), "' отсутствует описание на корневой файл." );
+
+        // - Сложить директории по парентам Разделов, исключая корневой (т.к. он уже входит в путь Проекта).
+        StringBuilder   filePath;
+        filePath    = new StringBuilder (128);
+        TreeObjTools.createFilePath ( node, filePath );
+        Log.l.debug ( "filePath 1 = '", filePath, "'" );
+
+        filePath.insert ( 0, projectDir.getAbsolutePath() );
+
+        return filePath.toString();
+    }
+
+    public static void moveFile (String src, String dest) throws WEditException {
+        try {
+            Files.move(Paths.get(src), Paths.get(dest));
+        } catch (Exception e) {
+            Log.l.error("Exception while moving file: " + e.getMessage(), e);
+            throw new WEditException(null, "Ошибка перемещения файла '" + src + "'\n в '" + dest + "'.");
+        }
+        /*
+        if (result != null) {
+            Log.l.debug("File moved successfully.");
+        } else {
+            Log.l.error("File movement failed.");
+            throw new WEditException(null, "Ошибка перемещения файла '" + src + "'\n в '" + dest + "'.");
+        }
+        */
     }
 
 }

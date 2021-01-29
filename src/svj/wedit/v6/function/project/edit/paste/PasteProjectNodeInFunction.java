@@ -6,12 +6,11 @@ import svj.wedit.v6.exception.WEditException;
 import svj.wedit.v6.function.FunctionId;
 import svj.wedit.v6.function.book.edit.paste.PasteBookFunction;
 import svj.wedit.v6.gui.tree.TreePanel;
-import svj.wedit.v6.obj.Project;
-import svj.wedit.v6.obj.Section;
-import svj.wedit.v6.obj.TreeObj;
+import svj.wedit.v6.logger.Log;
+import svj.wedit.v6.obj.*;
 import svj.wedit.v6.obj.book.BookTitle;
-import svj.wedit.v6.tools.Convert;
 import svj.wedit.v6.tools.DialogTools;
+import svj.wedit.v6.tools.FileTools;
 import svj.wedit.v6.tools.ProjectTools;
 import svj.wedit.v6.util.Buffer;
 
@@ -25,9 +24,10 @@ import java.awt.event.ActionEvent;
  * Вставить обьект из буфера внутрь отмеченного обьекта (части) первым.
  * <BR/> Допустимость использования корневого элемента: ДА.
  * <BR/>
- * <BR/> todo Только для Секций - т.к. вставить в Книгу другую Книгу или Секцию нельзя!!!
+ * <BR/> Только для Секций - т.к. вставить в Книгу другую Книгу или Секцию нельзя!!!
  * <BR/>
  * <BR/> todo При переносе  - Прописать полный алгоритм
+ * 1) Проверить выбранный обьект - должен быть один и должен быть Секцией.
  * 1) перенести старый файл в новую директорию
  * 2) в Новом обьекте изменить путь его файла
  * 3) еще что-то...
@@ -72,7 +72,7 @@ public class PasteProjectNodeInFunction extends PasteBookFunction
                 break;
 
             default: // больше 1
-                throw new WEditException("Выбрано больше одного (" + selectNodes.length + ")." );
+                throw new WEditException("Выбрано больше одного обьекта: " + selectNodes.length );
         }
 
         Object obj = selectNode.getUserObject();
@@ -82,25 +82,78 @@ public class PasteProjectNodeInFunction extends PasteBookFunction
         }
 
         selectSection    = (Section) selectNode.getUserObject();
+        Log.l.info("selectSection = " + selectSection);
+
+        for ( int i=0; i<newNodes.length; i++ ) {
+            Log.l.info(" - " + i + ": new node = " + newNodes[i].getUserObject());
+        }
 
         // Проверить, может выбранный узел (сам или в составе вышестоящего узла) уже открыт
         // -- Это лишнее
 
         // Стартовый диалог
         label       = createLabel ( selectNode, newNodes, "в" );
-        ic          = DialogTools.showConfirmDialog ( Par.GM.getFrame(), Convert.concatObj ( "Вставить ", newNodes.length, " в" ), label );
+        ic          = DialogTools.showConfirmDialog ( Par.GM.getFrame(), "Вставить " + newNodes.length + " в", label );
 
         if ( ic != 0 )  return;  // Отказ от вставки
 
-        // todo В переносимом обьекте изменить путь файла
+        // Переместить файл книги в новую директорию.
+        // - BookContent fileName - абс имя, заносится при октрытии книги
+        // - BookTitle  fileName - просто имя - вычисляется от Сборника (Секции?)
 
-        // Взять текущую книгу - TreePanel
+        // Взять текущий проект - TreePanel - т.е. куда переносим.
         currentProjectContentPanel = Par.GM.getFrame().getCurrentProjectPanel();
+        Project project = currentProjectContentPanel.getObject();
+
+        // 0) Вычисляем полный путь нового места
+        //String fileFullPath = FileTools.createFullFileName ( project, selectNode, null );
+        //Log.l.info("fileFullPath = '%s'", fileFullPath);
+        // fileFullPath = '/home/svj/Serg/stories/SvjStores/test/import_doc'
+
+
+        // В переносимом обьекте изменить путь до файла - НЕТ, там только имена
+
+        // ---------------- Изменения в дереве -------------
 
         Object node;
-        for ( int i=0; i<newNodes.length; i++ )
+        String oldFullPath, newFullPath;
+        Project oldProject = null;
+        BookTitle bookTitle;
+        Section section;
+
+        // - для всех newNodes
+        for (DefaultMutableTreeNode newNode : newNodes)
         {
-            node = newNodes[i].getUserObject();
+            node = newNode.getUserObject();
+            Log.l.info("move object = '%s'", node);
+
+            // 0) Берем старый проект - т.к. можем переносить между Проектами.
+            // - может, в диалоге взять Сборник переносимых обьектов и сохранить его?
+            if (oldProject == null) {
+                if (node instanceof BookTitle) {
+                    bookTitle = (BookTitle) node;
+                    oldProject = bookTitle.getProject();
+                } else if (node instanceof Section) {
+                    section = (Section) node;
+                    oldProject = section.getProject();
+                }
+            }
+            Log.l.info("oldProject = '%s'", oldProject);
+
+            // 1) вычисляем старые полные пути до их файлов.
+            // - Для книги - полный путь до файла книги. Для Секции - до диреткории секции (включительно)
+            oldFullPath = FileTools.createFullFileName(oldProject, (WTreeObj) node);
+            Log.l.info("oldFullPath = '%s'", oldFullPath);
+
+            // 2) вычисляем новые полные пути для них.
+            newFullPath = FileTools.createFullFileName(project, selectNode, (WTreeObj) node);
+            Log.l.info("newFullPath = '%s'", newFullPath);
+
+            // 3) todo перемещаем эти файлы на новое место - Отладка (секторы со вложениями и книги)
+            // - есть File.renameTo - но не для всех платформ работает. Сделать жесткое копирвоание а потмо удаление.
+            FileTools.moveFile(oldFullPath, newFullPath);
+
+            /*
             if ( node instanceof BookTitle)
             {
                 // Вставить Книгу в основное дерево
@@ -113,11 +166,13 @@ public class PasteProjectNodeInFunction extends PasteBookFunction
             }
             // Вставить в ГУИ-дерево Сборника
             currentProjectContentPanel.insertNode ( newNodes[i], selectNode, i );
+            */
         }
 
-        // Отметить что было изменение
-        currentProjectContentPanel.setEdit ( true );
-        currentProjectContentPanel.getObject().setEdit ( true ); // BookContent - т.к. через него флаг рисуется.
+        // todo Отметить что было изменение  - лишнее, т.к. нечего уже сохранять - Или дерево Сборника?
+
+        //currentProjectContentPanel.setEdit ( true );
+        //currentProjectContentPanel.getObject().setEdit ( true ); // BookContent - т.к. через него флаг рисуется.
 
         // OK. чистим буффер
         Buffer.clear();

@@ -10,7 +10,7 @@ import svj.wedit.v6.logger.Log;
 import svj.wedit.v6.obj.Project;
 import svj.wedit.v6.obj.Section;
 import svj.wedit.v6.obj.TreeObj;
-import svj.wedit.v6.tools.TreeObjTools;
+import svj.wedit.v6.tools.FileTools;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
@@ -62,8 +62,11 @@ public class AddSectionAfterFunction extends AbstractSaveProjectFunction
             throw new WEditException ( "Выбран корневой элемент" );
 
 
+        // Взять текущий проект
+        project         = currentProjectPanel.getObject();
+
         // Диалог - Запросить имя нового обьекта
-        dialog  = new CreateSectionDialog ( "Новый раздел", true );
+        dialog  = new CreateSectionDialog (project, "Новый раздел", true );
         dialog.showDialog ();
         if ( dialog.isOK() )
         {
@@ -85,9 +88,6 @@ public class AddSectionAfterFunction extends AbstractSaveProjectFunction
             parentSection.addSection ( inum+1, section );
             section.setParent ( parentSection );
 
-            // Взять текущий проект
-            project         = currentProjectPanel.getObject();
-            
             // Сохранить новый Раздел - новая файловая директория
             saveNewSection ( project, parentNode, section );
 
@@ -103,9 +103,9 @@ public class AddSectionAfterFunction extends AbstractSaveProjectFunction
 
     private void saveNewSection ( Project project, TreeObj parentNode, Section section ) throws WEditException
     {
-        StringBuilder   filePath;
         File            newDir, projectDir;
         boolean         b;
+        String          fileFullPath;
 
         if ( project == null )
             throw new WEditException ( null, "Сборник не задан" );
@@ -114,21 +114,13 @@ public class AddSectionAfterFunction extends AbstractSaveProjectFunction
         if ( projectDir == null )
             throw new WEditException ( null, "У Сборника '", project.getName(), "' отсутствует описание на корневой файл." );
 
-        // Создать полное имя файла-директории
-        // - Сложить директории по парентам Разделов, исключая корневой (т.к. он уже входит в путь Проекта).
-        filePath    = new StringBuilder (128);
-        TreeObjTools.createFilePath ( parentNode, filePath );
-        Log.l.debug ( "filePath 1 = '", filePath, "'" );
+        // Создать полное имя файла-директории для Секции
+        fileFullPath = FileTools.createFullFileName ( project, parentNode, section );
 
-        filePath.insert ( 0, projectDir.getAbsolutePath() );
-
-        filePath.append ( '/' );
-        filePath.append ( section.getFileName() );
-
-        Log.l.debug ( "filePath 2 = '", filePath, "'" );
+        Log.l.debug ( "fileFullPath = '%s'", fileFullPath );
 
         // Создать новую директорию в проекте
-        newDir  = new File ( filePath.toString() );
+        newDir  = new File ( fileFullPath );
         if ( newDir.exists() )
             throw new WEditException ( null, "Директория для нового раздела \n'", newDir, "' уже существует." );
 

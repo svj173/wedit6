@@ -61,8 +61,11 @@ public class AddSectionInFunction extends AbstractSaveProjectFunction
         //if ( level == 0 )  throw new WEditException ( "Выбран корневой элемент" );
 
 
+        // Взять текущий проект
+        project         = currentProjectPanel.getObject();
+
         // Диалог - Запросить имя нового обьекта
-        dialog  = new CreateSectionDialog ( "Новый Раздел", true );
+        dialog  = new CreateSectionDialog ( project, "Новый Раздел", true );
         dialog.showDialog();
         if ( dialog.isOK() )
         {
@@ -85,9 +88,6 @@ public class AddSectionInFunction extends AbstractSaveProjectFunction
             parentSection   = (Section) selectNode.getWTreeObj();
             parentSection.addSection ( inum, section );
             section.setParent ( parentSection );
-
-            // Взять текущий проект
-            project         = currentProjectPanel.getObject();
 
             // Сохранить новый Раздел - новая файловая директория
             saveNewSection ( project, selectNode, section );

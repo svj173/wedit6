@@ -157,7 +157,7 @@ public class ProjectStaxParser
                         if ( attr == null )
                             throw new WEditException ("Отсутствует имя Книги");
                         str         = getText ( eventReader );
-                        bookTitle   = new BookTitle ( attr.getValue(), str );
+                        bookTitle   = new BookTitle ( project, currentSection, attr.getValue(), str );
                         currentSection.addBook( bookTitle );
                         statusAttr    = startElement.getAttributeByName ( status );
                         if ( statusAttr != null )
@@ -225,7 +225,7 @@ public class ProjectStaxParser
                         if ( attr == null )
                             throw new WEditException ("Отсутствует имя Директории Раздела");
                         str2    = attr.getValue();
-                        section = new Section ( str, str2 );
+                        section = new Section ( str, str2, project );
                         if ( currentSection == null )
                         {
                             // это root

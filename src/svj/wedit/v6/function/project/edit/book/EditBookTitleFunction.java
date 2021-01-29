@@ -63,7 +63,6 @@ public class EditBookTitleFunction extends AbstractSaveProjectFunction
         // Анализируем наличие текста книги. Если есть, также возьмем титл и оттуда - вдруг они Разные? Чтобы иметь возможность для синхронизации.
         // Не всегда  bookContent вложен в bookTitle -- лучше искать выделенную в дереве книгу. -- Это сложно сделать. Проще в bookTitle хранить и полный путь до файла.
         titleFromBookContent    = null;
-        //fileName                = null;
         bookContent             = bookTitle.getBookContent();
         Log.l.debug ( "bookContent = %s", bookContent );
         if ( bookContent != null )
@@ -75,8 +74,11 @@ public class EditBookTitleFunction extends AbstractSaveProjectFunction
 
         fileName = BookTools.createFilePath ( currentProjectPanel.getObject(), bookTitle.getParent(), bookTitle );
 
+        // Взять текущий проект
+        project = currentProjectPanel.getObject();
+
         // Диалог
-        dialog      = new CreateBookDialog ( getName(), false, titleFromBookContent, fileName );
+        dialog      = new CreateBookDialog (project, null, getName(), false, titleFromBookContent, fileName );
         dialog.init ( bookTitle );
         dialog.showDialog ();
         if ( dialog.isOK() )
@@ -95,9 +97,6 @@ public class EditBookTitleFunction extends AbstractSaveProjectFunction
 
                 // Изменяем статус
                 bookTitle.setBookStatus ( bookTitle.getBookStatus() );
-
-                // Взять текущий проект
-                project = currentProjectPanel.getObject();
 
                 // Сохранить обновление проекта - в файле project.xml
                 saveProjectFile ( project );

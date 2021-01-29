@@ -70,9 +70,14 @@ public class CreateBookFunction extends AbstractSaveProjectFunction
         if ( object == null )  throw new MessageException ( "Не выбрана папка Сборника,\n в которой будет создана новая книга." );
         if ( ! (object instanceof Section) )  throw new MessageException ( "Необходимо выбрать папку Сборника,\n в которой будет создана новая книга." );
 
+        // Взять текущий проект
+        project         = currentProjectPanel.getObject();
+        parentSection   = (Section) selectNode.getWTreeObj();
+
         bookContent = null;
+
         // Диалог - Запросить имя нового обьекта
-        dialog  = new CreateBookDialog ( "Создать книгу", true, null, null );
+        dialog  = new CreateBookDialog ( project, parentSection, "Создать книгу", true, null, null );
         dialog.showDialog ();
         if ( dialog.isOK() )
         {
@@ -118,11 +123,8 @@ public class CreateBookFunction extends AbstractSaveProjectFunction
 
             // Добавить в сектора проекта - внутрь отмеченного
 
-            parentSection   = (Section) selectNode.getWTreeObj();
             parentSection.addBook ( bookTitle );
 
-            // Взять текущий проект
-            project         = currentProjectPanel.getObject();
             bookContent.setProject ( project );
 
             // Сохранить новую Книгу - новый файл

@@ -53,8 +53,11 @@ public class EditSectionFunction extends AbstractSaveProjectFunction
 
         editSection = (Section) selectNode.getWTreeObj();
 
+        // Взять текущий проект
+        project         = currentProjectPanel.getObject();
+
         // Диалог
-        dialog      = new CreateSectionDialog ( getName(), false );
+        dialog      = new CreateSectionDialog (project, getName(), false );
         dialog.init ( editSection );
         dialog.showDialog();
         if ( dialog.isOK() )
@@ -68,9 +71,6 @@ public class EditSectionFunction extends AbstractSaveProjectFunction
 
             // Изменяем имя
             editSection.setName ( sectionName );
-
-            // Взять текущий проект
-            project         = currentProjectPanel.getObject();
 
             // Сохранить обновление проекта - в файле project.xml
             saveProjectFile ( project );

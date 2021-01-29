@@ -4,15 +4,14 @@ package svj.wedit.v6.obj.book;
 import svj.wedit.v6.Par;
 import svj.wedit.v6.exception.WEditException;
 import svj.wedit.v6.logger.Log;
-import svj.wedit.v6.obj.TreeObjType;
-import svj.wedit.v6.obj.WTreeObj;
+import svj.wedit.v6.obj.*;
 import svj.wedit.v6.tools.BookTools;
 import svj.wedit.v6.tools.Convert;
 import svj.wedit.v6.tools.Utils;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Collection;
+import java.util.*;
 
 
 /**
@@ -51,11 +50,15 @@ public class BookTitle extends WTreeObj implements Comparable<BookTitle>
     * 30 книг по 1 Мб - это всего лишь 30 Мб ОЗУ. */
     private BookContent  bookContent;
     private BookStatus   bookStatus;
+    private Project project;
+    private Section section;
 
 
-    public BookTitle ( String name, String fileName )
+    public BookTitle (Project project, Section section, String name, String fileName )
     {
         setName (name);
+        this.project    = project;
+        this.section    = section;
         this.fileName   = fileName;
         bookStatus      = BookStatus.WORK;
         id              = BookTools.createBookNodeId ( name );
@@ -65,7 +68,8 @@ public class BookTitle extends WTreeObj implements Comparable<BookTitle>
     {
         BookTitle result;
 
-        result = new BookTitle ( getName(), getFileName() );
+        // Проект не клонируем, т.к. во всех обьектах - ссылка на один Проект.
+        result = new BookTitle ( getProject(), getSection(), getName(), getFileName() );
         result.setAdditionalName ( getAdditionalName() );
         result.setBookStatus ( getBookStatus() );
         result.setBookContent ( getBookContent() );  // todo clone
@@ -245,5 +249,21 @@ public class BookTitle extends WTreeObj implements Comparable<BookTitle>
     public void setId ( String id )
     {
         this.id = id;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
+    }
+
+    public Section getSection() {
+        return section;
+    }
+
+    public void setSection(Section section) {
+        this.section = section;
     }
 }

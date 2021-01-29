@@ -135,8 +135,7 @@ public class NewProjectFunction extends SimpleFunction
                 checkProjectDir ( projectDir );
 
                 // Создать корневую секцию
-                rootSection = new Section ( projectName );
-                //rootSection = new Section ( projectDir.getName() );
+                rootSection = new Section ( projectName, project );
                 project.setRootSection ( rootSection );
 
                 // создать файл и записать его в директорию
@@ -152,7 +151,7 @@ public class NewProjectFunction extends SimpleFunction
                 openProjectEvent.setMode ( OpenProjectEvent.Mode.OK );
                 setEventObject ( openProjectEvent );
 
-                // todo Сохранить новый путь для Сборников.
+                // Сохранить новый путь для Сборников. -- ???
             }
 
         } catch ( WEditException we )        {
@@ -172,12 +171,14 @@ public class NewProjectFunction extends SimpleFunction
             // Такая директория уже сушествует.
             // - Проверяем на наличие в ней файла с именем Сборника.
             projectFile = new File ( projectDir, ConfigParam.PROJECT_FILE_NAME );
-            if ( projectFile.exists () )   throw new MessageException ( "Файл с именем нового сборника '", projectFile, "' уже существует!" );
+            if ( projectFile.exists() )
+                throw new MessageException ( "Файл с именем нового сборника '", projectFile, "' уже существует!" );
         }
         else
         {
             // Создать такую директорию.
-            if ( ! projectDir.mkdir() )   throw new MessageException ( "Не удалось создать директорию '", projectDir, "'  для нового сборника!" );
+            if ( ! projectDir.mkdir() )
+                throw new MessageException ( "Не удалось создать директорию '", projectDir, "'  для нового сборника!" );
         }
     }
 

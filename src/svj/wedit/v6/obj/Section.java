@@ -18,17 +18,17 @@ import java.util.*;
  * <BR/> При отображении в дереве сначала выводятся другие разделы, потом - книги.
  * <BR/> Вывод - в алфавитном порядке.
  * <BR/>
- <section name="Имя раздела (здесь - название проекта)">
-     <section name="">
-         <section name="">
-             <book name="Имя книги">book file</book>
-         </section>
-         <book name="Имя книги">book file</book>
-     </section>
-
-     <book name="Имя книги">book file</book>
+ * <pre>
+ <section name="Римейк" dirName="remake">
+		<section name="Гуляковский" dirName="guliakovskii">
+			<book name="Белые колокола Реаны." status="Реализована" id="Белые_колокола_Реаны._2021_01_04_16_52_13_823">reana.book</book>
+			<book name="Сезон туманов." status="В работе" id="Сезон_туманов._2021_01_04_16_52_13_823">sezon_tumanov.book</book>
+		</section>
+		<book name="Иллиада" status="В работе" id="Иллиада_2021_01_04_16_52_13_823">illiada.book</book>
+		<book name="Римеки_планы" status="В работе" id="Римеки_планы_2021_01_04_16_52_13_823">remake_plans.book</book>
+		<book name="А.Азимов. Конец вечности." status="Болванка" id="А.Азимов._Конец_вечности._2021_01_04_16_52_13_823">azimov_vechnost.book</book>
  </section>
- 
+ </pre>
  * <BR/>
  * <BR/> User: svj
  * <BR/> Date: 27.07.2011 15:48:44
@@ -44,19 +44,26 @@ public class Section    extends WTreeObj implements Comparable<Section>
     /* Список книг, входящих в данную секцию. */
     private final List<BookTitle> bookTitles;
 
+    // Сборник, к которому принадлежит эта Секция.
+    // не final, т.к. при переносе между Сборниками он может меняться.
+    private Project project;
 
-    public Section ( String name )
+
+    // Исп когда создается Секция и когда создается Сборник.
+    public Section(String name, Project project)
     {
-        this ( name, name );
+        this ( name, name, project );
     }
 
-    public Section ( String name, String dirName )
+    public Section ( String name, String dirName, Project project )
     {
         setName ( name );
 
         fileName    = dirName;
         sections    = new ArrayList<Section>();
         bookTitles  = new ArrayList<BookTitle>();
+
+        this.project = project;
 
         setParent ( null );
     }
@@ -65,13 +72,15 @@ public class Section    extends WTreeObj implements Comparable<Section>
     {
         Section result;
 
-        result = new Section ( getName (), getFileName() );
+        // clone на Проект делать не надо, т.к. во всех остальных Секциях лежит сылка на один обьект Проекта
+        result = new Section ( getName (), getFileName(), getProject() );
 
-        for ( Section section : getSections () )
+        for ( Section section : getSections() )
         {
             result.addSection ( section.clone() );
         }
-        for ( BookTitle bookTitle : getBooks () )
+
+        for ( BookTitle bookTitle : getBooks() )
         {
             result.addBook ( bookTitle.clone() );
         }
@@ -311,6 +320,14 @@ public class Section    extends WTreeObj implements Comparable<Section>
         }
 
         return null;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
     }
 
 }

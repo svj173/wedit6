@@ -8,11 +8,14 @@ import svj.wedit.v6.gui.dialog.WValidateDialog;
 import svj.wedit.v6.gui.renderer.INameRenderer;
 import svj.wedit.v6.gui.widget.ComboBoxWidget;
 import svj.wedit.v6.gui.widget.StringFieldWidget;
+import svj.wedit.v6.obj.Project;
+import svj.wedit.v6.obj.Section;
 import svj.wedit.v6.obj.book.BookStatus;
 import svj.wedit.v6.obj.book.BookTitle;
 import svj.wedit.v6.tools.GuiTools;
 
 import javax.swing.*;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -27,12 +30,18 @@ public class CreateBookDialog extends WValidateDialog<BookTitle, BookTitle>
 {
     private final StringFieldWidget   nameWidget, fileNameWidget;
     private final ComboBoxWidget<BookStatus> statusWidget;
+    private final Project project;
+    private final Section section;
 
 
-    public CreateBookDialog ( String title, boolean editFileName, final String titleFromBookContent, String fileName )
+    public CreateBookDialog(Project project, Section section, String title, boolean editFileName,
+                            final String titleFromBookContent, String fileName)
             throws WEditException
     {
         super ( Par.GM.getFrame(), title );
+
+        this.project = project;
+        this.section = section;
 
         JPanel  panel;
         int     width;
@@ -170,7 +179,7 @@ public class CreateBookDialog extends WValidateDialog<BookTitle, BookTitle>
 
         fileName    = fileNameWidget.getValue();
         if ( ! fileName.endsWith ( "."+ WCons.BOOK_FILE_NAME_SUFFIX ))  fileName = fileName + "." + WCons.BOOK_FILE_NAME_SUFFIX;
-        bookTitle = new BookTitle ( nameWidget.getValue(), fileName );
+        bookTitle = new BookTitle ( project, section, nameWidget.getValue(), fileName );
         bookTitle.setBookStatus ( statusWidget.getValue() );
 
         return bookTitle;
