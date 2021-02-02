@@ -12,8 +12,6 @@ import svj.wedit.v6.function.FunctionId;
 import svj.wedit.v6.function.book.CloseBookTabFunction;
 import svj.wedit.v6.function.book.edit.BookElementPopupMenu;
 import svj.wedit.v6.function.project.CloseProjectFunction;
-import svj.wedit.v6.function.project.edit.book.BookPopupMenu;
-import svj.wedit.v6.function.project.edit.section.AddSectionPopupMenu;
 import svj.wedit.v6.function.text.CloseTextTabFunction;
 import svj.wedit.v6.gui.GuiCreator;
 import svj.wedit.v6.gui.WComponent;
@@ -30,10 +28,7 @@ import svj.wedit.v6.gui.tabs.TabsPanel;
 import svj.wedit.v6.gui.tree.TreePanel;
 import svj.wedit.v6.gui.tree.WCellRenderer;
 import svj.wedit.v6.logger.Log;
-import svj.wedit.v6.obj.Project;
-import svj.wedit.v6.obj.TreeObj;
-import svj.wedit.v6.obj.TreeObjType;
-import svj.wedit.v6.obj.WTreeObj;
+import svj.wedit.v6.obj.*;
 import svj.wedit.v6.obj.book.BookContent;
 import svj.wedit.v6.obj.book.BookNode;
 import svj.wedit.v6.obj.function.Function;
@@ -41,10 +36,9 @@ import svj.wedit.v6.tools.*;
 
 import javax.swing.*;
 import javax.swing.border.Border;
+
 import java.awt.*;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -77,11 +71,24 @@ public class ContentFrame    extends JFrame   implements WComponent
     /* Верхняя панель иконок. */
     private BrowserToolBar toolbar;
 
+    // Доп панель - только под Панелью текста. Т.е. относится только к данной книге.
+    private TabsPanel<EditablePanel> textAdditionalPanel;
+
     /* Нижняя, выдвигающаяся панель - дополнительная - Результаты поиска и т.д. Табики можно закрывать.
-       Функции, например "поиска", ищут таб-панель своего имени, если находят - заливают в нее результат работы, не находят - создают норвую панель. */
-    private TabsPanel<EditablePanel>  additionalPanel;
-    /* РАзделитель панели Поиска. Для возможности управлять им извне - показывать панели, скрывать. */
-    private JSplitPane  vertSplitPane;
+       Функции, например "поиска", ищут таб-панель своего имени, если находят - заливают в нее
+       результат работы, не находят - создают норвую панель.
+       Расположена под текущим Проектом. */
+    private TabsPanel<EditablePanel> projectAdditionalPanel;
+
+    // Доп панель под всем - в т.ч. и под деревом Проектов.
+    // Т.е. ее вкладки относятся ко всем Проектам (Поиск по всем Проектам и пр.)
+    private TabsPanel<EditablePanel> allAdditionalPanel;
+
+    /* РАзделитель панели Поиска для Проекта.
+    Для возможности управлять им извне - показывать панели, скрывать. */
+    private JSplitPane projectVertSplitPane;
+
+    private JSplitPane textVertSplitPane;
 
 
     public ContentFrame () throws HeadlessException, WEditException
@@ -123,18 +130,18 @@ public class ContentFrame    extends JFrame   implements WComponent
         //splitPane.setDividerSize(2);
         projectSplitPane.setOneTouchExpandable ( true );
 
-        additionalPanel = new TabsPanel<EditablePanel>();
-        additionalPanel.setName("Bottom_Tabs");
-        additionalPanel.getAccessibleContext().setAccessibleName ( "Bottom_Tabs" );
+        projectAdditionalPanel = new TabsPanel<EditablePanel>();
+        projectAdditionalPanel.setName("Bottom_Tabs");
+        projectAdditionalPanel.getAccessibleContext().setAccessibleName ( "Bottom_Tabs" );
         // Другой цвет на всю нижнюю панель - чтобы отличалась от верхней.
-        additionalPanel.setBackground ( WCons.BOTTOM_TABS );
+        projectAdditionalPanel.setBackground ( WCons.BOTTOM_TABS );
 
         // Отделяет все рабочие панели - Сборники, Книги. тексты - от служебной панели (Поиск и т.д.) - по вертикали.
         //vertSplitPane = new JSplitPane();
-        vertSplitPane  = new JSplitPane ( JSplitPane.VERTICAL_SPLIT, projectSplitPane, additionalPanel );
-        vertSplitPane.setOneTouchExpandable ( true );
+        projectVertSplitPane = new JSplitPane ( JSplitPane.VERTICAL_SPLIT, projectSplitPane, projectAdditionalPanel);
+        projectVertSplitPane.setOneTouchExpandable ( true );
         //add ( vertSplitPane, BorderLayout.CENTER );
-        getContentPane().add ( vertSplitPane, BorderLayout.CENTER );
+        getContentPane().add (projectVertSplitPane, BorderLayout.CENTER );
 
         // ------------- project --------------------
         CardPanel<TabsPanel<TreePanel<Project>>> cardPanel = new CardPanel<TabsPanel<TreePanel<Project>>>();
@@ -171,7 +178,7 @@ public class ContentFrame    extends JFrame   implements WComponent
         projectSplitPane.setDividerLocation ( 220 );
         // нижнюю панель показать на чуть-чуть.  0.7 - сильно вверху; 0.2 - еще выше
         // -- Почему-то дробные (проценты) не хотят работать - юзаем пикселя.
-        vertSplitPane.setDividerLocation ( Par.SCREEN_SIZE.height );
+        projectVertSplitPane.setDividerLocation ( Par.SCREEN_SIZE.height );
     }
 
     private JPanel createBooksAndTextPanel () throws WEditException
@@ -182,6 +189,7 @@ public class ContentFrame    extends JFrame   implements WComponent
         result   = new JPanel();
         result.setLayout ( new BorderLayout ( 0,0) );
 
+        // Разделитель по горизонтали - между панелью с деревом содержания книги и текстовой панелью.
         splitPane = new JSplitPane();
         //splitPane.setDividerSize(2);     // ширина разделителя между панелями - в пикс.
         splitPane.setOneTouchExpandable ( true );
@@ -220,7 +228,21 @@ public class ContentFrame    extends JFrame   implements WComponent
         textsPanel.addIconFunction ( Par.GM.getFm().get ( FunctionId.VIEW_FROM_SOURCE ) );
         textsPanel.addIconFunction ( Par.GM.getFm().get ( FunctionId.INSERT_TABLE ) );
 
-        splitPane.setRightComponent ( textsPanel );
+        textAdditionalPanel = new TabsPanel<EditablePanel>();
+        textAdditionalPanel.setName("Text_Bottom_Tabs");
+        textAdditionalPanel.getAccessibleContext().setAccessibleName ( "Text_Bottom_Tabs" );
+        // Другой цвет на всю нижнюю панель - чтобы отличалась от верхней.
+        textAdditionalPanel.setBackground ( WCons.BOTTOM_TABS );
+
+        // Отделяет все рабочие панели - Сборники, Книги. тексты - от служебной панели (Поиск и т.д.) - по вертикали.
+        //vertSplitPane = new JSplitPane();
+        textVertSplitPane  = new JSplitPane ( JSplitPane.VERTICAL_SPLIT, textsPanel, textAdditionalPanel);
+        textVertSplitPane.setOneTouchExpandable ( true );
+        textVertSplitPane.setDividerLocation ( 1 );
+
+
+        //splitPane.setRightComponent ( textsPanel );
+        splitPane.setRightComponent ( textVertSplitPane );
 
         splitPane.setDividerLocation ( 220 );
 
@@ -803,7 +825,7 @@ public class ContentFrame    extends JFrame   implements WComponent
 
             toolbar.rewrite();
 
-            additionalPanel.rewrite();
+            textAdditionalPanel.rewrite();
 
             // true - всегда взводим флаг что необходима перерисовка. Функции где это не требуется должны сбрасывать этот флаг.
             //Par.NEED_REWRITE = false;
@@ -1044,14 +1066,24 @@ public class ContentFrame    extends JFrame   implements WComponent
         return servicePanel;
     }
 
-    public TabsPanel<EditablePanel> getAdditionalPanel ()
+    public TabsPanel<EditablePanel> getTextAdditionalPanel()
     {
-        return additionalPanel;
+        return textAdditionalPanel;
     }
 
-    public void showAdditionalPanel ()
+    public TabsPanel<EditablePanel> getProjectAdditionalPanel()
     {
-        vertSplitPane.setDividerLocation ( 0.8 );  // нет еще прошлого значения - открываем слегка снизу
+        return projectAdditionalPanel;
+    }
+
+    public void showProjectAdditionalPanel ()
+    {
+        projectVertSplitPane.setDividerLocation ( 0.8 );  // нет еще прошлого значения - открываем слегка снизу
+    }
+
+    public void showTextAdditionalPanel ()
+    {
+        textVertSplitPane.setDividerLocation ( 0.8 );  // нет еще прошлого значения - открываем слегка снизу
     }
 
 }

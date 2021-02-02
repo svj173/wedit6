@@ -174,12 +174,13 @@ public class SimpleSearchFunction   extends SimpleFunction
         tabId         = "SEARCH_PANEL";
 
         // T paramsPanel, String tabId, String tabName, Icon icon
-        Par.GM.getFrame().getAdditionalPanel().addPanel ( result, tabId, tabName, icon );
+        Par.GM.getFrame().getTextAdditionalPanel().addPanel ( result, tabId, tabName, icon );
 
         // Нашу панель сделать текущей.
-        Par.GM.getFrame().getAdditionalPanel().setSelectedTab ( tabId );
-        // todo Открыть сервисную часть
-        Par.GM.getFrame().showAdditionalPanel();
+        Par.GM.getFrame().getTextAdditionalPanel().setSelectedTab ( tabId );
+        
+        // Открыть дополнительную панель снизу, под текстом.
+        Par.GM.getFrame().showTextAdditionalPanel();
     }
 
     private TreeObj createSearchTree ( Map<String, Collection<SearchObj>> searchArray )
