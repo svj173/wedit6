@@ -90,6 +90,8 @@ public class ContentFrame    extends JFrame   implements WComponent
 
     private JSplitPane textVertSplitPane;
 
+    private JSplitPane allVertSplitPane;
+
 
     public ContentFrame () throws HeadlessException, WEditException
     {
@@ -130,18 +132,18 @@ public class ContentFrame    extends JFrame   implements WComponent
         //splitPane.setDividerSize(2);
         projectSplitPane.setOneTouchExpandable ( true );
 
-        projectAdditionalPanel = new TabsPanel<EditablePanel>();
-        projectAdditionalPanel.setName("Bottom_Tabs");
-        projectAdditionalPanel.getAccessibleContext().setAccessibleName ( "Bottom_Tabs" );
+        allAdditionalPanel = new TabsPanel<EditablePanel>();
+        allAdditionalPanel.setName("Bottom_Tabs");
+        allAdditionalPanel.getAccessibleContext().setAccessibleName ( "Bottom_Tabs" );
         // Другой цвет на всю нижнюю панель - чтобы отличалась от верхней.
-        projectAdditionalPanel.setBackground ( WCons.BOTTOM_TABS );
+        allAdditionalPanel.setBackground ( WCons.BOTTOM_TABS );
 
         // Отделяет все рабочие панели - Сборники, Книги. тексты - от служебной панели (Поиск и т.д.) - по вертикали.
         //vertSplitPane = new JSplitPane();
-        projectVertSplitPane = new JSplitPane ( JSplitPane.VERTICAL_SPLIT, projectSplitPane, projectAdditionalPanel);
-        projectVertSplitPane.setOneTouchExpandable ( true );
+        allVertSplitPane = new JSplitPane ( JSplitPane.VERTICAL_SPLIT, projectSplitPane, allAdditionalPanel);
+        allVertSplitPane.setOneTouchExpandable ( true );
         //add ( vertSplitPane, BorderLayout.CENTER );
-        getContentPane().add (projectVertSplitPane, BorderLayout.CENTER );
+        getContentPane().add (allVertSplitPane, BorderLayout.CENTER );
 
         // ------------- project --------------------
         CardPanel<TabsPanel<TreePanel<Project>>> cardPanel = new CardPanel<TabsPanel<TreePanel<Project>>>();
@@ -178,7 +180,7 @@ public class ContentFrame    extends JFrame   implements WComponent
         projectSplitPane.setDividerLocation ( 220 );
         // нижнюю панель показать на чуть-чуть.  0.7 - сильно вверху; 0.2 - еще выше
         // -- Почему-то дробные (проценты) не хотят работать - юзаем пикселя.
-        projectVertSplitPane.setDividerLocation ( Par.SCREEN_SIZE.height );
+        allVertSplitPane.setDividerLocation ( Par.SCREEN_SIZE.height );
     }
 
     private JPanel createBooksAndTextPanel () throws WEditException
@@ -238,7 +240,9 @@ public class ContentFrame    extends JFrame   implements WComponent
         //vertSplitPane = new JSplitPane();
         textVertSplitPane  = new JSplitPane ( JSplitPane.VERTICAL_SPLIT, textsPanel, textAdditionalPanel);
         textVertSplitPane.setOneTouchExpandable ( true );
-        textVertSplitPane.setDividerLocation ( 1 );
+        // скрыть нижнюю панель. что-то не получается. видать дальше где-то переделывается.
+        //textVertSplitPane.setDividerLocation ( 1 );
+        textVertSplitPane.setDividerLocation ( Par.SCREEN_SIZE.height );
 
 
         //splitPane.setRightComponent ( textsPanel );
@@ -1074,6 +1078,16 @@ public class ContentFrame    extends JFrame   implements WComponent
     public TabsPanel<EditablePanel> getProjectAdditionalPanel()
     {
         return projectAdditionalPanel;
+    }
+
+    public TabsPanel<EditablePanel> getAllAdditionalPanel()
+    {
+        return allAdditionalPanel;
+    }
+
+    public void showAllAdditionalPanel ()
+    {
+        allVertSplitPane.setDividerLocation ( 0.8 );  // нет еще прошлого значения - открываем слегка снизу
     }
 
     public void showProjectAdditionalPanel ()

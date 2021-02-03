@@ -45,6 +45,10 @@ public class WEMenuBar extends JMenuBar
         menu    = createImportMenu ();
         add ( menu );
 
+        // Сборник
+        menu    = createProjectMenu();
+        add ( menu );
+
         // Книга
         menu    = createBookMenu();
         add ( menu );
@@ -125,6 +129,25 @@ public class WEMenuBar extends JMenuBar
 
         menu    = getMenu ( FunctionId.CONVERT_CONTENT_TO_RTF );
         if ( menu != null )  result.add ( menu );
+
+        return result;
+    }
+
+    /* Верхнее меню - "Текущий Сборник". */
+    private WEMenu createProjectMenu () {
+        WEMenu result;
+        JComponent menu;
+
+        result = new WEMenu("Текущий Сборник");
+
+        // ----------------------- Поиск во всех загруженных книгах Сборника  ----------------------
+        // НЕ загруженные не будут использоваться !!! Это другим Поиском.
+
+        //menu = getMenu(FunctionId.EDIT_DESC_ELEMENT);
+        //if (menu != null) result.add(menu);
+
+        menu = new WEMenuItem("Поиск во всех загруженных книгах Сборника");
+        result.add(menu);
 
         return result;
     }
