@@ -15,9 +15,7 @@ import svj.wedit.v6.obj.book.BookNode;
 import svj.wedit.v6.obj.book.TextObject;
 import svj.wedit.v6.obj.function.Function;
 import svj.wedit.v6.obj.function.SimpleFunction;
-import svj.wedit.v6.tools.Convert;
-import svj.wedit.v6.tools.DialogTools;
-import svj.wedit.v6.tools.FileTools;
+import svj.wedit.v6.tools.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -93,6 +91,7 @@ public class SimpleSearchFunction   extends SimpleFunction
         BookContent bookContent;
         SimpleParameter maxSizeParam;
         int maxSize;
+        // Реузльтат. Ключ - Полный путь Эпизода. Значение - найденные в данном эпизоде фразы, и места их рапсоложения.
         Map<String,Collection<SearchObj>> searchArray;
 
         Log.l.debug ( "Start" );
@@ -122,7 +121,23 @@ public class SimpleSearchFunction   extends SimpleFunction
         {
             maxSize = maxSize + list.size();
         }
-        DialogTools.showMessage ( getName(), "Найдено "+maxSize+" строк для '" + searchStr + "'." );
+
+        if (maxSize == 1)
+        {
+            // Нашли только одно попадание - открыть диалог с кнопкой - сразу перейти на него.
+            int inum    = DialogTools.showConfirmDialog ( Par.GM.getFrame(), "Найдено только одно значение",
+                    "Перейти", "Отменить" );
+            if ( inum == JOptionPane.YES_OPTION ) {
+                // Переходим
+                // - Взяли результат поиска
+                SearchObj so = searchArray.values().iterator().next().iterator().next();
+                // - Перейти
+                BookTools.goToSearchObj(so);
+            }
+        }
+        else {
+            DialogTools.showMessage(getName(), "Найдено " + maxSize + " строк для '" + searchStr + "'.");
+        }
     }
 
     @Override

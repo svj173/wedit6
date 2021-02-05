@@ -1,7 +1,6 @@
 package svj.wedit.v6.gui;
 
 import svj.wedit.v6.Par;
-import svj.wedit.v6.content.ContentFrame;
 import svj.wedit.v6.content.toolBar.BrowserToolBar;
 import svj.wedit.v6.function.FunctionId;
 import svj.wedit.v6.function.book.ReloadBookFunction;
@@ -13,10 +12,7 @@ import svj.wedit.v6.function.book.edit.desc.EditDescElementFunction;
 import svj.wedit.v6.function.book.edit.desc.EditDescElementsFunction;
 import svj.wedit.v6.function.book.edit.newNode.AddBookNodeAfterFunction;
 import svj.wedit.v6.function.book.edit.newNode.AddBookNodeInFunction;
-import svj.wedit.v6.function.book.edit.paste.CopyBookNodeFunction;
-import svj.wedit.v6.function.book.edit.paste.CutBookNodeFunction;
-import svj.wedit.v6.function.book.edit.paste.PasteBookNodeAfterFunction;
-import svj.wedit.v6.function.book.edit.paste.PasteBookNodeInFunction;
+import svj.wedit.v6.function.book.edit.paste.*;
 import svj.wedit.v6.function.book.export.*;
 import svj.wedit.v6.function.book.export.html.ConvertToHtmlFunction;
 import svj.wedit.v6.function.book.export.html.SelectedToHtmlFunction;
@@ -31,10 +27,7 @@ import svj.wedit.v6.function.option.DecoratorFunction;
 import svj.wedit.v6.function.option.changeIconSize.ChangeMenuIconSizeFunction;
 import svj.wedit.v6.function.option.changeIconSize.ChangePanelIconSizeFunction;
 import svj.wedit.v6.function.option.changeIconSize.ChangeToolBarIconSizeFunction;
-import svj.wedit.v6.function.project.CloseProjectFunction;
-import svj.wedit.v6.function.project.SaveAbsoluteAllProjectsFunction;
-import svj.wedit.v6.function.project.SaveAllProjectsFunction;
-import svj.wedit.v6.function.project.ZipAllProjectsFunction;
+import svj.wedit.v6.function.project.*;
 import svj.wedit.v6.function.project.archive.ArchiveProjectFunction;
 import svj.wedit.v6.function.project.create_new.NewProjectFunction;
 import svj.wedit.v6.function.project.edit.book.*;
@@ -59,8 +52,6 @@ import svj.wedit.v6.gui.tree.TreePanel;
 import svj.wedit.v6.manager.FunctionManager;
 import svj.wedit.v6.obj.Project;
 import svj.wedit.v6.obj.function.Function;
-
-import java.awt.*;
 
 /**
  * Создатель основных ГУИ элементов.
@@ -272,6 +263,7 @@ public class GuiCreator {
         fm.add ( new SaveTextFunction()        );
         fm.add ( new CloseTextFunction()       );
         fm.add ( new CloseAllTextTabFunction() );
+        fm.add ( new CloseAllTextTabExcludeCurrentFunction() );
         fm.add ( new InfoElementTypeFunction() );
         fm.add ( new SelectElementFunction()   );
         fm.add ( new SelectAlignFunction()     );

@@ -4,6 +4,7 @@ package svj.wedit.v6.tools;
 import svj.wedit.v6.Par;
 import svj.wedit.v6.WCons;
 import svj.wedit.v6.exception.WEditException;
+import svj.wedit.v6.function.service.search.SearchObj;
 import svj.wedit.v6.gui.panel.TextPanel;
 import svj.wedit.v6.gui.tabs.TabsPanel;
 import svj.wedit.v6.gui.tree.TreePanel;
@@ -18,6 +19,8 @@ import javax.swing.*;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import javax.swing.tree.DefaultMutableTreeNode;
+
+import java.awt.*;
 import java.io.File;
 import java.util.Collection;
 import java.util.Date;
@@ -640,5 +643,97 @@ public class BookTools
         result  = Convert.replaceXml ( result );  // убрать все специфические XML символы.
         return result;
     }
+
+    public static void goToSearchObj(SearchObj so) throws WEditException
+    {
+        if ( so.getBookNode() == null )  return;   // выходим т.к. это - узел дерева, а не конечный элемент поиска.
+
+        BookNode    bookNode;
+        String      nodeId, text, searchText;
+        boolean     hasOpen;
+        BookContent bookContent;
+        TextPanel   textPanel;
+        JTextPane   textPane;
+        int         start, end;
+
+        bookNode    = so.getBookNode();
+        nodeId      = bookNode.getId();
+        Log.l.debug ( "nodeId = %s", nodeId );
+
+        bookContent = bookNode.getBookContent();
+
+        // Перейти на обьект bookNode. Если он не открыт - открыть.
+        // - Определить - может такой Сборник уже загружен и открыт
+        hasOpen = Par.GM.containNode ( nodeId, bookContent );
+        Log.l.debug ( "hasOpen = ", hasOpen );
+        if ( hasOpen )
+        {
+            // уже есть открытый - сделать текущим выбранным
+            Par.GM.selectNode ( nodeId, bookContent );
+        }
+        else
+        {
+            Par.GM.addBookText ( bookNode, bookContent, 0 );
+        }
+
+        // Найти в нем требуемый текст, выделить, перевести на него курсор.
+        // - Взять текущий текст-panel
+        textPanel   = Par.GM.getFrame().getCurrentTextPanel();
+        // - Найти в нем искомую фразу. Запомнить позиции начала и конца.
+        textPane    = textPanel.getTextPane ();
+        text        = textPane.getText();
+        //Log.l.debug ( "--- current text : \n%s\n", text );
+        searchText  = so.getSearchText();
+
+        start       = search ( text, searchText, so.getNumber() );
+
+        //Log.l.debug ( "--- searchText = '%s'; start = %d", searchText, start );
+        if ( start >= 0 )
+        {
+            end = start + searchText.length();
+            // - Переместить курсор на начало выделенного текста. Передвинуть скроллинг - если надо.
+            textPanel.setCurrentCursor ( start );
+            // - Выделить данную позицию
+            textPane.select ( start, end );
+            //textPanel.set
+            //textPane.repaint();
+
+            // изменяем цвет текста выделения
+            textPane.setSelectedTextColor ( Color.WHITE );
+            // изменяем цвет фона выделения
+            textPane.setSelectionColor ( Color.GREEN );
+        }
+    }
+
+    /**
+     *  Найти текст.
+     * @param text         где ищем.
+     * @param searchText   что ищем.
+     * @param number       номер поиска текста - вдруг еще здесь встречается?
+     * @return             Номер найденной позиции текста, во всем тексте. Годится для применения курсора в редакторе текстов.
+     */
+    public static int search ( String text, String searchText, int number )
+    {
+        int start;
+
+        if ( number > 0 )
+        {
+            start = 0;
+            // проделать заданное число поисков
+            for ( int i = 0; i<=number; i++ )
+            {
+                start  = text.indexOf ( searchText, start );
+                start++;   // сдвигает поиск вперед
+            }
+            start--;       // возвращаем правильную позицию
+        }
+        else
+        {
+            start = text.indexOf ( searchText );    // находит правильно
+        }
+
+        return start;
+    }
+
 
 }

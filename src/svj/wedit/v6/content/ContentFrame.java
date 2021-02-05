@@ -220,6 +220,7 @@ public class ContentFrame    extends JFrame   implements WComponent
         textsPanel.addIconFunction ( Par.GM.getFm().get ( FunctionId.SAVE_TEXT ) );
         textsPanel.addIconFunction ( Par.GM.getFm().get ( FunctionId.CLOSE_TEXT ) );
         textsPanel.addIconFunction ( Par.GM.getFm().get ( FunctionId.CLOSE_ALL_TEXT ) );
+        textsPanel.addIconFunction ( Par.GM.getFm().get ( FunctionId.CLOSE_ALL_TEXT_EXCLUDE_CURRENT ) );
         textsPanel.addIconFunction ( Par.GM.getFm().get ( FunctionId.UNDO_TEXT ) );
         textsPanel.addIconFunction ( Par.GM.getFm().get ( FunctionId.REDO_TEXT ) );
         textsPanel.addIconFunction ( Par.GM.getFm().get ( FunctionId.TEXT_INFO_ELEMENT ) );

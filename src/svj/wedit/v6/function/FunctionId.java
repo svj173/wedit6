@@ -26,7 +26,7 @@ public enum FunctionId
     EDIT_NODE_TYPE,
 
     // Text
-    OPEN_TEXT, CLOSE_TEXT, CLOSE_ALL_TEXT, SAVE_TEXT,
+    OPEN_TEXT, CLOSE_TEXT, CLOSE_ALL_TEXT, CLOSE_ALL_TEXT_EXCLUDE_CURRENT, SAVE_TEXT,
     STAT_OPEN,      // меню - Статистика / Инфа обо всех открытых
     STAT_BOOK,      // меню - Статистика / Список книг
     STAT_BOOK_EDIT,      // меню - Статистика по редактированию Эпизодов. Смотреть исправления за - день, неделю, месяц...

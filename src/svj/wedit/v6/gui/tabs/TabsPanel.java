@@ -14,10 +14,10 @@ import svj.wedit.v6.tools.Utils;
 
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
+
 import java.awt.*;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 /**
@@ -43,7 +43,7 @@ public class TabsPanel<T extends EditablePanel> extends WPanel  implements WComp
       Пример ключа:
       1) Разное_1391411769437   - табики открытых текстов
       */
-    private final LinkedHashMap<String, T> panels;
+    private final ConcurrentHashMap<String, T> panels;
 
 
     public TabsPanel ()
@@ -59,7 +59,7 @@ public class TabsPanel<T extends EditablePanel> extends WPanel  implements WComp
         setLayout ( new BorderLayout() );
 
         // создаем упорядоченный список в порядке поступления
-        panels      = new LinkedHashMap<String,T>();
+        panels      = new ConcurrentHashMap<String,T>();
 
         //tabbedPane  = new WTabbedPane();
         tabbedPane  = new JTabbedPane();
@@ -116,7 +116,7 @@ public class TabsPanel<T extends EditablePanel> extends WPanel  implements WComp
         if ( tabPanel == null )  throw new MessageException ( "Нельзя удалить NULL таб." );
 
         //Log.l.debug ( "[removeTab] Start. panelId:", tabPanel.getId(), "; tabPanel = ", tabPanel.getClass().getSimpleName(), "; tabPanel hashCode = ", tabPanel.hashCode() );
-        Log.l.debug ( "[removeTab] panels = ", DumpTools.printCollectionAsClass ( panels.values (), '\n' ) );
+        Log.l.debug ( "[removeTab] panels = %s", DumpTools.printCollectionAsClass ( panels.values (), '\n' ) );
 
         removeKey   = null;
         // Найти в мапе ключ для удаляемого обьекта
@@ -130,7 +130,7 @@ public class TabsPanel<T extends EditablePanel> extends WPanel  implements WComp
                 break;
             }
         }
-        Log.l.debug ( "---  key:", removeKey );
+        Log.l.info ( "Tab key for gui remove = %s", removeKey );
         if ( removeKey != null )
         {
             panels.remove ( removeKey );
@@ -144,6 +144,7 @@ public class TabsPanel<T extends EditablePanel> extends WPanel  implements WComp
             throw new MessageException ( "Не удалось удалить таб '", tabPanel.getName(), "'." );
         }
 
+        Log.l.info("[removeTab] Finish. remove tab");
         //Log.l.debug ( "[removeTab] after removed. panelId:", panelId, "; panels = ", DumpTools.printCollectionAsClass ( panels.values (), '\n' ) );
     }
 
