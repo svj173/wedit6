@@ -178,4 +178,39 @@ public class PasteProjectNodeInFunction extends PasteBookFunction
         Buffer.clear();
     }
 
+    @Override
+    protected String getChildSize(DefaultMutableTreeNode node) {
+        return "-";
+    }
+
+    @Override
+    protected int getSize(DefaultMutableTreeNode node) {
+        int result = -1;
+
+        if ( node == null )  return result;
+
+        if ( node.getUserObject() instanceof Section )
+        {
+            Section section = (Section) node.getUserObject();
+            result = section.getSize();
+        }
+
+        return result;
+    }
+
+    @Override
+    protected String getName(DefaultMutableTreeNode node) {
+        String result = "???";
+
+        if ( node == null )  return result;
+
+        if ( node.getUserObject() instanceof Section )
+        {
+            Section section = (Section) node.getUserObject();
+            result = section.getName();
+        }
+
+        return result;
+    }
+
 }

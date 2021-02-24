@@ -54,9 +54,6 @@ public abstract class PasteBookFunction extends SimpleFunction
         JLabel          result;
         StringBuilder   msg;
         int             ic;
-        Section         section;
-
-        section = (Section) selectNode.getUserObject();
 
         msg = new StringBuilder();
 
@@ -65,7 +62,7 @@ public abstract class PasteBookFunction extends SimpleFunction
         msg.append ( "<h2>Вы действительно желаете<br/> вставить обьекты " );
         msg.append ( mode );
         msg.append ( " в '" );
-        msg.append ( section.getName() );
+        msg.append ( getName(selectNode) );
         msg.append ( "' ?</h2>" );
 
         msg.append ( "Уровень : " );
@@ -76,25 +73,87 @@ public abstract class PasteBookFunction extends SimpleFunction
 
         ic          = 1;
 
+        // todo - node?
         for ( DefaultMutableTreeNode node : pasteNodes )
         {
             msg.append ( "<tr><td align='right'>&nbsp;" );
             msg.append ( ic );
             msg.append ( "&nbsp;</td><td><font color='green'>&nbsp;" );
-            msg.append ( section.getName() );
+            msg.append ( getName(node) );
             msg.append ( "&nbsp;</td><td align='right'>&nbsp;" );
-            msg.append ( section.getSize() );
+            msg.append ( getSize(node) );
             msg.append ( "&nbsp;</td><td align='center'>&nbsp;" );
-            msg.append ( "-" );
+            //msg.append ( "-" );
+            msg.append ( getChildSize(node) );
             msg.append ( "&nbsp;</td>" );
             msg.append ( "</tr>" );
             ic++;
+            /*
+            bookNode = (BookNode) node.getUserObject();
+            msg.append ( "<tr><td align='right'>&nbsp;" );
+            msg.append ( ic );
+            msg.append ( "&nbsp;</td><td><font color='green'>&nbsp;" );
+            msg.append ( bookNode.getName() );
+            msg.append ( "&nbsp;</td><td align='right'>&nbsp;" );
+            msg.append ( bookNode.getSize() );
+            msg.append ( "&nbsp;</td><td align='center'>&nbsp;" );
+            msg.append ( bookNode.getChildSize() );
+            msg.append ( "&nbsp;</td>" );
+            msg.append ( "</tr>" );
+
+             */
         }
         msg.append ( "</table>\n<br/></body></HTML>\n" );
 
         result   = new JLabel ( msg.toString() );
 
         return result;
+    }
+
+    protected String getChildSize(DefaultMutableTreeNode node)
+    {
+        String result = "-";
+
+        if ( node == null )  return result;
+
+        if ( node.getUserObject() instanceof BookNode )
+        {
+            BookNode bookNode = (BookNode) node.getUserObject();
+            result = Integer.toString(bookNode.getChildSize());
+        }
+
+        return result;
+    }
+
+    protected int getSize(DefaultMutableTreeNode node)
+    {
+        int result = -1;
+
+        if ( node == null )  return result;
+
+        if ( node.getUserObject() instanceof BookNode )
+        {
+            BookNode bookNode = (BookNode) node.getUserObject();
+            result = bookNode.getSize();
+        }
+
+        return result;
+    }
+
+    protected String getName(DefaultMutableTreeNode node)
+    {
+        String result = "???";
+
+        if ( node == null )  return result;
+
+        if ( node.getUserObject() instanceof BookNode )
+        {
+            BookNode bookNode = (BookNode) node.getUserObject();
+            result = bookNode.getName();
+        }
+
+        return result;
+
     }
 
     @Override
