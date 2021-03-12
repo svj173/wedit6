@@ -158,4 +158,9 @@ public class TableTextObject extends TextObject
             values[row][column] = value.toString();
     }
 
+    public TextObjectType getType()
+    {
+        return TextObjectType.TABLE;
+    }
+
 }

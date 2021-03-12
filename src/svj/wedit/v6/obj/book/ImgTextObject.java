@@ -44,4 +44,9 @@ public class ImgTextObject extends TextObject
         }
     }
 
+    public TextObjectType getType()
+    {
+        return TextObjectType.IMG;
+    }
+
 }

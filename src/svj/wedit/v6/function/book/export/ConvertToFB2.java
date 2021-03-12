@@ -51,6 +51,8 @@ public class ConvertToFB2 extends AbstractConvertFunction {
      * FALSE - вывели любой текст, в т.ч. и пустую строку. */
     private boolean needEmpty = true;
 
+    private TextObjectType oldTextType = TextObjectType.EOL;
+
 
     public ConvertToFB2(FunctionId functionId, String functionName, String iconFile, boolean multiSelect) {
         super ( functionId, functionName, iconFile, multiSelect );
@@ -232,6 +234,61 @@ public class ConvertToFB2 extends AbstractConvertFunction {
         needEmpty = false;
 
         /*
+Условия для борьбы с разрывами строк:
+1) флаг - предыдущий текст -sln, str
+2) str
+- если предыдущий - sln - выводим с новой строки, но перенос строк в конце не ставим   - т.е. только открытый тег P
+- если предыдущий - str - выводим текст без переносов строк - в начале и в конце
+3) sln
+- если предыдущий - sln - обычная работа
+- если предыдущий - str - добавляем текст без начального переноса строк, но в конце ставим перенос
+
+Проблема
+1) Ставя стартовый тег <p> мы можем забыть поставить закрывашку (например, дальше пойдут типы EOL, IMG и пр)
+
+Может, проще прогонять весь текст и анализировать подобные ситуации (str
+
+Вторйо вариант - может лучше разобраться, почему конвертер из BookNode так работает.
+Почему он полсе SLN воспринимает абзац как две разных сущности?
+
+         */
+/*
+        String startTag, endTag;
+        TextObjectType currentType = textObj.getType();
+
+        switch (currentType)
+        {
+            case STR:
+                switch (oldTextType) {
+                    case SLN:
+                        startTag = "<p>";
+                        endTag = "";
+                        break;
+                    case STR:
+                        startTag = "";
+                        endTag = "";
+                        break;
+                }
+                break;
+
+            case SLN:
+                switch (oldTextType) {
+                    case SLN:
+                        startTag = "<p>";
+                        endTag = "";
+                        break;
+                    case STR:
+                        startTag = "";
+                        endTag = "";
+                        break;
+                }
+                break;
+
+            default:
+
+        }
+*/
+        /*
         if ( textObj instanceof SlnTextObject) {
             writeStr ( "<p>" );
             writeStr ( getRedLineValue(cp) );
@@ -248,7 +305,7 @@ public class ConvertToFB2 extends AbstractConvertFunction {
         }
         */
 
-        // Не исп красную строку в любом случае.
+        // Не исп красную строку в любом случае - чтобы случайно не потерять данные, либо не поломать структуру файла.
         writeStr ( "<p>" );
         writeStr ( text );
         writeStr ( "</p>" );

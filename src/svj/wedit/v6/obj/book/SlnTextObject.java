@@ -70,4 +70,9 @@ public class SlnTextObject extends TextObject
         }
     }
 
+    public TextObjectType getType()
+    {
+        return TextObjectType.SLN;
+    }
+
 }

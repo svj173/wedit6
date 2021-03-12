@@ -217,4 +217,9 @@ public class TextObject   extends XmlAvailable
         return ic;
     }
 
+    public TextObjectType getType()
+    {
+        return TextObjectType.STR;
+    }
+
 }

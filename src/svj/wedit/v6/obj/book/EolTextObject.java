@@ -44,4 +44,9 @@ public class EolTextObject  extends TextObject
         }
     }
 
+    public TextObjectType getType()
+    {
+        return TextObjectType.EOL;
+    }
+
 }
