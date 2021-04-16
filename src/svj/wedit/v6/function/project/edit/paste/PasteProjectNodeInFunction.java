@@ -120,6 +120,7 @@ public class PasteProjectNodeInFunction extends PasteBookFunction
         Project oldProject = null;
         BookTitle bookTitle;
         Section section;
+        int i = 0;
 
         // - для всех newNodes
         for (DefaultMutableTreeNode newNode : newNodes)
@@ -149,27 +150,33 @@ public class PasteProjectNodeInFunction extends PasteBookFunction
             newFullPath = FileTools.createFullFileName(project, selectNode, (WTreeObj) node);
             Log.l.info("newFullPath = '%s'", newFullPath);
 
-            // 3) todo перемещаем эти файлы на новое место - Отладка (секторы со вложениями и книги)
+            // 3) перемещаем эти файлы на новое место - Отладка (секторы со вложениями и книги)
+            // - Для сектора - директорию сектора со всеми файлами
+            // - Для книги - только ее файл
             // - есть File.renameTo - но не для всех платформ работает. Сделать жесткое копирвоание а потмо удаление.
             FileTools.moveFile(oldFullPath, newFullPath);
 
-            /*
+
+            // todo Вставить в деревья
+            //*
             if ( node instanceof BookTitle)
             {
                 // Вставить Книгу в основное дерево
-                selectSection.addBook ( i, (BookTitle) node );
+                selectSection.addBook ( 0, (BookTitle) node );
             }
             else if ( node instanceof Section)
             {
                 // Вставить Секцию в основное дерево
-               selectSection.addSection ( i, (Section) node );
+               selectSection.addSection ( 0, (Section) node );
             }
             // Вставить в ГУИ-дерево Сборника
-            currentProjectContentPanel.insertNode ( newNodes[i], selectNode, i );
-            */
+            currentProjectContentPanel.insertNode ( newNodes[i], selectNode, 0 );
+            //*/
+
+            i++;
         }
 
-        // todo Отметить что было изменение  - лишнее, т.к. нечего уже сохранять - Или дерево Сборника?
+        // todo Отметить что было изменение  - лишнее, т.к. нечего уже сохранять - Или дерево Сборника ???
 
         //currentProjectContentPanel.setEdit ( true );
         //currentProjectContentPanel.getObject().setEdit ( true ); // BookContent - т.к. через него флаг рисуется.

@@ -1093,18 +1093,11 @@ public class FileTools
     public static void moveFile (String src, String dest) throws WEditException {
         try {
             Files.move(Paths.get(src), Paths.get(dest));
-        } catch (Exception e) {
-            Log.l.error("Exception while moving file: " + e.getMessage(), e);
-            throw new WEditException(null, "Ошибка перемещения файла '" + src + "'\n в '" + dest + "'.");
-        }
-        /*
-        if (result != null) {
             Log.l.debug("File moved successfully.");
-        } else {
-            Log.l.error("File movement failed.");
+        } catch (Exception e) {
+            Log.l.error("Exception while moving file from '" + src + "' to '" + dest + "' : " + e.getMessage(), e);
             throw new WEditException(null, "Ошибка перемещения файла '" + src + "'\n в '" + dest + "'.");
         }
-        */
     }
 
 }

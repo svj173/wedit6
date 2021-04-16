@@ -2,9 +2,11 @@ package svj.wedit.v6.function.book.edit.paste;
 
 
 import svj.wedit.v6.exception.WEditException;
-import svj.wedit.v6.obj.Section;
-import svj.wedit.v6.obj.function.SimpleFunction;
+import svj.wedit.v6.logger.Log;
+import svj.wedit.v6.obj.IName;
+import svj.wedit.v6.obj.XmlAvailable;
 import svj.wedit.v6.obj.book.BookNode;
+import svj.wedit.v6.obj.function.SimpleFunction;
 import svj.wedit.v6.util.Buffer;
 
 import javax.swing.*;
@@ -55,6 +57,8 @@ public abstract class PasteBookFunction extends SimpleFunction
         StringBuilder   msg;
         int             ic;
 
+        Log.l.info("selectNode = %s", selectNode);
+
         msg = new StringBuilder();
 
         // Вы действительно желаете вставить след элементы? (перечислить) В обьект ""?
@@ -76,6 +80,7 @@ public abstract class PasteBookFunction extends SimpleFunction
         // todo - node?
         for ( DefaultMutableTreeNode node : pasteNodes )
         {
+            Log.l.info("- move Node = %s", node);
             msg.append ( "<tr><td align='right'>&nbsp;" );
             msg.append ( ic );
             msg.append ( "&nbsp;</td><td><font color='green'>&nbsp;" );
@@ -131,9 +136,9 @@ public abstract class PasteBookFunction extends SimpleFunction
 
         if ( node == null )  return result;
 
-        if ( node.getUserObject() instanceof BookNode )
+        if ( node.getUserObject() instanceof XmlAvailable)
         {
-            BookNode bookNode = (BookNode) node.getUserObject();
+            XmlAvailable bookNode = (XmlAvailable) node.getUserObject();
             result = bookNode.getSize();
         }
 
@@ -146,9 +151,10 @@ public abstract class PasteBookFunction extends SimpleFunction
 
         if ( node == null )  return result;
 
-        if ( node.getUserObject() instanceof BookNode )
+        Object userObject = node.getUserObject();
+        if ( userObject instanceof IName)
         {
-            BookNode bookNode = (BookNode) node.getUserObject();
+            IName bookNode = (IName) node.getUserObject();
             result = bookNode.getName();
         }
 
