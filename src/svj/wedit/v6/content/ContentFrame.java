@@ -209,6 +209,7 @@ public class ContentFrame    extends JFrame   implements WComponent
         booksPanel.addIconFunction ( Par.GM.getFm().get ( FunctionId.BOOKMARK ) );       // добавить текущую книгу в Закладки
         // Групповое редактирование типов Элементов (hidden, work...)
         booksPanel.addIconFunction ( Par.GM.getFm().get ( FunctionId.EDIT_NODE_TYPE ) );
+        booksPanel.addIconFunction ( Par.GM.getFm().get ( FunctionId.REWRITE_BOOK_TREE ) );
 
         splitPane.setLeftComponent ( booksPanel );
 
