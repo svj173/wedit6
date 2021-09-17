@@ -78,11 +78,6 @@ public class SearchObj     implements Comparable<SearchObj>
         return text;
     }
 
-    public String toString()
-    {
-        return text;
-    }
-
     public String getSearchText ()
     {
         return searchText;
@@ -106,5 +101,18 @@ public class SearchObj     implements Comparable<SearchObj>
     public int getNumber ()
     {
         return number;
+    }
+
+    @Override
+    public String toString() {
+        String result = "SearchObj{" +
+                "path='" + path + '\'' +
+                ", cursor=" + cursor +
+                ", text='" + text + '\'' +
+                ", searchText='" + searchText + '\'' +
+                ", bookNode=" + (bookNode == null ? "Null" : bookNode.getId()) +
+                ", number=" + number +
+                '}';
+        return result;
     }
 }

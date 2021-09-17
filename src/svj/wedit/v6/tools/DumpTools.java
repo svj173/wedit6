@@ -76,6 +76,8 @@ public class DumpTools
         if ( array == null  ) return "Null";
         if ( array.isEmpty()  ) return "Empty";
 
+        if (separator == null)  separator = "\n";
+
         for ( Object key : array.keySet() )
         {
             sb.append ( separator );

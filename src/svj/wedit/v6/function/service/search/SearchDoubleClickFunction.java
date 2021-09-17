@@ -29,6 +29,8 @@ public class SearchDoubleClickFunction extends SimpleFunction
         TreeObj     treeObj;
         SearchObj   so;
 
+        Log.f.info("Start. event = %s", event);
+
         if ( event == null ) return;
         if ( event.getSource() == null ) return;
         if ( !(event.getSource() instanceof JTree ) ) return;
@@ -55,6 +57,7 @@ public class SearchDoubleClickFunction extends SimpleFunction
             Log.l.error ( "error", e );
             throw new WEditException ( e, "Ошибка перехода на страницу с найденным текстом :\n", e );
         }
+        Log.f.info("Finish");
     }
 
     @Override

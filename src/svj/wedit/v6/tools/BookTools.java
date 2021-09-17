@@ -644,6 +644,11 @@ public class BookTools
         return result;
     }
 
+    /**
+     * Перейти на страницу текста, которая указана в обьекте.
+     * @param so    Обьект со страницы Поиска
+     * @throws WEditException  Проблемы перехода
+     */
     public static void goToSearchObj(SearchObj so) throws WEditException
     {
         if ( so.getBookNode() == null )  return;   // выходим т.к. это - узел дерева, а не конечный элемент поиска.
@@ -658,14 +663,14 @@ public class BookTools
 
         bookNode    = so.getBookNode();
         nodeId      = bookNode.getId();
-        Log.l.debug ( "nodeId = %s", nodeId );
+        Log.l.info ( "[N] nodeId = %s", nodeId );
 
         bookContent = bookNode.getBookContent();
 
         // Перейти на обьект bookNode. Если он не открыт - открыть.
         // - Определить - может такой Сборник уже загружен и открыт
         hasOpen = Par.GM.containNode ( nodeId, bookContent );
-        Log.l.debug ( "hasOpen = ", hasOpen );
+        Log.l.info ( "[N] hasOpen = %b", hasOpen );
         if ( hasOpen )
         {
             // уже есть открытый - сделать текущим выбранным

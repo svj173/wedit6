@@ -539,8 +539,9 @@ public class ContentFrame    extends JFrame   implements WComponent
 
         // Взять из текущего card - tabsPanel по ИД
         bookId = bookContent.getId();  // ID книги - это ее имя файла.
-        Log.l.debug ( "--- bookId = %s; nodeId for select = %s", bookId, nodeId );
+        Log.l.info ( "[N] bookId = %s; nodeId for select = %s", bookId, nodeId );
         tabsPanel   = textsPanel.getTabsPanel ( bookId );
+        Log.l.info ( "[N] tabsPanel = %s", tabsPanel );
         if ( (tabsPanel != null) && (tabsPanel.contain ( nodeId )) )
         {
             tabsPanel.setSelectedTab ( nodeId );

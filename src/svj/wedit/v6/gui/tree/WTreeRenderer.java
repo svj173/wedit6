@@ -2,6 +2,7 @@ package svj.wedit.v6.gui.tree;
 
 
 import svj.wedit.v6.WCons;
+import svj.wedit.v6.function.service.search.SearchObj;
 import svj.wedit.v6.logger.Log;
 import svj.wedit.v6.obj.TreeObj;
 import svj.wedit.v6.obj.TreeObjType;
@@ -10,9 +11,9 @@ import svj.wedit.v6.tools.Convert;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultTreeCellRenderer;
+
 import java.awt.*;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -99,7 +100,6 @@ public class WTreeRenderer extends DefaultTreeCellRenderer implements Cloneable
         try
         {
             obj      = ( TreeObj ) value;
-            type     = obj.getType();
             object   = obj.getWTreeObj();
 
             if ( object instanceof WTreeObj )
@@ -109,6 +109,7 @@ public class WTreeRenderer extends DefaultTreeCellRenderer implements Cloneable
                 // Вот этой строкой решили проблему растягивания титлов.
                 comp.setText ( wTreeObj.getName() );
 
+                type     = obj.getType();
                 renderer = objectRenderers.get(type);
                 //if ( renderer == null )  renderer = objectRenderers.get(EmsConst.SYSTEM_OBJECT_TYPE);
                 if ( renderer == null )
@@ -133,12 +134,23 @@ public class WTreeRenderer extends DefaultTreeCellRenderer implements Cloneable
                 }
 
                 /*
-                // Поначалу рисует очень длинные бордюры. Но стоит обьект раскрыть-закрыть и у него и его чилдренов бордюры становятся строго по тексту.
+                // Поначалу рисует очень длинные бордюры. Но стоит обьект раскрыть-закрыть и у него и его чилдренов
+                // бордюры становятся строго по тексту.
                 comp.setMaximumSize ( comp.getPreferredSize () );
                 comp.setBorder ( BorderFactory.createEtchedBorder () );
                 comp.revalidate ();
                 comp.repaint ();
                 */
+            }
+            else if ( object instanceof TreeObj)
+            {
+                TreeObj to = (TreeObj) object;
+                comp.setText ( to.getName() );
+            }
+            else if ( object instanceof SearchObj)
+            {
+                SearchObj so = (SearchObj) object;
+                comp.setText ( so.getText() );
             }
             else
             {

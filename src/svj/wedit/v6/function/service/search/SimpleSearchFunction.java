@@ -18,6 +18,7 @@ import svj.wedit.v6.obj.function.SimpleFunction;
 import svj.wedit.v6.tools.*;
 
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.*;
@@ -153,6 +154,8 @@ public class SimpleSearchFunction   extends SimpleFunction
         SimpleEditablePanel result;
         Function    doubleClickFunction;
 
+        Log.l.info ( "[N] searchArray = %s", DumpTools.printMap(searchArray, null) );
+
         // Создать дерево найденных значений
         seachResultRoot = createSearchTree ( searchArray );
 
@@ -164,9 +167,12 @@ public class SimpleSearchFunction   extends SimpleFunction
         // TreeObj root, T object
         treePanel   = new TreePanel ( seachResultRoot, null );
         treePanel.getTree().setRootVisible ( false );
-        scrollPane  = new JScrollPane ( treePanel );
-        //scrollPane = null;
-        result.add ( scrollPane, BorderLayout.CENTER );
+
+        //scrollPane  = new JScrollPane ( treePanel );
+        //result.add ( scrollPane, BorderLayout.CENTER );
+
+        // без скрола
+        result.add ( treePanel, BorderLayout.CENTER );
 
         // Навесить на дерево свою акцию - если это конечный узел - переход в указанную точку.
         doubleClickFunction = new SearchDoubleClickFunction();
@@ -223,11 +229,11 @@ public class SimpleSearchFunction   extends SimpleFunction
     }
 
     /**
-     *
+     * Поиск в книге заданного текста.
      * @param nodeObject
      * @param searchText
      * @param maxSize      Счетчик последних найденных.
-     * @param searchArray
+     * @param searchArray  Массив, куда добавляются найденные фрагменты.
      */
     private void processNode ( BookNode nodeObject, String searchText, int maxSize, Map<String, Collection<SearchObj>> searchArray )
     {
@@ -317,12 +323,16 @@ public class SimpleSearchFunction   extends SimpleFunction
      * @param searchText
      * @param number       Порядковые номер найденного текста - если в одном тексте было найдено более одного раза.
      */
-    private void addSearch ( BookNode nodeObject, int maxSize, Map<String, Collection<SearchObj>> searchArray, String text, String searchText, int number )
+    private void addSearch ( BookNode nodeObject, int maxSize, Map<String, Collection<SearchObj>> searchArray,
+                             String text, String searchText, int number )
     {
         String          title;
         int             ic;
         SearchObj       searchObj;
         Collection<SearchObj> list;
+
+        Log.l.info ( "--- [N] nodeObject = %s; find = %s", nodeObject, text );
+        Log.l.info ( "--- [N] parent node = %s; searchText = %s", nodeObject.getParentNode().getName(), searchText );
 
         // Только при переходах на эту запись.
         //action = new StyledEditorKit.ForegroundAction ( "Search", Color.BLUE );
