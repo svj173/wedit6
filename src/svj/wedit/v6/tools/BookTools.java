@@ -22,9 +22,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 import java.awt.*;
 import java.io.File;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Enumeration;
+import java.util.*;
 
 
 /**
@@ -629,6 +627,11 @@ public class BookTools
 
     public static String createBookNodeId ( String bookNodeName )
     {
+        return createBookNodeId(bookNodeName, 0);
+    }
+
+    public static String createBookNodeId ( String bookNodeName, int number )
+    {
         String result;
         if ( bookNodeName == null )
             result = "bookNodeName";
@@ -639,8 +642,21 @@ public class BookTools
             result = bookNodeName.replace ( " ", "_" );
         }
         //result  = Convert.concatObj ( result, '_', System.currentTimeMillis() );    // old
-        result  = result + WCons.PP + Convert.getFullDate ( new Date() );  // Преобразовать дату в удобочитаемый вид, а не непонятный набор циферок.
-        result  = Convert.replaceXml ( result );  // убрать все специфические XML символы.
+
+        // Преобразовать дату в удобочитаемый вид, а не непонятный набор циферок.
+        // - не применяет наносекунды
+        //result  = result + WCons.PP + Convert.getFullDate ( new Date() );
+
+        // применяем наносекунды - т.к. при конвертации книги одинаковые названия эпизодов имеют одинаковое время в миллисек.
+        // что приводит к одинаковым ИД
+        result  = result + WCons.PP + System.nanoTime();
+
+        // убрать все специфические XML символы.
+        result  = Convert.replaceXml ( result );
+
+        if (number > 0) {
+            result = result + WCons.PP + number;
+        }
         return result;
     }
 

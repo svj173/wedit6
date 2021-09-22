@@ -491,6 +491,14 @@ public class TabsPanel<T extends EditablePanel> extends WPanel  implements WComp
         }
     }
 
+    public int getTabSize() {
+        return panels.size();
+    }
+
+    public boolean isNotEmpty() {
+        return panels.size() > 0;
+    }
+
     public void setSelectedPanel ( T panel )
     {
         tabbedPane.setSelectedComponent ( panel );

@@ -19,6 +19,7 @@ import svj.wedit.v6.function.book.export.html.SelectedToHtmlFunction;
 import svj.wedit.v6.function.book.imports.doc.ImportBookFromDocFunction;
 import svj.wedit.v6.function.book.imports.txt.ImportBookFromTxtFunction;
 import svj.wedit.v6.function.book.imports.we1.ImportFromWe1Function;
+import svj.wedit.v6.function.book.text.CheckNodeIdFunction;
 import svj.wedit.v6.function.book.text.ReplaceBlockTextFunction;
 import svj.wedit.v6.function.book.text.RewriteBookTreeFunction;
 import svj.wedit.v6.function.book.tree.GroupEditNodeTypeFunction;
@@ -230,6 +231,7 @@ public class GuiCreator {
 
         fm.add ( new ReloadBookFunction()   );
         fm.add ( new RewriteBookTreeFunction()     );
+        fm.add ( new CheckNodeIdFunction()         );
 
         // - элементы книги
         fm.add ( new AddBookNodeInFunction()       );
