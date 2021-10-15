@@ -2,11 +2,8 @@ package svj.wedit.v6.function.book.text;
 
 
 import svj.wedit.v6.Par;
-import svj.wedit.v6.exception.MessageException;
 import svj.wedit.v6.exception.WEditException;
 import svj.wedit.v6.function.FunctionId;
-import svj.wedit.v6.gui.panel.TextPanel;
-import svj.wedit.v6.gui.tabs.TabsPanel;
 import svj.wedit.v6.obj.WTreeObj;
 import svj.wedit.v6.obj.book.BookContent;
 import svj.wedit.v6.obj.book.BookNode;
@@ -40,18 +37,12 @@ public class CheckNodeIdFunction extends Function
     public void handle ( ActionEvent event ) throws WEditException
     {
         BookContent currentBookContent;
-        TabsPanel<TextPanel> tabs;
         BookNode bookNode;
 
         currentBookContent  = Par.GM.getFrame().getCurrentBookContent();
 
         // Проверка открытых эпизодов
-        tabs = Par.GM.getFrame().getTextTabsPanel();
-        if ((tabs != null) && (tabs.isNotEmpty()))
-        {
-            throw new MessageException( "У книги '", currentBookContent.getName() + "' есть открытые тексты.\nНеобходимо их все закрыть."
-                    + "\n\n" + tabs );
-        }
+        BookTools.checkAllOpenText();
 
         // рекурсивно пробегаем по эпизодам и анализируем ИД
 

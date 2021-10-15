@@ -244,6 +244,9 @@ public class WEMenuBar extends JMenuBar
         menu    = getMenu ( FunctionId.BLOCK_REPLACE );
         if ( menu != null )  result.add ( menu );
 
+        menu    = getMenu ( FunctionId.FIND_LOW_POINT );
+        if ( menu != null )  result.add ( menu );
+
         menu    = getMenu ( FunctionId.SET_ALL_TEXT_AS_SIMPLE );
         if ( menu != null )  result.add ( menu );
 

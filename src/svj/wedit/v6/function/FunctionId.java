@@ -46,7 +46,7 @@ public enum FunctionId
 
     // Tools For Current Book
     TRIM_BOOK_TEXT, REPLACE_BOOK_TEXT, BLOCK_REPLACE,
-    SET_ALL_TEXT_AS_SIMPLE,
+    SET_ALL_TEXT_AS_SIMPLE, FIND_LOW_POINT,
 
     BOOKMARK
 }

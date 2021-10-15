@@ -281,7 +281,7 @@ public class SimpleSearchFunction   extends SimpleFunction
                         str     = textObj.getText ();
                         if ( str.contains ( searchText ) )
                         {
-                            // Нашли в заголовке - добавить в массив
+                            // Нашли в тексте - добавить в массив
                             addSearch ( nodeObject, maxSize, searchArray, str, searchText, ic );
                             ic++;
                         }

@@ -3,6 +3,7 @@ package svj.wedit.v6.tools;
 
 import svj.wedit.v6.Par;
 import svj.wedit.v6.WCons;
+import svj.wedit.v6.exception.MessageException;
 import svj.wedit.v6.exception.WEditException;
 import svj.wedit.v6.function.service.search.SearchObj;
 import svj.wedit.v6.gui.panel.TextPanel;
@@ -582,6 +583,24 @@ public class BookTools
                 // - bookNode открыта в составе других частей? Если ДА - исключение.
                 BookTools.checkContainInNode ( bookNode, node );
             }
+        }
+    }
+
+    /**
+     * Проверить, есть ли открытые тексты для текущей книги.
+     * Если есть - генерим исключение.
+     */
+    public static void checkAllOpenText ()  throws WEditException
+    {
+        TabsPanel<TextPanel>    tabsPanel;
+
+        // Берем все открытые текстовые панели. Ищем в них наш узел, или его родителей.
+        tabsPanel   = Par.GM.getFrame().getTextTabsPanel();
+        if ((tabsPanel != null) && (tabsPanel.isNotEmpty()))
+        {
+            throw new MessageException( "У книги '", Par.GM.getFrame().getCurrentBookContent().getName()
+                    + "' есть открытые тексты.\nНеобходимо их все закрыть."
+                    + "\n\n" + tabsPanel );
         }
     }
 
