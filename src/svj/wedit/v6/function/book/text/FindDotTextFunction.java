@@ -4,16 +4,23 @@ package svj.wedit.v6.function.book.text;
 import svj.wedit.v6.Par;
 import svj.wedit.v6.exception.WEditException;
 import svj.wedit.v6.function.FunctionId;
+import svj.wedit.v6.function.service.search.SearchDoubleClickFunction;
 import svj.wedit.v6.function.service.search.SearchObj;
+import svj.wedit.v6.gui.panel.SimpleEditablePanel;
+import svj.wedit.v6.gui.tree.TreePanel;
 import svj.wedit.v6.logger.Log;
+import svj.wedit.v6.obj.TreeObj;
 import svj.wedit.v6.obj.WTreeObj;
 import svj.wedit.v6.obj.book.BookContent;
 import svj.wedit.v6.obj.book.BookNode;
 import svj.wedit.v6.obj.book.TextObject;
+import svj.wedit.v6.obj.function.Function;
 import svj.wedit.v6.obj.function.SimpleFunction;
-import svj.wedit.v6.tools.BookTools;
-import svj.wedit.v6.tools.DialogTools;
+import svj.wedit.v6.tools.*;
 
+import javax.swing.*;
+
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.*;
 
@@ -44,6 +51,7 @@ public class FindDotTextFunction extends SimpleFunction
 {
     /** Счетчик изменений. */
     private int count = 0;
+    private final int maxSize = 1000;
 
     private final String ruLowCh  = "йцукенгшщзхъэждлорпавыфячсмитьбюё";
     private final String ruHighCh = "ЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭЮБЬТИМСЧЯЁ";
@@ -65,6 +73,8 @@ public class FindDotTextFunction extends SimpleFunction
     {
         BookContent             currentBookContent;
         BookNode                bookNode;
+        // Реузльтат. Ключ - Полный путь Эпизода. Значение - найденные в данном эпизоде фразы, и места их рапсоложения.
+        Map<String,Collection<SearchObj>> searchArray;
 
         Log.l.debug ( "Start" );
 
@@ -77,18 +87,23 @@ public class FindDotTextFunction extends SimpleFunction
 
         // Выяснить, есть ли для данной книги открытые тексты.
         // Проверка открытых эпизодов
-        BookTools.checkAllOpenText();
+        //BookTools.checkAllOpenText();
 
-        StringBuilder sb = new StringBuilder(128);
+        // Поиск. LinkedHashMap - чтобы хранил в порядке поступления.
+        searchArray = new LinkedHashMap<String,Collection<SearchObj>>();
+
+        //StringBuilder sb = new StringBuilder(128);
 
         // пробегаем по всем текстам - исключаем заголовки и аннотации.
-        processNode ( bookNode, sb );
+        processNode ( bookNode, searchArray );
 
+        // Вывести на экран в сервисную часть
+        createTabbedPanel ( searchArray );
 
-        DialogTools.showMessage ( getName(), "Успешно завершилась.\nИзменений: "+sb );
+        DialogTools.showMessage ( getName(), "Успешно завершилась.\nНайдено: "+searchArray.size() );
     }
 
-    private void processNode ( BookNode bookNode, StringBuilder sb )
+    private void processNode ( BookNode bookNode, Map<String,Collection<SearchObj>> searchArray )
     {
         BookNode node;
         String   type;
@@ -98,44 +113,40 @@ public class FindDotTextFunction extends SimpleFunction
         type = bookNode.getElementType ();
         if ( (type != null) && type.equalsIgnoreCase ( "hidden" ) )  return;
 
-        find ( bookNode, sb );
+        find ( bookNode, searchArray );
 
         // Проверка на вложенные обьекты
         childs = bookNode.getChildrens ();
         for ( WTreeObj wo : childs )
         {
             node = (BookNode) wo;
-            processNode ( node, sb );
+            processNode ( node, searchArray );
         }
     }
 
     /**
      * @param bookNode  Обьект книги.
      */
-    private void find ( BookNode bookNode, StringBuilder sb )
+    private void find ( BookNode bookNode, Map<String,Collection<SearchObj>> searchArray )
     {
         String                  str;
         Collection<TextObject>  text;
+        int ic;
 
         // Взять текст
         text = bookNode.getText();
         if ( ( text != null ) && ( !text.isEmpty () ) )
         {
+            ic = 0;
             for ( TextObject textObj : text )
             {
                 str = textObj.getText();
                 if (check ( str )) {
-                    sb.append(str);
-                    sb.append('\n');
+                    //sb.append(str);
+                    //sb.append('\n');
 
-      //              addSearch ( bookNode, maxSize, searchArray, str, str, ic );
-
-                    count++;
-
-                    // todo
-                    if (count > 10) {
-                        throw new RuntimeException(sb.toString());
-                    }
+                    addSearch ( bookNode, maxSize, searchArray, str, str, ic );
+                    ic++;
                 }
             }
         }
@@ -219,6 +230,91 @@ public class FindDotTextFunction extends SimpleFunction
         }
         list.add ( searchObj );
     }
+
+    private void createTabbedPanel ( Map<String, Collection<SearchObj>> searchArray ) throws WEditException
+    {
+        ImageIcon icon;
+        String      imgLocation, iconPath, tabName, tabId;
+        TreePanel treePanel;
+        JScrollPane scrollPane;
+        TreeObj seachResultRoot;
+        SimpleEditablePanel result;
+        Function doubleClickFunction;
+
+        Log.l.info ( "[N] searchArray = %s", DumpTools.printMap(searchArray, null) );
+
+        // Создать дерево найденных значений
+        seachResultRoot = createSearchTree ( searchArray );
+
+
+        // Создать панель
+        result  = new SimpleEditablePanel();
+        result.setLayout ( new BorderLayout( 5,5 ) );
+
+        // TreeObj root, T object
+        treePanel   = new TreePanel ( seachResultRoot, null );
+        treePanel.getTree().setRootVisible ( false );
+
+        //scrollPane  = new JScrollPane ( treePanel );
+        //result.add ( scrollPane, BorderLayout.CENTER );
+
+        // без скрола
+        result.add ( treePanel, BorderLayout.CENTER );
+
+        // Навесить на дерево свою акцию - если это конечный узел - переход в указанную точку.
+        doubleClickFunction = new SearchDoubleClickFunction();
+        treePanel.setDoubleClickAction ( doubleClickFunction );
+
+        // todo Создать панель с кнопками управления - стоит справа вертикально. Функции: Удалить табик.
+        //buttonsPanel = null;
+        //result.add ( buttonsPanel, BorderLayout.WEST );
+
+        // Загрузить иконку
+        iconPath    = getIcon ( Par.TOOLBAR_ICON_SIZE );
+        imgLocation = FileTools.createFileName ( iconPath, Par.MODULE_HOME );
+        Log.l.debug ( "imgLocation = %s", imgLocation );
+        icon        = new ImageIcon ( imgLocation );
+        Log.l.debug ( "search icon = %s", icon );
+
+        //title       = Msg.getMsg (getNameKey ());
+        //altTitle    = Msg.getMsg ( "simpleSearch.altTitle" );
+        tabName       = "Поиск";
+        tabId         = "SEARCH_PANEL";
+
+        // T paramsPanel, String tabId, String tabName, Icon icon
+        Par.GM.getFrame().getTextAdditionalPanel().addPanel ( result, tabId, tabName, icon );
+
+        // Нашу панель сделать текущей.
+        Par.GM.getFrame().getTextAdditionalPanel().setSelectedTab ( tabId );
+
+        // Открыть дополнительную панель снизу, под текстом.
+        Par.GM.getFrame().showTextAdditionalPanel();
+    }
+
+    private TreeObj createSearchTree ( Map<String, Collection<SearchObj>> searchArray )
+    {
+        TreeObj result, to, ts;
+        Collection<SearchObj> soList;
+
+        result = new TreeObj ();
+
+        for ( String path : searchArray.keySet() )
+        {
+            to = new TreeObj();
+            to.setUserObject ( new SearchObj(path) );
+            result.add ( to );
+
+            soList = searchArray.get(path);
+            for ( SearchObj so : soList )
+            {
+                ts = new TreeObj();
+                ts.setUserObject ( so );
+                to.add ( ts );
+            }
+        }
+        return result;
+    }
+
 
     @Override
     public void rewrite ()     {    }
