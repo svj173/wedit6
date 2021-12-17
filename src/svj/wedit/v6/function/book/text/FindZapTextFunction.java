@@ -16,7 +16,9 @@ import svj.wedit.v6.obj.book.BookNode;
 import svj.wedit.v6.obj.book.TextObject;
 import svj.wedit.v6.obj.function.Function;
 import svj.wedit.v6.obj.function.SimpleFunction;
-import svj.wedit.v6.tools.*;
+import svj.wedit.v6.tools.DialogTools;
+import svj.wedit.v6.tools.DumpTools;
+import svj.wedit.v6.tools.FileTools;
 
 import javax.swing.*;
 
@@ -25,20 +27,12 @@ import java.awt.event.ActionEvent;
 import java.util.*;
 
 /**
- * Искать в тексте точки, после которых идут маленькие буквы (исключая пробелы, запятые, воск и вопрос знаки).
- * <BR/> Игнорируем после точки
- * <BR/> 1) пробелы
- * <BR/> 2) запятые
- * <BR/> 3) восклицательный знак
- * <BR/> 4) вопросительный знак
- * <BR/> 5) игнорируем все
+ * Искать в тексте запятые, после которыхнет пробелов.
  * <BR/>
  * <BR/> Алгоритм:
- * <BR/> 1) находим точку
- * <BR/> 2) анализируем после нее буквы (и только буквы)
- * <BR/> 3) если первой буквой была маленькая - заносим в результат
- * <BR/> 4) Если троеточие - то предыдущие точки игнорируем
- * <BR/> 5) тире после точки с пробелом - нормально (что дальше потом маленкьая буква)
+ * <BR/> 1) находим запятую
+ * <BR/> 2) анализируем после нее на пробел
+ * <BR/> 3) если не пробел - заносим в результат
  * <BR/>
  * <BR/> Результат заносим в панель внизу - Поиск
  * <BR/>
@@ -46,29 +40,20 @@ import java.util.*;
  * <BR/>
  * <BR/> Применяется, толкьо если все тексты закрыты.
  * <BR/>
- * <BR/> Отладка - SvjStory/TEST/test-003
- * <BR/> Не все гладко проходит.
- * <BR/>
  * <BR/> User: svj
- * <BR/> Date: 15.10.2021 15:57
+ * <BR/> Date: 15.12.2021 15:57
  */
-public class FindDotTextFunction extends SimpleFunction
+public class FindZapTextFunction extends SimpleFunction
 {
     /** Счетчик изменений. */
     private int count = 0;
     private final int maxSize = 1000;
 
-    private final String ruLowCh  = "йцукенгшщзхъэждлорпавыфячсмитьбюё";
-    private final String ruHighCh = "ЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭЮБЬТИМСЧЯЁ";
 
-    private final String enLowCh  = "qwertyuioplkjhgfdsazxcvbnm";
-    private final String enHighCh = "QWERTYUIOPASDFGHJKLZXCVBNM";
-
-
-    public FindDotTextFunction()
+    public FindZapTextFunction()
     {
-        setId ( FunctionId.FIND_LOW_POINT );
-        setName ( "Поиск мал букв после точки" );
+        setId ( FunctionId.FIND_ZAP );
+        setName ( "Поиск отсутствия пробелов после запятой" );
         setIconFileName ( "search.png" );    //
 
     }
@@ -148,9 +133,6 @@ public class FindDotTextFunction extends SimpleFunction
             {
                 str = textObj.getText();
                 if (check ( str )) {
-                    //sb.append(str);
-                    //sb.append('\n');
-
                     addSearch ( bookNode, maxSize, searchArray, str, str, ic );
                     ic++;
                 }
@@ -160,62 +142,21 @@ public class FindDotTextFunction extends SimpleFunction
 
     private boolean check ( String str )
     {
-        //Log.l.info("str = '%s'", str);
         boolean findDot = false;
-        int ic = 0;  // счетчик для троеточий
         char[] chars = str.toCharArray();
         for (char ch : chars) {
-            //Log.l.info("ch = %s; findDot = %b; ic = %d", ch, findDot, ic);
-            if (ch == '.') {
+            if (ch == ',') {
                 findDot = true;
-                ic++;
-                //Log.l.info("is Dot. ch = %s; ic = %d", ch, ic);
-                if (ic > 2) {
-                    // игнорируем троеточия
-                    ic = 0;
-                    findDot = false;
-                }
             } else {
-                //Log.l.info("not Dot. findDot = %b", findDot);
                 if (findDot) {
-                    // точка была найдена - анализируем на символ
-                    // - русский
-                    if (check(ch, ruLowCh)) {
-                        //Log.l.info("is little RU");
-                        // это маленькая русская - конец поисков
+                    // символ - не запятая
+                    // запятая была найдена - анализируем на пробел
+                    if (ch == ' ' || ch == '"') {
+                        // все ОК
+                    } else {
                         return true;
                     }
-                    if (check(ch, ruHighCh)) {
-                        //Log.l.info("is big RU");
-                        // это большая русская - скидываем режим точки
-                        findDot = false;
-                        ic = 0;
-                        continue;
-                    }
-                    // - английский
-                    if (check(ch, enLowCh)) {
-                        //Log.l.info("is little EN");
-                        // это маленькая англ - конец поисков
-                        return true;
-                    }
-                    if (check(ch, enHighCh)) {
-                        //Log.l.info("is big EN");
-                        // это большая англ - скидываем режим точки
-                        findDot = false;
-                        ic = 0;
-                        //continue;
-                    }
-                    // > 1 - может быть и так - !..
-                    boolean b = (ic > 1) && (ch == '-' || ch == '–'|| ch == '"');
-                    //Log.l.info("2. ch = %s; findDot = %b; ic = %d; b = %b", ch, findDot, ic, b);
-                    if (b) {
-                        // - скидываем режим точки - после точки и этих символов допустимы маленькие буквы
-                        // - только для троеточий
-                        findDot = false;
-                        ic = 0;
-                    }
-
-                    // все остальное игнорируем
+                    findDot = false;
                 }
             }
         }
@@ -223,14 +164,7 @@ public class FindDotTextFunction extends SimpleFunction
         return false;
     }
 
-    private boolean check(char sym, String symbols) {
-        char[] chars = symbols.toCharArray();
-        for (char ch : chars) {
-            if (sym == ch) return true;
-        }
-        return false;
-    }
-
+    // todo Вынести в отдельный класс
     private void addSearch ( BookNode nodeObject, int maxSize, Map<String, Collection<SearchObj>> searchArray,
                              String text, String searchText, int number )
     {
@@ -239,8 +173,8 @@ public class FindDotTextFunction extends SimpleFunction
         SearchObj       searchObj;
         Collection<SearchObj> list;
 
-        //Log.l.info ( "--- [N] nodeObject = %s; find = %s", nodeObject, text );
-        //Log.l.info ( "--- [N] parent node = %s; searchText = %s", nodeObject.getParentNode().getName(), searchText );
+        Log.l.info ( "--- [N] nodeObject = %s; find = %s", nodeObject, text );
+        Log.l.info ( "--- [N] parent node = %s; searchText = %s", nodeObject.getParentNode().getName(), searchText );
 
         // Только при переходах на эту запись.
         //action = new StyledEditorKit.ForegroundAction ( "Search", Color.BLUE );
@@ -274,7 +208,7 @@ public class FindDotTextFunction extends SimpleFunction
         SimpleEditablePanel result;
         Function doubleClickFunction;
 
-        //Log.l.info ( "[N] searchArray = %s", DumpTools.printMap(searchArray, null) );
+        Log.l.info ( "[N] searchArray = %s", DumpTools.printMap(searchArray, null) );
 
         // Создать дерево найденных значений
         seachResultRoot = createSearchTree ( searchArray );
@@ -355,7 +289,7 @@ public class FindDotTextFunction extends SimpleFunction
 
     public static void main ( String[] args )
     {
-        FindDotTextFunction function;
+        FindZapTextFunction function;
         String[] array;
         StringBuilder sb = new StringBuilder(128);
 
@@ -366,7 +300,7 @@ public class FindDotTextFunction extends SimpleFunction
         array[3] = "текст.-Да";     // 1
         array[4] = "текст. Нет";     // 1
 
-        function = new FindDotTextFunction();
+        function = new FindZapTextFunction();
 
         for ( String str : array )
         {

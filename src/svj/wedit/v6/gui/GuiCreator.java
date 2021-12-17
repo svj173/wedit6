@@ -254,6 +254,7 @@ public class GuiCreator {
         fm.add ( new ReplaceTextFunction()         );
         fm.add ( new ReplaceBlockTextFunction()    );
         fm.add ( new FindDotTextFunction()         );
+        fm.add ( new FindZapTextFunction()         );
 
         // ------------------ Options ------------------------
         fm.add ( new DecoratorFunction()               );

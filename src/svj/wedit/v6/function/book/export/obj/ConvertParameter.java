@@ -276,13 +276,87 @@ public class ConvertParameter     extends FunctionParameter<Object>   implements
             return Utils.compareToWithNull ( getName(), o.getName() );
     }
 
-    public void setFileName ( String fileName )
+    //
+    //
+
+    /**
+     * Создать путь проекта, минус Имя проекта - на случай если сохранение сконвертированных файлов
+     * будет происходить в директорию, в которой лежат все проекты.
+     * <br/> Например:
+     * <br/> 1) Директория текущего Сборника
+     * <br/> '/home/svj/Serg/stories/SvjStores'
+     * <br/> 2) Папка текущего Сборника
+     * <br/> SvjStores
+     * <br/> 4) Результат
+     * <br/> '/home/svj/Serg/stories/'
+     * <br/>
+     */
+    private String createCurrentProjectPath()
     {
-        this.fileName = fileName;
+        String projectDir = Par.GM.getFrame().getCurrentProject().getProjectDir().toString();
+        return projectDir.replace(Par.GM.getFrame().getCurrentProject().getFolderName(), "");
+    }
+
+    //
+    // !!! Смотреть директорию текущего Сборника
+
+    /**
+     * Если указанный путь начинается с директории Сборника - то прописывать относительный путь, иначе - полный путь
+     * todo Надо продумать лучше. Преобразовывать не здесь а выше. И для сет и для гет. Здесь тупо хранение.
+     * <br/> Пример:
+     * <br/> 1) Файл, куда надо конвертить.
+     * <br/> '/home/svj/Serg/stories/release_books/html/test_004.html'
+     * <br/> 2) Директория Сборника
+     * <br/> '/home/svj/Serg/stories/'
+     * <br/> 3) Результат
+     * <br/> 'release_books/html/test-004.html'
+     * <br/>
+     */
+    public void setFileName ( String fName )
+    {
+        /*
+        Log.l.info("[F] folder = '%s'", Par.GM.getFrame().getCurrentProject().getFolderName());
+        Log.l.info("[F] projectDir = '%s'", Par.GM.getFrame().getCurrentProject().getProjectDir());
+
+        // [F] folder = 'SvjStores'
+        // [F] projectDir = '/home/svj/Serg/stories/SvjStores'   -- !!!!
+
+        Log.l.info("[F] fileName = '%s'", fName);
+        Log.l.info("[F] Par.MODULE_HOME = '%s'", Par.MODULE_HOME);
+
+        // fileName = '/home/svj/Serg/stories/release_books/html/test_004.html'
+        // [F] Par.MODULE_HOME = '/home/svj/programm/my/wedit6'
+
+        String projectDir = Par.GM.getFrame().getCurrentProject().getProjectDir().toString();
+        String path = createCurrentProjectPath();
+        Log.l.info("[F] path = '%s'", path);
+        Log.l.info("[F] startsWith = %b", fName.startsWith(path));
+
+        if (fName.startsWith(path)) {
+            fileName = fName.substring(path.length());
+        }
+        else {
+            fileName = fName;
+        }
+        Log.l.info("[F] new fileName = '%s'", fileName);
+        //*/
+
+        fileName = fName;
     }
 
     public String getFileName ()
     {
+        /* todo Доделать
+        String result;
+        if (fileName.startsWith("/")) {
+            result = fileName;
+        }
+        else {
+            result = createCurrentProjectPath() + fileName;
+        }
+        Log.l.info("[F] fileName = '%s'; result = '%s'", fileName, result);
+        return result;
+        */
         return fileName;
     }
 
