@@ -69,6 +69,10 @@ public class BookContent   extends XmlAvailable  implements IId, Editable, Compa
     /** Статус книги: в работе, завершена, только началось и т.д. */
     private BookStatus      bookStatus;
 
+    // Эпиграф
+    private String[] epigraphText;
+    private String epigraphAuthor;
+
 
     public BookContent ( String name, String fileName )
     {
@@ -159,6 +163,9 @@ public class BookContent   extends XmlAvailable  implements IId, Editable, Compa
 
             outTag ( ic, "status",   getBookStatus().getName(), out );
 
+            // todo эпиграф. текст - как массив строк, выделенных тегами P
+            // - требуется свой парсер для Эпиграфа
+
             // bookStructure
             if ( hasBookStructure() ) getBookStructure().toXml ( ic, out );
 
@@ -168,7 +175,8 @@ public class BookContent   extends XmlAvailable  implements IId, Editable, Compa
             // all node
             if ( hasBookNode() )    getBookNode().toXml ( ic, out );
 
-            // параметры функций уровня книги - в самих этих функциях мап - название_книги=значение_параметра. Либо функция изначально свои значения хранит в книге.
+            // параметры функций уровня книги - в самих этих функциях мап - название_книги=значение_параметра.
+            // Либо функция изначально свои значения хранит в книге.
             if ( hasBookParams() ) getBookParams().toXml ( ic, out );
 
             endTag ( level, "bookContent", out );
@@ -525,6 +533,22 @@ public class BookContent   extends XmlAvailable  implements IId, Editable, Compa
     public void setBookStatus ( BookStatus bookStatus )
     {
         this.bookStatus = bookStatus;
+    }
+
+    /**
+     * Эпиграф.
+     * @param text Текст эпиграфа может быть многострочным. Его необходимо разбить на массив строк.
+     */
+    public void setEpigraphText(String text) {
+        if (text == null) return;
+
+        String[] strs = text.split("\n");
+        epigraphText = strs;
+    }
+
+    public void setEpigraphAuthor(String text) {
+        if (text == null) return;
+        epigraphAuthor = text;
     }
 
 }

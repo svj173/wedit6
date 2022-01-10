@@ -34,9 +34,9 @@ import java.util.Map;
  */
 public class EditBookParamsDialog extends WValidateDialog<BookContent, BookContent>
 {
-    private final StringFieldWidget   titleWidget;
+    private final StringFieldWidget   titleWidget, epigraphAuthorWidget;
     private final ComboBoxWidget<BookStatus> statusWidget;
-    private final TextWidget          annotationWidget, synopsisWidget;
+    private final TextWidget          annotationWidget, synopsisWidget, epigraphTextWidget;
     private final JPanel              attrsPanel;
     private final Collection<StringFieldWidget> attrsWidgetList;
 
@@ -49,7 +49,7 @@ public class EditBookParamsDialog extends WValidateDialog<BookContent, BookConte
 
         Log.l.debug ( "Create edit book params dialog." );
 
-        titleWidth   = 110;
+        titleWidth   = 150;
         valueWidth   = 420;
 
         panel = new JPanel();
@@ -67,6 +67,17 @@ public class EditBookParamsDialog extends WValidateDialog<BookContent, BookConte
         titleWidget.setValueWidth ( valueWidth );
         //nameWidget.setValue ( "none empty" );
         panel.add ( titleWidget );
+
+        // Эпиграф.
+        // - состав -
+        epigraphTextWidget = new TextWidget ( "Эпиграф (текст)", 14 );
+        epigraphTextWidget.setTitleWidth ( titleWidth );
+        epigraphTextWidget.setValueWidth ( valueWidth );
+        panel.add ( epigraphTextWidget );
+        epigraphAuthorWidget = new StringFieldWidget ( "Эпиграф (автор)", true, 2000, 320 );
+        epigraphAuthorWidget.setTitleWidth ( titleWidth );
+        epigraphAuthorWidget.setValueWidth ( valueWidth );
+        panel.add ( epigraphAuthorWidget );
 
         annotationWidget = new TextWidget ( "Аннотация", 14 );
         annotationWidget.setTitleWidth ( titleWidth );
@@ -134,6 +145,20 @@ public class EditBookParamsDialog extends WValidateDialog<BookContent, BookConte
             addValidateErr ( "Синопсис книги содержит недопустимые XML символы." );
         }
 
+        str     = getEpigraphText ();
+        if ( XmlTools.checkXmlSymbols ( str ) )
+        {
+            result  = false;
+            addValidateErr ( "Эпиграф книги содержит недопустимые XML символы." );
+        }
+
+        str     = getEpigraphAuthor ();
+        if ( XmlTools.checkXmlSymbols ( str ) )
+        {
+            result  = false;
+            addValidateErr ( "Автор эпиграфа книги содержит недопустимые XML символы." );
+        }
+
         // валидация на отсутствие xml в введенных значениях
         result  = validateAttributies ( result );
 
@@ -182,6 +207,10 @@ public class EditBookParamsDialog extends WValidateDialog<BookContent, BookConte
         synopsisWidget.setValue ( bookContent.getSynopsis() );
         statusWidget.setValue ( bookContent.getBookStatus() );
 
+        // todo Эпиграф
+//        epigraphTextWidget.setValue ( bookContent.getBookEpigraphText() );
+//        epigraphAuthorWidget.setValue ( bookContent.getBookEpigraphAuthor() );
+
         // attrs
 
         titleWidth   = 170;
@@ -224,6 +253,16 @@ public class EditBookParamsDialog extends WValidateDialog<BookContent, BookConte
         return synopsisWidget.getValue().trim();
     }
 
+    public String getEpigraphText ()
+    {
+        return epigraphTextWidget.getValue().trim();
+    }
+
+    public String getEpigraphAuthor ()
+    {
+        return epigraphAuthorWidget.getValue().trim();
+    }
+
     public BookStatus getBookStatus ()
     {
         return statusWidget.getValue ();
@@ -231,7 +270,9 @@ public class EditBookParamsDialog extends WValidateDialog<BookContent, BookConte
 
     public boolean isChange ()
     {
-        return titleWidget.isChangeValue() || annotationWidget.isChangeValue() || synopsisWidget.isChangeValue() || statusWidget.isChangeValue() || attrsChanged();
+        return titleWidget.isChangeValue() || annotationWidget.isChangeValue() || synopsisWidget.isChangeValue()
+                || statusWidget.isChangeValue() || attrsChanged()
+                || epigraphTextWidget.isChangeValue() || epigraphAuthorWidget.isChangeValue();
     }
 
     public boolean isStatusChange ()

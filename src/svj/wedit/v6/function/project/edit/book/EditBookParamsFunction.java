@@ -61,6 +61,13 @@ public class EditBookParamsFunction extends AbstractSaveProjectFunction
             bookContent.setSynopsis ( dialog.getSynopsis() );
             bookContent.setBookStatus ( dialog.getBookStatus() );
 
+            // эпиграф
+            if (! dialog.getEpigraphText().isEmpty()) {
+                // есть эпиграф
+                bookContent.setEpigraphText(dialog.getEpigraphText());
+                bookContent.setEpigraphAuthor(dialog.getEpigraphAuthor());
+            }
+
             //  attributies
             for ( StringFieldWidget attrWidget : dialog.getAttrsWidgetList() )
             {
