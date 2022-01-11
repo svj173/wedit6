@@ -45,6 +45,7 @@ import javax.xml.stream.events.XMLEvent;
  * <BR/> User: svj
  * <BR/> Date: 19.08.2011 17:45:43
  */
+@Deprecated
 public class BookElementStaxParser  extends WEditStaxParser
 {
     // elementLevel - подсчитывает автоматом и заносит в обьект

@@ -169,7 +169,7 @@ public abstract class XmlAvailable
         String tabs;
 
         tabs    = createTabs ( tabMargin );
-        outString ( Convert.concatObj ( tabs, '<', tag, " ", attrName, "=\"", Convert.validateXml(attrValue), "\">" ), out );
+        outString (  tabs + '<' + tag + " " + attrName + "=\"" + Convert.validateXml(attrValue) + "\">", out );
     }
 
     /* Только начало тега, без атрибутов, но с левым смещением. */

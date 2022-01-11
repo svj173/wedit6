@@ -22,6 +22,7 @@ public interface BookCons
     String BOOK_NODE        = "bookNode";
     String ANNOTATION	    = "annotation";
     String SYNOPSIS	        = "synopsis";
+    String EPIGRAPH	        = "epigraph";
     String PARAMS	        = "params";
     String ID	            = "id";
 

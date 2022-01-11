@@ -113,6 +113,7 @@ public class BookContentStaxParser   extends WEditStaxParser
         BookStructureStaxParser structureParser;
         BookNodeStaxParser      nodeParser;
         BookAttrStaxParser      attrParser;
+        EpigraphStaxParser      epigraphParser;
         BookFunctionParamsParser      fpParser;
         BookNode                bookNode;
         int                     eventType;
@@ -123,6 +124,7 @@ public class BookContentStaxParser   extends WEditStaxParser
             nodeParser      = new BookNodeStaxParser();
             attrParser      = new BookAttrStaxParser();
             fpParser        = new BookFunctionParamsParser();
+            epigraphParser  = new EpigraphStaxParser();
 
             // Всегда создаем нулевой текст
             bookNode        = new BookNode ( bookContent.getName(), null );
@@ -223,6 +225,13 @@ public class BookContentStaxParser   extends WEditStaxParser
                             // читаем текст
                             str = getText ( eventReader );
                             bookContent.setSynopsis ( str );
+                            continue;
+                        }
+
+                        if ( tagName.equals( BookCons.EPIGRAPH) )
+                        {
+                            // вызываем парсер эпиграфа  - epigraphParser
+                            epigraphParser.read ( eventReader, bookContent );
                             continue;
                         }
 

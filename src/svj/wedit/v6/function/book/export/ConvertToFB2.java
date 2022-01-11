@@ -125,6 +125,34 @@ public class ConvertToFB2 extends AbstractConvertFunction {
         writeStr(title);
         writeStr("</p></title>\n");
 
+        /*
+        // todo Пока криво работает. Необходимо отлаживать.
+        if (level == 0) {
+            // Это заголовок книги - выводим Эпиграф если есть
+
+            if (bookContent.getEpigraphText() != null) {
+                writeStr("<epigraph>\n");
+                for (String str: bookContent.getEpigraphText())  {
+                    if (StringTools.isEmpty(str)) {
+                        writeStr("  <empty-line/>\n");
+                    }
+                    else {
+                        writeStr("  <p>");
+                        writeStr(str);
+                        writeStr("</p>\n");
+                    }
+                }
+
+                if (! StringTools.isEmpty(bookContent.getEpigraphAuthor())) {
+                    writeStr("  <text-author>");
+                    writeStr(bookContent.getEpigraphAuthor());
+                    writeStr("</text-author>\n");
+                }
+                writeStr("</epigraph>");
+            }
+        }
+        */
+
         oldLevel = level;
 
         // вычисляем начальный уровень секций, с которого реально начинается вывод Заголовков.

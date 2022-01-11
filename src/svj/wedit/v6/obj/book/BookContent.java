@@ -14,8 +14,7 @@ import svj.wedit.v6.tools.StringTools;
 import svj.wedit.v6.tools.Utils;
 
 import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -70,7 +69,7 @@ public class BookContent   extends XmlAvailable  implements IId, Editable, Compa
     private BookStatus      bookStatus;
 
     // Эпиграф
-    private String[] epigraphText;
+    private List<String> epigraphText;
     private String epigraphAuthor;
 
 
@@ -163,8 +162,28 @@ public class BookContent   extends XmlAvailable  implements IId, Editable, Compa
 
             outTag ( ic, "status",   getBookStatus().getName(), out );
 
-            // todo эпиграф. текст - как массив строк, выделенных тегами P
-            // - требуется свой парсер для Эпиграфа
+            // эпиграф. текст - как массив строк, выделенных тегами P, или empty-line
+            if (getEpigraphText() != null) {
+                outTitle ( ic, "epigraph", out );
+
+                int is = ic + 1;
+                for (String str: getEpigraphText())  {
+                    if (StringTools.isEmpty(str)) {
+                        outString(is, "<empty-line/>\n", out);
+                    }
+                    else {
+                        outString(is, "<p>", out);
+                        outString(is, str.trim(), out);
+                        outString(is, "</p>\n", out);
+                    }
+                }
+
+                if (! StringTools.isEmpty(getEpigraphAuthor())) {
+                    outTag ( is, "text-author", getEpigraphAuthor(), out );
+                }
+
+                endTag ( ic, "epigraph", out );
+            }
 
             // bookStructure
             if ( hasBookStructure() ) getBookStructure().toXml ( ic, out );
@@ -543,12 +562,29 @@ public class BookContent   extends XmlAvailable  implements IId, Editable, Compa
         if (text == null) return;
 
         String[] strs = text.split("\n");
-        epigraphText = strs;
+
+        epigraphText = Arrays.asList(strs);
     }
 
     public void setEpigraphAuthor(String text) {
         if (text == null) return;
-        epigraphAuthor = text;
+        epigraphAuthor = text.trim();
     }
 
+    public List<String> getEpigraphText() {
+        return epigraphText;
+    }
+
+    public String getEpigraphAuthor() {
+        return epigraphAuthor;
+    }
+
+    // пустая стркоа тоже учитывается - вдруг это пропуск между абзацами?
+    public void addEpigraphText(String text) {
+        if (text == null)  return;
+        if (epigraphText == null) {
+            epigraphText = new ArrayList<>();
+        }
+        epigraphText.add(text.trim());
+    }
 }

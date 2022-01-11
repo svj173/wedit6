@@ -14,9 +14,8 @@ import svj.wedit.v6.obj.book.BookStatus;
 import svj.wedit.v6.tools.XmlTools;
 
 import javax.swing.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
+
+import java.util.*;
 
 
 /**
@@ -207,9 +206,16 @@ public class EditBookParamsDialog extends WValidateDialog<BookContent, BookConte
         synopsisWidget.setValue ( bookContent.getSynopsis() );
         statusWidget.setValue ( bookContent.getBookStatus() );
 
-        // todo Эпиграф
-//        epigraphTextWidget.setValue ( bookContent.getBookEpigraphText() );
-//        epigraphAuthorWidget.setValue ( bookContent.getBookEpigraphAuthor() );
+        // Эпиграф
+        if (bookContent.getEpigraphText() != null) {
+            StringBuilder sb = new StringBuilder(128);
+            for (String str : bookContent.getEpigraphText()) {
+                sb.append(str);
+                sb.append('\n');
+            }
+            epigraphTextWidget.setValue(sb.toString());
+            epigraphAuthorWidget.setValue(bookContent.getEpigraphAuthor());
+        }
 
         // attrs
 
