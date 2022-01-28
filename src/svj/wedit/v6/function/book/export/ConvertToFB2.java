@@ -117,46 +117,55 @@ public class ConvertToFB2 extends AbstractConvertFunction {
             }
             */
         } else {
-            // вывести заголовок
+            // вывести Начало секции и ее заголовок
             writeStr(StringTools.createFirst(level, ' '));
             writeStr("<section><title>");
+            writeStr("<p>");
+            writeStr(title);
+            writeStr("</p></title>\n");
+            // Вывести эпиграф Эпизода - если он есть
+            //writeEpigraph(nodeObject, level);
         }
-        writeStr("<p>");
-        writeStr(title);
-        writeStr("</p></title>\n");
-
-        /*
-        // todo Пока криво работает. Необходимо отлаживать.
-        if (level == 0) {
-            // Это заголовок книги - выводим Эпиграф если есть
-
-            if (bookContent.getEpigraphText() != null) {
-                writeStr("<epigraph>\n");
-                for (String str: bookContent.getEpigraphText())  {
-                    if (StringTools.isEmpty(str)) {
-                        writeStr("  <empty-line/>\n");
-                    }
-                    else {
-                        writeStr("  <p>");
-                        writeStr(str);
-                        writeStr("</p>\n");
-                    }
-                }
-
-                if (! StringTools.isEmpty(bookContent.getEpigraphAuthor())) {
-                    writeStr("  <text-author>");
-                    writeStr(bookContent.getEpigraphAuthor());
-                    writeStr("</text-author>\n");
-                }
-                writeStr("</epigraph>");
-            }
-        }
-        */
+        //writeStr("<p>");
+        //writeStr(title);
+        //writeStr("</p></title>\n");
 
         oldLevel = level;
 
         // вычисляем начальный уровень секций, с которого реально начинается вывод Заголовков.
         if (startLevel > oldLevel)  startLevel = oldLevel;
+    }
+
+    private void writeEpigraph(int level) {
+        // Это заголовок книги - выводим Эпиграф если есть
+        // todo Автор в файле есть но в гуи-книге почему-то не отображается. Разобраться. (test_002.fb2)
+
+        if (bookContent.getEpigraphText() != null) {
+            String sp = StringTools.createFirst(level, ' ');
+            writeStr(sp);
+            writeStr("<epigraph>\n");
+            for (String str: bookContent.getEpigraphText())  {
+                if (StringTools.isEmpty(str)) {
+                    writeStr(sp);
+                    writeStr("  <empty-line/>\n");
+                }
+                else {
+                    writeStr(sp);
+                    writeStr("  <p>");
+                    writeStr(str);
+                    writeStr("</p>\n");
+                }
+            }
+
+            if (! StringTools.isEmpty(bookContent.getEpigraphAuthor())) {
+                writeStr(sp);
+                writeStr("  <text-author>");
+                writeStr(bookContent.getEpigraphAuthor());
+                writeStr("</text-author>\n");
+            }
+            writeStr(sp);
+            writeStr("</epigraph>");
+        }
     }
 
     /**
@@ -168,9 +177,14 @@ public class ConvertToFB2 extends AbstractConvertFunction {
      * @param level  Уровень текущего (нового) титла, который только собираемся вывести в документ.
      */
     private void closeSection(int level) {
-        //Log.file.debug("closeSection. nodeLevel = %d", level);
+        //Log.file.info("[S] closeSection. nodeLevel = %d; oldLevel = %d", level, oldLevel);
 
         // закрывашка для уровня книги - для Литрес не используется.
+        // - НЕТ. используем. В ситуации когда три части с текстом без эпизодов - конец не обрабатывается.
+        // но если стркоу ниже убрать - то тоже все ломается.
+        // todo Нужен другой алгоритм closeSection. Например сразу формирвоать и сохранять в стеке тег закрытия и его
+        // уровень. Если эпизоды будут углубляться вглубь, то и стек будет наполняться. А по закрытию эпизода
+        // из стека все извчлечется до текушего уровня.
         if ( level == 0 ) return;
 
         /*
@@ -186,20 +200,23 @@ public class ConvertToFB2 extends AbstractConvertFunction {
         А если у Глава есть подглавы, но они также не выводятся.
         И тогда в самом конце у нас oldLevel и currentLevel равны 5, а азкрыть надо до уровня 2 (Глава)
         НЕТ. oldLevel отмечается толкьо для тех титлов, которые выводятся.
-
-        
          */
+
         int ic = oldLevel - level;
+        //Log.file.info("[S] closeSection. ic = %d", ic);
         writeStr("\n");
         if ( ic > 0 )  {
+            //Log.file.info("[S] closeSection. 1");
             // т.е. закрываем эпизод, более верхний чем предыдущий
             // (например: Часть, а до этого была ПодГлава. Значит надо закрыть Подглаву, Главу, Часть-предыдущую)
             for ( int i=0; i<ic+1; i++) {
-            //for ( int i=0; i<ic; i++) {   // Игнорируем уровень 0 - Для структуры: Часть, Глава
+                //for ( int i=0; i<ic; i++) {   // Игнорируем уровень 0 - Для структуры: Часть, Глава
+                //Log.file.info("[S] -- closeSection. i = %d", i);
                 writeStr(StringTools.createFirst(level-ic,' '));
                 writeStr("</section>\n");
             }
         } else if ( ic == 0 ) {
+            //Log.file.info("[S] closeSection. 1");
             // Новый эпизод того же уровня что и предыдущий.
             writeStr(StringTools.createFirst(level-ic,' '));
             writeStr("</section>\n");
@@ -395,7 +412,7 @@ child_adv               Детские Приключения
             writeStr("</p></annotation>\n");
         }
 
-        // date
+        // date - дата написания - только год
         String dateStr = getBookContent().getBookAttrs().get("last_change_date");
         if ( dateStr != null ) {
             writeStr("<date>"+ getYear(dateStr) +"</date>\n");
@@ -409,8 +426,11 @@ child_adv               Детские Приключения
 
         writeStr("</description>\n");
 
-        //writeStr("<body>\n");
-        writeStr("<body>");
+        writeStr("<body>\n");
+        //writeStr("<body>");
+
+        // Вывести эпиграф книги - если он есть
+        writeEpigraph(0);
 
         // Устанавливаем рабочие параметры в исходное состояние.
         // А то если два раза подряд сконвертировать, то во втором файле будет ошибка.
@@ -427,7 +447,7 @@ child_adv               Детские Приключения
         if (dateStr.length() > 4)
             return dateStr.substring(0,4);
         else
-            return "2021";
+            return "2022";
     }
 
     /**
