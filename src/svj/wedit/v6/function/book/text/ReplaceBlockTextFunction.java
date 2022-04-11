@@ -85,7 +85,8 @@ public class ReplaceBlockTextFunction extends SimpleFunction
         // двойной пробел на один
         mapText.put ( "  ", " " );
         // дефис на тире
-        mapText.put ( "- ", "– " );
+        //mapText.put ( "- ", "– " );
+        mapText.put ( "- ", "— " );    // это тире взято из файла Литрес
         mapText.put ( "\\!\\?", "\\?\\!" );
     }
 

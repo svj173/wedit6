@@ -32,6 +32,12 @@ import java.awt.event.ActionEvent;
  * 2) в Новом обьекте изменить путь его файла
  * 3) еще что-то...
  * <BR/>
+ * <BR/> todo Проверки:
+ * <BR/> 1) Вырезка толкьо книги (книг)
+ * <BR/> 2) Вырезка сектора (секторов), содержащих в себе сектор.
+ * <BR/> 3) Вставка всего этого в и после
+ * <BR/> 4) Вставка всего этого в книгу
+ * <BR/>
  * <BR/> User: svj
  * <BR/> Date: 07.11.2020 18:06:04
  */
@@ -157,7 +163,7 @@ public class PasteProjectNodeInFunction extends PasteBookFunction
             FileTools.moveFile(oldFullPath, newFullPath);
 
 
-            // todo Вставить в деревья
+            // Вставить в деревья
             //*
             if ( node instanceof BookTitle)
             {
@@ -176,9 +182,9 @@ public class PasteProjectNodeInFunction extends PasteBookFunction
             i++;
         }
 
-        // todo Отметить что было изменение  - лишнее, т.к. нечего уже сохранять - Или дерево Сборника ???
+        // Отметить что было изменение  - лишнее, т.к. нечего уже сохранять - Или дерево Сборника ???
 
-        //currentProjectContentPanel.setEdit ( true );
+        currentProjectContentPanel.setEdit ( true );
         //currentProjectContentPanel.getObject().setEdit ( true ); // BookContent - т.к. через него флаг рисуется.
 
         // OK. чистим буффер

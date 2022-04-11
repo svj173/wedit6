@@ -512,6 +512,12 @@ public abstract class AbstractConvertFunction  extends FileWriteFunction
                         //Log.file.info("title = %s; nodeLevel = %d; result_title = %s", nodeObject.getName(), nodeLevel,
                         //        title);
                         break;
+                    case NUMBER_ONLY:
+                        // выводить номер заголовка. Например: "1"
+                        title = getNumber(nodeLevel);
+                        //Log.file.info("title = %s; nodeLevel = %d; result_title = %s", nodeObject.getName(), nodeLevel,
+                        //        title);
+                        break;
                     case NUMBER_AND_POINT_WITH_NAME:
                         // выводить номер заголовка с точкой и название титла. Например: "1. Введение"
                         title = getNumber(nodeLevel) + ". " + nodeObject.getName();

@@ -51,7 +51,9 @@ public class ConvertToFB2 extends AbstractConvertFunction {
      * FALSE - вывели любой текст, в т.ч. и пустую строку. */
     private boolean needEmpty = true;
 
-    private TextObjectType oldTextType = TextObjectType.EOL;
+    private final static String END_LINE = "\r\n";
+
+    //private TextObjectType oldTextType = TextObjectType.EOL;
 
 
     public ConvertToFB2(FunctionId functionId, String functionName, String iconFile, boolean multiSelect) {
@@ -119,10 +121,10 @@ public class ConvertToFB2 extends AbstractConvertFunction {
         } else {
             // вывести Начало секции и ее заголовок
             writeStr(StringTools.createFirst(level, ' '));
-            writeStr("<section><title>");
+            writeStr("<section>" + END_LINE + "<title>" + END_LINE);
             writeStr("<p>");
             writeStr(title);
-            writeStr("</p></title>\n");
+            writeStr("</p>" + END_LINE + "</title>" + END_LINE);
             // Вывести эпиграф Эпизода - если он есть
             //writeEpigraph(nodeObject, level);
         }
@@ -143,17 +145,17 @@ public class ConvertToFB2 extends AbstractConvertFunction {
         if (bookContent.getEpigraphText() != null) {
             String sp = StringTools.createFirst(level, ' ');
             writeStr(sp);
-            writeStr("<epigraph>\n");
+            writeStr("<epigraph>" + END_LINE);
             for (String str: bookContent.getEpigraphText())  {
                 if (StringTools.isEmpty(str)) {
                     writeStr(sp);
-                    writeStr("  <empty-line/>\n");
+                    writeStr("  <empty-line/>" + END_LINE);
                 }
                 else {
                     writeStr(sp);
                     writeStr("  <p>");
                     writeStr(str);
-                    writeStr("</p>\n");
+                    writeStr("</p>" + END_LINE);
                 }
             }
 
@@ -161,10 +163,10 @@ public class ConvertToFB2 extends AbstractConvertFunction {
                 writeStr(sp);
                 writeStr("  <text-author>");
                 writeStr(bookContent.getEpigraphAuthor());
-                writeStr("</text-author>\n");
+                writeStr("</text-author>" + END_LINE);
             }
             writeStr(sp);
-            writeStr("</epigraph>");
+            writeStr("</epigraph>" + END_LINE);
         }
     }
 
@@ -204,7 +206,7 @@ public class ConvertToFB2 extends AbstractConvertFunction {
 
         int ic = oldLevel - level;
         //Log.file.info("[S] closeSection. ic = %d", ic);
-        writeStr("\n");
+    //    writeStr(END_LINE);
         if ( ic > 0 )  {
             //Log.file.info("[S] closeSection. 1");
             // т.е. закрываем эпизод, более верхний чем предыдущий
@@ -213,13 +215,13 @@ public class ConvertToFB2 extends AbstractConvertFunction {
                 //for ( int i=0; i<ic; i++) {   // Игнорируем уровень 0 - Для структуры: Часть, Глава
                 //Log.file.info("[S] -- closeSection. i = %d", i);
                 writeStr(StringTools.createFirst(level-ic,' '));
-                writeStr("</section>\n");
+                writeStr("</section>" + END_LINE);
             }
         } else if ( ic == 0 ) {
             //Log.file.info("[S] closeSection. 1");
             // Новый эпизод того же уровня что и предыдущий.
             writeStr(StringTools.createFirst(level-ic,' '));
-            writeStr("</section>\n");
+            writeStr("</section>" + END_LINE);
         }
         // else - Предыдущий уровень выше текущего (нового). - Ничего не делаем. Т.к. углубляемся вниз.
     }
@@ -351,15 +353,20 @@ public class ConvertToFB2 extends AbstractConvertFunction {
         */
 
         // Не исп красную строку в любом случае - чтобы случайно не потерять данные, либо не поломать структуру файла.
-        writeStr ( "<p>" );
-        writeStr ( text );
-        writeStr ( "</p>" );
+        //if (text.contains("\n"))  throw new RuntimeException("Text: '" + text + "' contains EOL");
+        text = text.replace("\n", "");
+        text = text.replace("\r", "");
+        if (! StringTools.isEmpty(text)) {
+            writeStr("<p>");
+            writeStr(text);
+            writeStr("</p>" + END_LINE);
+        }
 
     }
 
     private void createEmptyLine ()
     {
-        writeStr ( "<empty-line/>" );
+        writeStr ( "<empty-line/>" + END_LINE );
         wasEmpty = true;
     }
 
@@ -370,12 +377,12 @@ public class ConvertToFB2 extends AbstractConvertFunction {
         needEmpty = true;
         wasEmpty = false;
 
-        writeStr("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
+        writeStr("<?xml version=\"1.0\" encoding=\"utf-8\"?>" + END_LINE);
         writeStr("<FictionBook xmlns:l=\"http://www.w3.org/1999/xlink\" xmlns=\"http://www.gribuser"
-                + ".ru/xml/fictionbook/2.0\">\n");
-        writeStr("<description>\n");
+                + ".ru/xml/fictionbook/2.0\">" + END_LINE);
+        writeStr("<description>" + END_LINE);
 
-        writeStr("<title-info>\n");
+        writeStr("<title-info>" + END_LINE);
 
         // жанр книги - можно перечеслить несколько
         /*
@@ -388,45 +395,45 @@ child_det               Детские Остросюжетные
 child_adv               Детские Приключения
          */
         //writeStr("<genre>literature_su_classics</genre><genre>mystery</genre>");
-        writeStr("<genre>child_sf</genre>\n");       // antique = Старинная Литература: Прочее
+        writeStr("<genre>child_sf</genre>" + END_LINE);       // antique = Старинная Литература: Прочее
 
         Author author = Par.GM.getAuthor();
         if (author != null) {
-            writeStr("<author>");
+            writeStr("<author>" + END_LINE);
             writeStr("<first-name>");
             writeStr(author.getFirstName());
-            writeStr("</first-name>");
+            writeStr("</first-name>" + END_LINE);
             writeStr("<last-name>");
             writeStr(author.getLastName());
-            writeStr("</last-name>");
-            writeStr("</author>\n");
+            writeStr("</last-name>" + END_LINE);
+            writeStr("</author>" + END_LINE);
         }
 
         writeStr("<book-title>");
         writeStr(getBookContent().getName());
-        writeStr("</book-title>\n");
+        writeStr("</book-title>"  + END_LINE);
 
         if (getBookContent().getAnnotation() != null ){
-            writeStr("<annotation><p>");
+            writeStr("<annotation>" + END_LINE + "<p>");
             writeStr(getBookContent().getAnnotation());
-            writeStr("</p></annotation>\n");
+            writeStr("</p>" + END_LINE + "</annotation>" + END_LINE);
         }
 
         // date - дата написания - только год
         String dateStr = getBookContent().getBookAttrs().get("last_change_date");
         if ( dateStr != null ) {
-            writeStr("<date>"+ getYear(dateStr) +"</date>\n");
+            writeStr("<date>"+ getYear(dateStr) +"</date>" + END_LINE);
         } else {
-            writeStr("<date>2020</date>\n");
+            writeStr("<date>2020</date>" + END_LINE);
         }
 
-        writeStr("<lang>ru</lang>\n");
+        writeStr("<lang>ru</lang>" + END_LINE);
 
-        writeStr("</title-info>\n");
+        writeStr("</title-info>" + END_LINE);
 
-        writeStr("</description>\n");
+        writeStr("</description>" + END_LINE);
 
-        writeStr("<body>\n");
+        writeStr("<body>" + END_LINE);
         //writeStr("<body>");
 
         // Вывести эпиграф книги - если он есть
@@ -482,9 +489,9 @@ child_adv               Детские Приключения
         //closeSection(currentLevel);
         closeSection(startLevel);
 
-        writeStr("</body>\n");
+        writeStr("</body>" + END_LINE);
 
-        writeStr("</FictionBook>\n");
+        writeStr("</FictionBook>" + END_LINE);
     }
 
     @Override

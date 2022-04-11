@@ -104,7 +104,6 @@ public class PasteProjectNodeAfterFunction extends PasteBookFunction
 
             inum++;
             // Добавить - после отмеченного
-            //parentNode.addBookNode ( inum, bookNode );
 
             if ( node instanceof BookTitle) {
                 // Вставить Книгу в основное дерево - после отмеченного
@@ -115,12 +114,12 @@ public class PasteProjectNodeAfterFunction extends PasteBookFunction
                 parentNode.addSection ( inum, (Section) node );
             }
 
-            // todo Добавить в дерево после отмеченного - в самом конце, когда все действия прошли успешно
+            // Добавить в дерево после отмеченного - в самом конце, когда все действия прошли успешно
             //  (создание директории, перезапись project.xml и т.д.)
             currentProjectContentPanel.insertNode ( pasteNode, parentObj, inum );
         }
 
-        // todo Отметить что было изменение
+        // Отметить что было изменение
         currentProjectContentPanel.setEdit ( true );
         //currentProjectContentPanel.getObject().setEdit ( true );
 
