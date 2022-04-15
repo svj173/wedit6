@@ -157,28 +157,33 @@ public class DialogTools
     public static void showError ( Component parentFrame, Object msg, String title )
     {
         Object object;
+        Log.l.info("[M] msg = %s");   // ловим ошибку с длинным текстом который почемуто не обрезается.
         // Анализ на очень длинные строки.
         if ( msg instanceof String )
         {
             String str = msg.toString ();
+            Log.l.info("[M] msg is String/ length = %d", str.length());
             if ( str.length() > 80 )
             {
-                //*
+                Log.l.info("[M] msg > 80");
                 JTextArea textArea = new JTextArea ( str );
                 textArea.setWrapStyleWord ( true );
                 textArea.setLineWrap ( true );
-                textArea.setPreferredSize ( new Dimension ( Par.SCREEN_SIZE.width / 2, (str.length() / 80 + 1)*15 ) );
+                Dimension size = new Dimension ( Par.SCREEN_SIZE.width / 2, (str.length() / 80 + 1)*15 );
+                Log.l.info("[M] new size = %s", size);
+                textArea.setPreferredSize ( size );
                 object = textArea;
-                        //*/
                 //str = StringTools.recut ( str, 75, "\n" );
             }
             else
             {
+                Log.l.info("[M] msg < 80");
                 object = str;
             }
         }
         else
         {
+            Log.l.info("[M] msg Not String");
             object = msg;
         }
         if ( parentFrame == null )  parentFrame = Par.GM.getFrame();

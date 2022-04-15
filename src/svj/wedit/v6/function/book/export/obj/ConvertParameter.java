@@ -11,6 +11,7 @@ import svj.wedit.v6.tools.DumpTools;
 import svj.wedit.v6.tools.Utils;
 import svj.wedit.v6.util.IClone;
 
+import java.io.File;
 import java.io.OutputStream;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -291,11 +292,13 @@ public class ConvertParameter     extends FunctionParameter<Object>   implements
      * <br/> '/home/svj/Serg/stories/'
      * <br/>
      */
+    /*
     private String createCurrentProjectPath()
     {
         String projectDir = Par.GM.getFrame().getCurrentProject().getProjectDir().toString();
         return projectDir.replace(Par.GM.getFrame().getCurrentProject().getFolderName(), "");
     }
+    */
 
     //
     // !!! Смотреть директорию текущего Сборника
@@ -317,47 +320,102 @@ public class ConvertParameter     extends FunctionParameter<Object>   implements
         /*
         Log.l.info("[F] folder = '%s'", Par.GM.getFrame().getCurrentProject().getFolderName());
         Log.l.info("[F] projectDir = '%s'", Par.GM.getFrame().getCurrentProject().getProjectDir());
-
-        // [F] folder = 'SvjStores'
-        // [F] projectDir = '/home/svj/Serg/stories/SvjStores'   -- !!!!
-
         Log.l.info("[F] fileName = '%s'", fName);
-        Log.l.info("[F] Par.MODULE_HOME = '%s'", Par.MODULE_HOME);
+        */
 
-        // fileName = '/home/svj/Serg/stories/release_books/html/test_004.html'
-        // [F] Par.MODULE_HOME = '/home/svj/programm/my/wedit6'
-
-        String projectDir = Par.GM.getFrame().getCurrentProject().getProjectDir().toString();
-        String path = createCurrentProjectPath();
-        Log.l.info("[F] path = '%s'", path);
-        Log.l.info("[F] startsWith = %b", fName.startsWith(path));
-
-        if (fName.startsWith(path)) {
-            fileName = fName.substring(path.length());
-        }
-        else {
-            fileName = fName;
-        }
-        Log.l.info("[F] new fileName = '%s'", fileName);
-        //*/
+        // Учет относительных путей - Пока НЕ получилось
+        //fileName = setRealFileName(fName);
 
         fileName = fName;
     }
 
+    /**
+     * Занести имя файла для конвертации. Если файл находится в рамках Сборников - обрезать его.
+     * Вызовы:
+     * 1) Из редактора Конвертера - полный путь файла
+     * 2) Мержинг параметра на другой - берется какой есть
+     * 3) Парсинг из book-файла - берется какой есть
+     *
+     * Т.е. может не быть текущей директории, а значит и Префикса
+     *
+     * @param fName  Это полное имя файла.
+     */
+    public void checkAndSaveFileName(String fName) {
+
+        String result;
+        String prefix = getPrefix();
+
+        //Log.l.info("[M] setRealFileName: fileName = %s; prefix = %s", fName, prefix);
+
+        if (prefix == null) {
+            result = fName;
+        }
+        else
+        {
+            if (fName.startsWith(prefix)) {
+                result = fName.substring(prefix.length());
+            } else {
+                result = fName;
+            }
+        }
+        //Log.l.info("[M] setRealFileName: result = %s", result);
+        fileName = result;
+    }
+
+    // Применение - во многих случаях - отладочная инфа в лог
+    /*
+    При разных конвертациях берется имя файла, и если отсутсвует - берется юзерская директория
+     */
     public String getFileName ()
     {
-        /* todo Доделать
+        // Учет относительных путей - Пока НЕ получилось
+        // имя файла может быть относительное
+        //return getRealFileName(fileName);
+
+        return fileName;
+    }
+
+    public String getRealFileName() {
         String result;
-        if (fileName.startsWith("/")) {
+        if (fileName.startsWith("/"))
+        {
+            // сохранено полное имя файла - ничего не делаем
             result = fileName;
         }
-        else {
-            result = createCurrentProjectPath() + fileName;
+        else
+        {
+            // сохранено относительно имя файла - анализируем Префикс
+            String prefix = getPrefix();
+            if (prefix != null) {
+                result = prefix + fileName;
+            } else {
+                result = fileName;
+            }
         }
-        Log.l.info("[F] fileName = '%s'; result = '%s'", fileName, result);
         return result;
-        */
-        return fileName;
+    }
+
+    private String getPrefix()
+    {
+        // - выделяем префикс - на директорию выше - /home/svj/Serg/stories
+        // -- сохраняем Префикс (только в памяти) и в след разы используем его - без всякого выделения.
+        //Log.l.info("[M] getPrefix: Par.CONVERT_FILE_PREFIX = %s", Par.CONVERT_FILE_PREFIX);
+        if (Par.CONVERT_FILE_PREFIX == null &&
+                Par.GM.getFrame() != null &&
+                Par.GM.getFrame().getCurrentProject() != null &&
+                Par.GM.getFrame().getCurrentProject().getProjectDir() != null)
+        {
+            // выделяем Префикс - из чего? Из сборника
+            File projectDir = Par.GM.getFrame().getCurrentProject().getProjectDir();
+            // выдает только Имя. А как  - полный путь?
+            //Log.l.info("[M] getPrefix: projectDir = %s", projectDir);
+
+            if (projectDir.getParent() != null) {
+                Par.CONVERT_FILE_PREFIX = projectDir.getParent() + "/";
+            }
+        }
+        //Log.l.info("[M] getPrefix: result = %s", Par.CONVERT_FILE_PREFIX);
+        return Par.CONVERT_FILE_PREFIX;
     }
 
     public Collection<ElementConvertParameter> getElementList ()

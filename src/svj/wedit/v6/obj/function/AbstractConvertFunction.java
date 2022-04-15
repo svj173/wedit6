@@ -314,7 +314,7 @@ public abstract class AbstractConvertFunction  extends FileWriteFunction
 
         try
         {
-            fileName    = cp.getFileName();
+            fileName    = cp.getRealFileName();
             fos         = new FileOutputStream ( fileName );
             setFos ( fos );
 
@@ -339,7 +339,7 @@ public abstract class AbstractConvertFunction  extends FileWriteFunction
         try
         {
             // Взять из параметра директорию, куда сохраняли последний раз.
-            fileName    = cp.getFileName();
+            fileName    = cp.getRealFileName();
             if ( fileName == null )  fileName = Par.USER_HOME_DIR;
 
             Log.file.debug ( "--- convert to file '%s'.", fileName );

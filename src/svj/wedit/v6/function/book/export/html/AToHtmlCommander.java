@@ -167,7 +167,7 @@ public abstract class AToHtmlCommander  extends FileWriteFunction implements Tre
         try
         {
             // Взять из параметра директорию, куда сохраняли последний раз.
-            fileName    = cp.getFileName();
+            fileName    = cp.getRealFileName();
             if ( fileName == null )  fileName = Par.USER_HOME_DIR;
 
             Log.file.debug ( "--- convert to file '%s'.", fileName );
@@ -348,7 +348,7 @@ public abstract class AToHtmlCommander  extends FileWriteFunction implements Tre
                     {
                         // ---------------- IMAGE -------------------
                         // Скопировать картинку в директорию расположения html-файла
-                        FileTools.copyFileToDir ( textObj.getText (), cp.getFileName () );
+                        FileTools.copyFileToDir ( textObj.getText(), cp.getRealFileName() );
                         // Разместить в тексте тег ссылки на картинку (по идее в обьекте может быть и подпись для картинки).
                         writeStr ( fos, "<center><IMG src='"+ textObj.getText()+ "' /></center>\n" );
                         // Иначе текст следующего заголовка пойдет прямо от иконки.

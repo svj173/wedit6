@@ -72,4 +72,20 @@ public class Par
 
     // Книга которую распарсивают - для более вразумительных сообщений об ошибках.
     public static BookContent CURRENT_PARSE_BOOK = null;
+
+    /**
+     * Префикс для имен конвертируемых файлов. Предназанчен для работ с разных компьютеров,
+     * <br/> где Сборники находятся в одной директории (т.е. структура Сборников одинакова),
+     * <br/> но эта директория в разных компьютерах - разная.
+     * <br/> Пример:
+     * <br/> 1) имя файла с компа-1: /home/svj/Serg/Project/Story/release_books/fb2/zs1.fb2
+     * <br/> 2) имя файла с компа-1: /home/svj/Serg/stories/release_books/fb2/zs1.fb2
+     * <br/> 3) общее относительное имя файла: release_books/fb2/zs1.fb2
+     * <br/> 4) Вычисляемый на компе Префикс (CONVERT_FILE_PREFIX):
+     * <br/> - 1-комп: /home/svj/Serg/Project/Story/
+     * <br/> - 2-комп: /home/svj/Serg/stories/
+     */
+    public static String CONVERT_FILE_PREFIX = null;
+
+
 }

@@ -632,6 +632,7 @@ public class ConvertDialog extends WValidateDialog<BookmarksParameter,ConvertPar
         //}
 
         // -------------------------- File ------------------------------------
+        // Если путь относительный - такой и показываем
         fileWidget.setValue ( parameter.getFileName() );
         fileWidget.setEditable ( false );  // запрещаем редактирование
     }
@@ -1178,7 +1179,9 @@ public class ConvertDialog extends WValidateDialog<BookmarksParameter,ConvertPar
             //}
 
             // - file
-            parameter.setFileName ( fileWidget.getValue() );
+            //Log.l.info ( "[M] save: file from widget = %s", fileWidget.getValue());
+            parameter.checkAndSaveFileName ( fileWidget.getValue() );
+            //parameter.setFileName ( fileWidget.getValue() );
             fileWidget.setEditable ( false );
 
         } catch ( Exception e )        {

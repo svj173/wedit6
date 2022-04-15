@@ -86,7 +86,7 @@ public abstract class AToHtml2Commander extends AbstractConvertFunction
         // Скопировать картинку в директорию расположения html-файла
         try
         {
-            FileTools.copyFileToDir ( imgFileName, cp.getFileName() );
+            FileTools.copyFileToDir ( imgFileName, cp.getRealFileName() );
             msg = "<center><IMG src='"+ imgFileName+ "' /></center>\n";
 
         } catch ( Exception e )        {
