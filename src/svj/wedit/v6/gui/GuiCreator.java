@@ -103,6 +103,14 @@ public class GuiCreator {
 
         // Копировать-Вырезать-Вставить
 
+        function    = Par.GM.getFm().get ( FunctionId.MOVE_BOOK );
+        //menuItem    = new BookPopupMenu ( function );
+        // Меню доступно как для Сектора, так и для Книги
+        menuItem    = new WEMenuItem ( function.getId().toString(), function.getIcon ( Par.MENU_ICON_SIZE ) );
+        menuItem.addActionListener ( function );
+        menuItem.setText ( function.getName() );
+        projectPanel.addPopupMenu ( menuItem );
+
         function    = Par.GM.getFm().get ( FunctionId.CUT_PROJECT_ELEMENT );
         //menuItem    = new BookPopupMenu ( function );
         // Меню доступно как для Сектора, так и для Книги

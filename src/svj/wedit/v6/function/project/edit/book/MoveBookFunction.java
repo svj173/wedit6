@@ -60,7 +60,7 @@ public class MoveBookFunction  extends AbstractSaveProjectFunction
     public MoveBookFunction ()
     {
         setId ( FunctionId.MOVE_BOOK );
-        setName ( "Переместить книгу" );
+        setName ( "Переместить Книгу или Сектор (x)" );
         setIconFileName ( "move_book.png" );
         //setToolTip ();
         //setParamsType ( ParameterCategory.BOOK );

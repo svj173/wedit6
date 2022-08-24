@@ -29,6 +29,7 @@ import java.awt.event.ActionEvent;
  * <BR/> User: svj
  * <BR/> Date: 07.11.2020 18:06:04
  */
+@Deprecated
 public class PasteProjectNodeAfterFunction extends PasteBookFunction
 {
     public PasteProjectNodeAfterFunction()

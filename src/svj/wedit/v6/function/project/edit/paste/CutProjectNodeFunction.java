@@ -15,6 +15,7 @@ import svj.wedit.v6.tools.*;
 import svj.wedit.v6.util.Buffer;
 
 import javax.swing.*;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 import java.awt.event.ActionEvent;
 
@@ -25,9 +26,13 @@ import java.awt.event.ActionEvent;
  * <BR/> Допустимость использования корневого элемента дерева: НЕТ.
  * <BR/> Только однородные для верхнего уровня!
  * <BR/>
+ * <BR/> todo Большой недостаток - можнов ырезать книгу-сектор, и забыть про это.
+ * <BR/> Лучше - расширенный диалог - слева - кого, справа - куда
+ * <BR/>
  * <BR/> User: svj
  * <BR/> Date: 03.02.2012 11:06:04
  */
+@Deprecated
 public class CutProjectNodeFunction extends Function
 {
     public CutProjectNodeFunction()
@@ -45,44 +50,34 @@ public class CutProjectNodeFunction extends Function
         JLabel              label;
         int                 ic;
 
-        // Взять отмеченные
+        // 1) Взять отмеченные
         // Не проверяем на отсутствие выделения, т.к. если не было отмеченных то
         //  еще раньше (в NodeTools) выкинется исключение
         // Там же, в глубине, проверяется отмеченность одноуровневых элементов. И проверка на корень.
         selectNodes  = ProjectTools.getSelectedNodesForCut(false);
         Log.f.info ( "selectNodes = %s", WDumpTools.printArray ( selectNodes ) );
 
-        // Проверить, может выбранный узел (сам или в составе вышестоящего узла) уже открыт
+        // 2) Проверить, может выбранный узел (сам или в составе вышестоящего узла) уже открыт
         // в текстах, и тогда добавлять/удалять в него ничего нельзя.
         ProjectTools.checkOpenBooks ( selectNodes );
 
-        // Стартовый диалог
+        // 3) Стартовый диалог
         label   = createLabel ( selectNodes );
         ic      = DialogTools.showConfirmDialog ( Par.GM.getFrame(),  "Вырезать " + selectNodes.length
                 + " обьектов", label );
 
         if ( ic != 0 )  return;
 
-        // Создать копию обьектов - необходимо при переносе элементов книг из одной книги в другую.
-        /*
-        // Для CUT не надо создавать clone.
-        newNodes    = new TreeObj[selectNodes.length];
-        for ( int i=0; i<selectNodes.length; i++ )
-        {
-            //newNodes[i]    = BookTools.createClone ( selectNodes[i] );
-            newNodes[i]    = selectNodes[i].clone();
-        }
-        */
-        
-        //Log.f.debug ( "--- selectNodes = \n", DumpTools.printTreeObj ( selectNodes[0] ) );
+        // 4) Создать копию обьектов - необходимо при переносе элементов книг из одной книги в другую.
+        // Для CUT не надо создавать clone - т.к. ИД обьектов останется уникальным.
+
         Log.f.info ( "new Clone Nodes = \n%s", DumpTools.printArray ( selectNodes, '\n' ) );
 
-        // Занести в буфер
+        // 5) Занести в буфер
         Buffer.setBuffer ( selectNodes );
 
-        // Удалить в дереве    todo - После успешного Paste
-        /*
-        // Взять панель дерева текущего Сборника
+        // 6) Удалить в дереве    todo - После успешного Paste
+        // - Взять панель дерева текущего Сборника
         projectTreePanel = Par.GM.getFrame().getCurrentProjectPanel();
 
         for ( DefaultMutableTreeNode node : selectNodes )
@@ -97,7 +92,6 @@ public class CutProjectNodeFunction extends Function
         projectTreePanel.setEdit ( true );
         projectTreePanel.getObject().setEdit ( true ); // BookContent - т.к. через него флаг рисуется.
         //Log.f.debug ( "Finish" );
-        */
     }
 
     private JLabel createLabel ( TreeObj[] selectNodes )
