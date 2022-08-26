@@ -55,6 +55,8 @@ public class TreeObj extends DefaultMutableTreeNode implements Comparable<TreeOb
         result.append ( getParentId() );
         result.append ( "; subType = " );
         result.append ( getSubType() );
+        result.append ( "; childs = " );
+        result.append ( getChildCount() );
         result.append ( "; wtree = " );
         result.append ( getWTreeObj() );
 

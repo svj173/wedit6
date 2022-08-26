@@ -3,7 +3,6 @@ package svj.wedit.v6.gui.tree;
 
 import svj.wedit.v6.WCons;
 import svj.wedit.v6.exception.WEditException;
-import svj.wedit.v6.function.book.export.obj.StrongSelectListener;
 import svj.wedit.v6.gui.listener.TreeObjSelectionListener;
 import svj.wedit.v6.gui.panel.EditablePanel;
 import svj.wedit.v6.gui.panel.WPanel;
@@ -12,22 +11,16 @@ import svj.wedit.v6.obj.Editable;
 import svj.wedit.v6.obj.TreeObj;
 import svj.wedit.v6.obj.TreeObjType;
 import svj.wedit.v6.obj.function.Function;
-import svj.wedit.v6.tools.Convert;
-import svj.wedit.v6.tools.TreeObjTools;
-import svj.wedit.v6.tools.Utils;
-import svj.wedit.v6.tools.WDumpTools;
+import svj.wedit.v6.tools.*;
 import svj.wedit.v6.util.SortingNode;
 
 import javax.swing.*;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeExpansionListener;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreePath;
-import javax.swing.tree.TreeSelectionModel;
+import javax.swing.tree.*;
+
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
 
 
 /**
@@ -258,7 +251,7 @@ public class TreePanel<T extends Editable>  extends EditablePanel  //implements 
     {
         TreeObj oldCurrentObj;
 
-        Log.l.debug ( "%s: Start TreePanel rewrite: repaintTreeMode = %s; currentObj = %s", getName(), repaintTreeMode, currentObj );
+        //Log.l.debug ( "%s: Start TreePanel rewrite: repaintTreeMode = %s; currentObj = %s", getName(), repaintTreeMode, currentObj );
 
         // Нельзя здесь делать getCurrent, т.к. тогда перезатрется currentObj. А некоторые функции просто устанавливают его
         //   в новое значение, чтобы по rewrite оно установилось (особенно при переходах в программе - не по дереву)
@@ -275,7 +268,7 @@ public class TreePanel<T extends Editable>  extends EditablePanel  //implements 
             // Найти такой же обьект в текущем дереве. Сменить текущий на него.
             if ( oldCurrentObj != null )
                 currentObj  = TreeObjTools.getObjectInNodeById ( (TreeObj) treeModel.getRoot(), oldCurrentObj.getId() );
-            Log.l.debug (  "%s: NEW currentObj = %s", getName(), currentObj );
+            //Log.l.debug (  "%s: NEW currentObj = %s", getName(), currentObj );
 
             if ( (oldCurrentObj != null) && (currentObj == null) ) {
                 Log.l.error("%s: NOT found object for oldCurrentObj = %s; ", getName(), oldCurrentObj);
@@ -334,7 +327,7 @@ public class TreePanel<T extends Editable>  extends EditablePanel  //implements 
             Log.l.error ( Convert.concatObj ( getName(), ": error. repaintTreeMode = ", repaintTreeMode ), e);
             //throw new GuiEltexException ( "Системная ошибка перерисовки дерева объектов :\n" + e, e );
         } finally        {
-            Log.l.info ( "%s: Finish. repaint-revalidate tree. currentObj = %s", getName(), currentObj );
+            //Log.l.info ( "%s: Finish. repaint-revalidate tree. currentObj = %s", getName(), currentObj );
             allowExpand         = true;    // включить акцию на раскрывании узла - чтобы он автоматом и выбирался.
             repaintTreeMode     = RepaintTree.NO;
             //
@@ -346,7 +339,7 @@ public class TreePanel<T extends Editable>  extends EditablePanel  //implements 
             if ( treeListener != null )  treeListener.setEnableAction();
             //Log.l.debug ( "EltexTreePanel.rewrite: Finish" );
         }
-        Log.l.debug ( "%s: Finish. currentObj = %s", getName(), currentObj );
+        //Log.l.debug ( "%s: Finish. currentObj = %s", getName(), currentObj );
     }
 
 

@@ -25,7 +25,7 @@ public class ViewTreeFromTabFunction extends Function
 {
     public ViewTreeFromTabFunction ()
     {
-        setId ( FunctionId.VIEW_FROM_SOURCE );
+        setId ( FunctionId.VIEW_ELEMENT_FROM_SOURCE);
         setName ( "Показать элемент книги в дереве Содержания." );
         setIconFileName ( "view_from_source.png" );
     }

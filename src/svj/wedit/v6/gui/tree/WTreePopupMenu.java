@@ -123,7 +123,7 @@ public class WTreePopupMenu extends JPopupMenu implements InitObjectComponent<Tr
         else
         {
             // нет текущего объекта - безусловно выключить меню.
-            Log.l.info ( "Current obj is null. Disable popup menu." );
+            //Log.l.info ( "Current obj is null. Disable popup menu." );
             setEnabled ( false );
             setVisible ( false );
         }

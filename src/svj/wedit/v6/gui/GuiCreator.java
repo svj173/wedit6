@@ -5,6 +5,7 @@ import svj.wedit.v6.content.toolBar.BrowserToolBar;
 import svj.wedit.v6.function.FunctionId;
 import svj.wedit.v6.function.book.ReloadBookFunction;
 import svj.wedit.v6.function.book.TrimBookTextFunction;
+import svj.wedit.v6.function.book.ViewBookOnTreeFunction;
 import svj.wedit.v6.function.book.bookmark.BookmarkFunction;
 import svj.wedit.v6.function.book.edit.DeleteBookNodeFunction;
 import svj.wedit.v6.function.book.edit.EditBookNodeFunction;
@@ -251,6 +252,7 @@ public class GuiCreator {
 
 
         // ---------------- Контекстное меню на дереве книги -----------------------
+        fm.add ( new ViewBookOnTreeFunction()      );
         fm.add ( new GroupEditNodeTypeFunction()   );
 
         // - Описание элементов книги

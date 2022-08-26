@@ -31,6 +31,7 @@ import svj.wedit.v6.logger.Log;
 import svj.wedit.v6.obj.*;
 import svj.wedit.v6.obj.book.BookContent;
 import svj.wedit.v6.obj.book.BookNode;
+import svj.wedit.v6.obj.book.BookTitle;
 import svj.wedit.v6.obj.function.Function;
 import svj.wedit.v6.tools.*;
 
@@ -199,10 +200,11 @@ public class ContentFrame    extends JFrame   implements WComponent
         result.add ( splitPane, BorderLayout.CENTER );
 
         // ---------------- создать book content Panel -----------------
-        booksPanel   = new WorkPanel<TreePanel<BookContent>>( "Work_bookPanel", projectsPanel.getCardPanel(),
-                                                              new CardPanel<TabsPanel<TreePanel<BookContent>>>(), null );
+        booksPanel   = new WorkPanel<>("Work_bookPanel", projectsPanel.getCardPanel(),
+                new CardPanel<>(), null);
         booksPanel.setId ( "Work_bookPanel" );
         // наполнить ее сверху (тул-бар)  акциями-иконками
+        booksPanel.addIconFunction ( Par.GM.getFm().get ( FunctionId.VIEW_BOOK_FROM_SOURCE ) );
         booksPanel.addIconFunction ( Par.GM.getFm().get ( FunctionId.RELOAD_BOOK ) );
         booksPanel.addIconFunction ( Par.GM.getFm().get ( FunctionId.CUT_ELEMENT ) );
         booksPanel.addIconFunction ( Par.GM.getFm().get ( FunctionId.DELETE_ELEMENT ) );
@@ -230,7 +232,7 @@ public class ContentFrame    extends JFrame   implements WComponent
         textsPanel.addIconFunction ( Par.GM.getFm().get ( FunctionId.TEXT_SELECT_ALIGN ) );
         textsPanel.addIconFunction ( Par.GM.getFm().get ( FunctionId.TEXT_SELECT_STYLE ) );
         textsPanel.addIconFunction ( Par.GM.getFm().get ( FunctionId.SELECT_IMAGE ) );
-        textsPanel.addIconFunction ( Par.GM.getFm().get ( FunctionId.VIEW_FROM_SOURCE ) );
+        textsPanel.addIconFunction ( Par.GM.getFm().get ( FunctionId.VIEW_ELEMENT_FROM_SOURCE) );
         textsPanel.addIconFunction ( Par.GM.getFm().get ( FunctionId.INSERT_TABLE ) );
 
         textAdditionalPanel = new TabsPanel<EditablePanel>();
@@ -497,6 +499,85 @@ public class ContentFrame    extends JFrame   implements WComponent
         }
     }
 
+    /**
+     * Выделить табик Сборника и книгу в дереве - на панели Сборника
+     */
+    public void selectBookOnProject ( String bookId, String projectId )
+    {
+        TabsPanel<TreePanel<Project>>  tabsPanel;
+
+        //Log.l.info("bookId = %s; projectId = %s", bookId, projectId);
+
+        // Взять из текущего card - tabsPanel по ИД
+        tabsPanel   = projectsPanel.getTabsPanel ( "project" );
+        //Log.l.info("tabsPanel = \n%s", tabsPanel);
+        if ( (tabsPanel != null) && (tabsPanel.contain ( projectId )) )
+        {
+            // выделить сборник
+            tabsPanel.setSelectedTab ( projectId );
+
+            // взять дерево у этого табика
+            TreePanel<Project> treePanel = tabsPanel.getPanel(projectId);
+            //Log.l.info("treePanel = \n%s", treePanel);
+
+
+            TreeObj select = getBootTitleByBookId(treePanel.getRoot(), bookId);
+            //Log.l.info("bookTitle = " + select);
+
+            treePanel.selectNode(select, false);
+        }
+        else
+        {
+            Log.l.error ( "[selectProject] tabsPanel not found. projectId:%s", projectId );
+        }
+    }
+
+    /** Найти обьект по ИД от заданого узла и вглубь.
+     *             // Пробежать по всему дереву
+     *             // - искать обьекты BookTitle
+     *             // - брать из них BookContent
+     *             // - сравнивать его ИД с заданным
+     *             // - если нашли такой - его выделить селектом на обьект дерева (а не ИД)
+     */
+    private static TreeObj getBootTitleByBookId ( TreeObj object, String bookId )
+    {
+        boolean                 b;
+        TreeObj                 obj, findObj;
+        Enumeration<TreeObj>    childs;
+
+        //Log.l.info("--- object = " + object);
+
+        if ( (object == null) || (bookId == null) )     return null;
+
+        Object uObj = object.getUserObject();
+        if (uObj instanceof BookTitle) {
+            BookTitle bookTitle = (BookTitle) uObj;
+            BookContent content = bookTitle.getBookContent();
+            if (content != null) {
+                b = Utils.compareToWithNull(content.getId(), bookId) == 0;
+
+                if (b) {
+                    Log.l.info("----- find tree obj = " + object);
+                    return object;
+                }
+            }
+            // Если content == null, значит эту книуг еще не открывали.
+        }
+
+        childs = object.children();
+        while ( childs.hasMoreElements() )
+        {
+            obj     = childs.nextElement();
+            findObj = getBootTitleByBookId ( obj, bookId );
+            if ( findObj != null ) return findObj;
+        }
+
+        return null;
+    }
+
+    /**
+     * Выделить табик указаной книги. На панели книг.
+     */
     public void selectBook ( String bookId, Project project )
     {
         TabsPanel<TreePanel<BookContent>>  tabsPanel;

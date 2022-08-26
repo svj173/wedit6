@@ -23,7 +23,7 @@ public enum FunctionId
     COPY_PROJECT_ELEMENT, PASTE_PROJECT_ELEMENT_IN, PASTE_PROJECT_ELEMENT_AFTER, CUT_PROJECT_ELEMENT,
 
     // Book tree - toolbar
-    EDIT_NODE_TYPE, REWRITE_BOOK_TREE, CHECK_NODE_ID,
+    VIEW_BOOK_FROM_SOURCE, EDIT_NODE_TYPE, REWRITE_BOOK_TREE, CHECK_NODE_ID,
 
     // Text
     OPEN_TEXT, CLOSE_TEXT, CLOSE_ALL_TEXT, CLOSE_ALL_TEXT_EXCLUDE_CURRENT, SAVE_TEXT,
@@ -31,7 +31,7 @@ public enum FunctionId
     STAT_BOOK,      // меню - Статистика / Список книг
     STAT_BOOK_EDIT,      // меню - Статистика по редактированию Эпизодов. Смотреть исправления за - день, неделю, месяц...
     TEXT_INFO_ELEMENT, TEXT_SELECT_ELEMENT, TEXT_SELECT_ALIGN, TEXT_SELECT_STYLE, SELECT_IMAGE,
-    UNDO_TEXT, REDO_TEXT, VIEW_FROM_SOURCE,
+    UNDO_TEXT, REDO_TEXT, VIEW_ELEMENT_FROM_SOURCE,
     INSERT_TABLE,
 
     // Convert
