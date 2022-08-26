@@ -91,13 +91,10 @@ public class FindDotTextFunction extends SimpleFunction
         bookNode            = currentBookContent.getBookNode();
 
         // Выяснить, есть ли для данной книги открытые тексты.
-        // Проверка открытых эпизодов
         //BookTools.checkAllOpenText();
 
         // Поиск. LinkedHashMap - чтобы хранил в порядке поступления.
         searchArray = new LinkedHashMap<String,Collection<SearchObj>>();
-
-        //StringBuilder sb = new StringBuilder(128);
 
         // пробегаем по всем текстам - исключаем заголовки и аннотации.
         processNode ( bookNode, searchArray );
@@ -143,14 +140,12 @@ public class FindDotTextFunction extends SimpleFunction
         text = bookNode.getText();
         if ( ( text != null ) && ( !text.isEmpty () ) )
         {
-            ic = 0;
+            ic = 0; // номер текста в данном элементе книги - на случай если будет найдено несколько
+            // А если в одной строке будет найдено несколкьо?
             for ( TextObject textObj : text )
             {
                 str = textObj.getText();
                 if (check ( str )) {
-                    //sb.append(str);
-                    //sb.append('\n');
-
                     addSearch ( bookNode, maxSize, searchArray, str, str, ic );
                     ic++;
                 }
@@ -164,6 +159,7 @@ public class FindDotTextFunction extends SimpleFunction
         boolean findDot = false;
         int ic = 0;  // счетчик для троеточий
         char[] chars = str.toCharArray();
+
         for (char ch : chars) {
             //Log.l.info("ch = %s; findDot = %b; ic = %d", ch, findDot, ic);
             if (ch == '.') {
@@ -205,6 +201,7 @@ public class FindDotTextFunction extends SimpleFunction
                         ic = 0;
                         //continue;
                     }
+
                     // > 1 - может быть и так - !..
                     boolean b = (ic > 1) && (ch == '-' || ch == '–'|| ch == '"');
                     //Log.l.info("2. ch = %s; findDot = %b; ic = %d; b = %b", ch, findDot, ic, b);

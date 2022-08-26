@@ -13,17 +13,14 @@ import svj.wedit.v6.obj.book.BookContent;
 import svj.wedit.v6.obj.book.BookNode;
 import svj.wedit.v6.obj.book.BookTitle;
 import svj.wedit.v6.obj.book.xml.BookContentStaxParser;
-import svj.wedit.v6.obj.open.BookInfo;
-import svj.wedit.v6.obj.open.OpenParamsData;
-import svj.wedit.v6.obj.open.ProjectInfo;
-import svj.wedit.v6.obj.open.TextInfo;
-import svj.wedit.v6.tools.Convert;
+import svj.wedit.v6.obj.open.*;
 import svj.wedit.v6.tools.DialogTools;
 import svj.wedit.v6.tools.ProjectTools;
 
 import javax.swing.*;
+
 import java.io.File;
-import java.util.List;
+import java.util.*;
 
 /**
  * - Void - the result type returned by this {@code SwingWorker's}  {@code doInBackground} and {@code get} methods
@@ -270,13 +267,13 @@ public class WEdit6InitWorker    extends SwingWorker<OpenParamsData,String>
                 } catch ( Exception e )                {
                     String str;
                     // Не смогли открыть старый сборник - не страшно
-                    Log.l.error ( Convert.concatObj ( "WEdit.openProjects error: file = ", projectDirName ), e );
+                    Log.l.error ( "WEdit.openProjects error: file = " + projectDirName, e );
                     errMsg.append ( "Ошибка открытия книги '" );
                     if ( bookTitle == null )
                         str = "Null";
                     else
                         str = bookTitle.getName();
-                    errMsg.append ( bookTitle );
+                    errMsg.append ( str );
                     errMsg.append ( "'\n сборника '" );
                     errMsg.append ( project.getName() );
                     errMsg.append ( "' :\n " );

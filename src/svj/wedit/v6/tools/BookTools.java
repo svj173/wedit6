@@ -543,10 +543,10 @@ public class BookTools
         fullPath2   = node.getFullPath();
 
         if ( fullPath1.startsWith ( fullPath2 ) )
-            throw new WEditException ( true, "Глава '",bookNode.getName(),"', уже открыта в составе '", node.getName(), "'."); // true - чтобы не скидывать в errors.txt
+            throw new WEditException ( true, "Глава '",bookNode.getName(),"',\n уже открыта в составе\n '", node.getName(), "'."); // true - чтобы не скидывать в errors.txt
 
         if ( fullPath2.startsWith ( fullPath1 ) )
-            throw new WEditException ( true, "Части главы '",bookNode.getName(),"', уже открыты в составе '", node.getName(), "'.");
+            throw new WEditException ( true, "Части главы '",bookNode.getName(),"',\n уже открыты в составе\n '", node.getName(), "'.");
     }
 
     /* Проверяем на вхождение bookNode в node или ее частях. Т.е. смотрим, открыт ли bookNode в каком-нибудь тексте. */
@@ -561,7 +561,7 @@ public class BookTools
         fullPath2   = node.getFullPath ();
 
         if ( fullPath1.startsWith ( fullPath2 ) )
-            throw new WEditException ( true, "Глава '",bookNode.getName(),"', уже открыта в составе '", node.getName(), "'.");
+            throw new WEditException ( true, "Глава '",bookNode.getName(),"',\n уже открыта в составе\n '", node.getName(), "'.");
     }
 
     /**
