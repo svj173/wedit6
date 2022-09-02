@@ -8,15 +8,15 @@ import svj.wedit.v6.function.params.SimpleParameter;
 import svj.wedit.v6.gui.dialog.LoadImageDialog;
 import svj.wedit.v6.gui.panel.TextPanel;
 import svj.wedit.v6.logger.Log;
-import svj.wedit.v6.obj.function.Function;
 import svj.wedit.v6.obj.book.BookContent;
+import svj.wedit.v6.obj.function.Function;
 import svj.wedit.v6.tools.BookTools;
-import svj.wedit.v6.tools.Convert;
 import svj.wedit.v6.tools.FileTools;
 import svj.wedit.v6.tools.GuiTools;
 
 import javax.swing.*;
 import javax.swing.text.StyledDocument;
+
 import java.awt.event.ActionEvent;
 import java.io.File;
 
@@ -41,6 +41,7 @@ public class SelectImageFunction extends Function
         SimpleParameter sp;
         String      PARAM_NAME = "pathDir";
 
+        // Если раньше уже брали изображения - взять директорию, откуда брали
         sp  = (SimpleParameter) getParameter ( PARAM_NAME );
         if ( sp == null )
         {
@@ -57,7 +58,8 @@ public class SelectImageFunction extends Function
     {
         LoadImageDialog dialog;
         File            file, bookFile, bookImgDirFile;
-        Icon            icon;
+        //Icon            icon;
+        ImageIcon            icon;
         int             pos;
         String          fileName, bookFileName, iconDir, bookImgDir, targetFileName, iconFileName;
         StyledDocument  doc;
@@ -74,16 +76,26 @@ public class SelectImageFunction extends Function
 
         // открыть диалог по загрузке картинки
         dialog = new LoadImageDialog ( pathDir );
-        //dialog.init ( pathDir );
         dialog.showDialog();
 
         if ( dialog.isOK() )
         {
             // Иконка выбрана
-            icon    = dialog.getResult();
+
+            // - сам файл иконки
             file    = dialog.getIconFile();
+            // - директория размещения файла иконки
             pathDir = file.getParentFile();
+            // - полный путь до файла иконки
             iconFileName    = file.getAbsolutePath();
+
+            // todo Взять размер иконки
+
+            // ?
+            // todo Взять подпись под кратинкой - Мап языков. Т.е. есть параметр - Язык - по умолч - ru
+            // - список применяемых языков взять из конфиг-файла. есди нет аткого параметра - ru
+            // - если выведем подпись то при парсинге обратно как узнаем что это не текст а подпись?
+            //     и как узнаем какой у нее язык?
 
             // Сохранить новое значение параметра
             getPar().setValue ( pathDir.toString() );
@@ -94,61 +106,95 @@ public class SelectImageFunction extends Function
             bookContent = textPanel.getBookNode().getBookContent();
 
             bookFileName    = bookContent.getFileName();
-            // Определить - из рабочей директории книги эта иконка или нет.
+            // Определить - эта иконка из рабочей директории книги или со стороны.
             iconDir         = pathDir.getAbsolutePath();
-            // Если нет - скопировать туда.
+
+            // Если со стороны - скопировать в рабочую диеркторию книги в директорию image.
             if ( ! bookFileName.startsWith ( iconDir ) )
             {
-                // скопирвоать файл
-                // Сформировать директорию книги
-                bookFile        = new File ( bookFileName );
-                // - создать имя директории для картинок книг
-                bookImgDir      = Convert.concatObj ( bookFile.getParent(), "/image" );
-                bookImgDirFile  = new File ( bookImgDir );
-                FileTools.createFolder ( bookImgDirFile );
+                // скопировать файл
+                // Сформировать директорию image книги
+                bookImgDirFile = createImgDir(bookFileName, "image");
                 // копируем
                 targetFileName  = FileTools.copyFile ( file, bookImgDirFile.getAbsolutePath() );
+
+                // todo - лишнее
                 // Перечитываем иконку из правильной директории, чтоыб именно этот файловый путь отметился в стиле текста (а не предыдущий)
                 if ( targetFileName != null )
                 {
-                    icon            = GuiTools.createImageByFile ( targetFileName );
+                    //icon            = GuiTools.createImageByFile ( targetFileName );
                     iconFileName    = targetFileName;
                 }
             }
+
+            // iconFileName - путь до болшой кратинки в диреткории книги
+
+            // - иконка дял размещения в текстовой части
+
+            // создать иконку указанного размера  - icon
+            icon            = GuiTools.createSmallImageByFile ( iconFileName, 250 );
+
+            // создать имя новой иконки
+            String bigIconName = file.getName();
+
+            // взять расширение (тип) изображения
+
+            // todo сохранить ее в директории иконок изображений  - iconFileName
+            // Сформировать директорию image_small книги
+            bookImgDirFile = createImgDir(bookFileName, "image_small");
+            // Создать имя файла иконки
+            String smallFileName = bookImgDirFile + "/" + bigIconName;
+
+            // взять расширение
+            int index = smallFileName.lastIndexOf(".");
+            String imgType = smallFileName.substring(index + 1);
+
+            /*
+            if (1==1)
+                throw new WEditException ( null, "smallFileName = ", smallFileName,
+                        "\nsource pathDir = ", pathDir, "\nnew iconFileName = ", iconFileName,
+                        "\nimgType = ", imgType, "\n" );
+            */
+
+            // Сохранить
+            FileTools.saveIcon(icon, smallFileName, imgType);
+
+            // перечитать из рабочей директории т.к. icon внутри себя хранит имя файла
+            icon            = GuiTools.createImageByFile ( smallFileName );
+
+
+            Log.l.info (  "iconFileName = " + iconFileName +
+                    "\nsource pathDir = " + pathDir + "\nbigIconName = ", bigIconName,
+                    "\nsmallFileName = ", smallFileName );
+
+
 
             // Взять текущий Документ
             doc         = textPanel.getDocument();
 
             // Взять текущую позицию курсора
-            //pos         = 10;
             pos         = textPanel.getCurrentCursor();
-
 
             //throw new WEditException ( null, "icon = ", icon, "\npathDir = ", pathDir, "\npos = ", pos, "\nbookContent = ", bookContent );
 
+            // занести иконку в текст -  здесь передать расположение иконки и прочее
+            BookTools.insertImg ( doc, pos, icon, smallFileName );
 
-            /*
-            Style           def, iconStyle;
-            //styleName   = file.getName();
-            // Сформировать и зарегистрирвоать стиль для данной иконки
-            // - Исходный стиль - стиль по-умолчанию. На основе его потом формируются другие стили.
-            def         = StyleContext.getDefaultStyleContext().getStyle ( StyleContext.DEFAULT_STYLE );
-            // - Добавить стиль в документ - по имени стиля
-            iconStyle   = doc.addStyle ( styleName, def);
-            // - Выставить в нашем стиле выравнивание
-            StyleConstants.setAlignment ( iconStyle, StyleConstants.ALIGN_CENTER );
-            // - Занести в стиль иконку
-            StyleConstants.setIcon ( iconStyle, icon );
-            iconStyle.addAttribute ( "styleName", styleName );
-            iconStyle.addAttribute ( "fileName", file.getAbsolutePath() );
-            */
-
-            BookTools.insertImg ( doc, pos, icon, iconFileName );
         }
 
         //DialogTools.showMessage ( "Внимание", "Функция не реализована." );
 
         Log.l.debug ( "Finish" );
+    }
+
+    private File createImgDir(String bookFileName, String imageDirName) {
+        File bookFile        = new File ( bookFileName );
+        // - создать имя директории для картинок книг
+        String bookImgDir      = bookFile.getParent() + "/" + imageDirName;
+        File bookImgDirFile  = new File ( bookImgDir );
+        FileTools.createFolder ( bookImgDirFile );
+
+        return bookImgDirFile;
     }
 
     @Override

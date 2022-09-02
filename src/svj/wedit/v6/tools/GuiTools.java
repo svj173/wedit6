@@ -29,12 +29,13 @@ import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.StyleConstants;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.net.URL;
-import java.util.Collection;
-import java.util.LinkedList;
+import java.util.*;
 
 
 /**
@@ -452,6 +453,63 @@ public class GuiTools
         return icon;
     }
 
+    public static ImageIcon createSmallImageByFile ( String path, int size )
+    {
+        String      imgLocation;
+        ImageIcon   icon;
+
+        //Log.l.debug ( "--- icon path = ", path );
+        // Загрузить иконку
+        //imgLocation = FileTools.createFileName ( Par.MODULE_HOME, path );
+        //Log.l.debug ( "--- icon imgLocation = ", imgLocation );
+        //icon        = new ImageIcon ( imgLocation );
+        //Log.l.debug ( "--- icon  = ", icon );
+
+        ImageIcon tmpIcon = new ImageIcon ( path );
+
+        int k = -1, width = 1, height = 1;
+        if ( tmpIcon.getIconWidth() > tmpIcon.getIconHeight() )   {
+            // уменьшаем по горизонтали
+            if (tmpIcon.getIconWidth() > size) {
+                k = tmpIcon.getIconWidth() / size;
+                width = tmpIcon.getIconWidth() / k;
+                height = tmpIcon.getIconHeight() / k;
+            }
+
+        } else {
+            // уменьшаем по вертикали
+            if (tmpIcon.getIconHeight() > size) {
+                k = tmpIcon.getIconHeight() / size;
+                width = tmpIcon.getIconWidth() / k;
+                height = tmpIcon.getIconHeight() / k;
+            }
+        }
+
+        Image image = tmpIcon.getImage ();
+        if (k > 0) {
+            //icon = new ImageIcon ( image.getScaledInstance ( 90, height, Image.SCALE_REPLICATE ) );
+            //icon = new ImageIcon(image.getScaledInstance(width, height, Image.SCALE_DEFAULT));
+
+            icon = new ImageIcon(getScaledImage(image, width, height));
+        } else {
+            icon = tmpIcon;
+        }
+
+        return icon;
+    }
+
+    // уменьшить раземр картинки
+    private static Image getScaledImage(Image srcImg, int w, int h){
+        BufferedImage resizedImg = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2 = resizedImg.createGraphics();
+
+        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g2.drawImage(srcImg, 0, 0, w, h, null);
+        g2.dispose();
+
+        return resizedImg;
+    }
+    
     public static Image createImage ( String path )
     {
         String      imgLocation;

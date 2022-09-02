@@ -101,7 +101,7 @@ public class IconWidget   extends AbstractDialogWidget<Icon>
                     }
                     */
                     // Получить картинку как результат
-                    icon    = GuiTools.createImageByFile ( filePath );
+                    icon    = GuiTools.createSmallImageByFile ( filePath, 90 );
                     iconLabel.setIcon ( icon );
                 }
                 else

@@ -9,6 +9,7 @@ import svj.wedit.v6.obj.*;
 import svj.wedit.v6.obj.book.BookContent;
 import svj.wedit.v6.obj.book.BookTitle;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 import java.awt.*;
@@ -1100,4 +1101,25 @@ public class FileTools
         }
     }
 
+    public static void saveIcon(ImageIcon icon, String fileName, String imgType) throws WEditException {
+        //ImageIO.write(Image img, String type, File file)
+        //ImageIO.write(icon, imgType, new File(fileName));
+
+        try {
+            Image img = icon.getImage();
+
+            BufferedImage bi = new BufferedImage(
+                    img.getWidth(null),img.getHeight(null),BufferedImage.TYPE_INT_ARGB);
+
+            Graphics2D g2 = bi.createGraphics();
+            g2.drawImage(img, 0, 0, null);
+            g2.dispose();
+            ImageIO.write(bi, imgType, new File(fileName));
+        } catch (Exception e) {
+            String errMsg = "Save icon to file error. File = " + fileName + "; imgType = " + imgType;
+            Log.file.error(errMsg, e);
+            throw new WEditException(e, errMsg);
+        }
+    }
+    
 }

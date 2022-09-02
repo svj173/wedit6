@@ -134,7 +134,7 @@ public class InsertTableFunction extends Function
     @Override
     public String getToolTipText ()
     {
-        return "Загрузить в текст картинку.";
+        return "Вставить в текст таблицу.";
     }
 
 }

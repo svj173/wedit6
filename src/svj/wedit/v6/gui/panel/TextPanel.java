@@ -29,7 +29,7 @@ import java.lang.reflect.Field;
 
 /**
  * Панель для редактирования текста.
- * <BR/> Метки найденных позици и прочее - в бордюрах скроллинга.
+ * <BR/> Метки найденных позиций и прочее - в бордюрах скроллинга - todo должно быть.
  * <BR/>
  * <BR/> User: svj
  * <BR/> Date: 28.10.2011 11:30:45
@@ -43,8 +43,8 @@ public class TextPanel extends EditablePanel //implements Comparable<WPanel>
     private CompoundUndoMan     undo;
     private JScrollPane         scrollPane;
 
-    private DefaultHighlighter highlighter;
-    private DefaultHighlighter.DefaultHighlightPainter painter;
+    //private DefaultHighlighter highlighter;
+    //private DefaultHighlighter.DefaultHighlightPainter painter;
 
 
     public TextPanel ( BookNode bookNode )
@@ -245,6 +245,8 @@ public class TextPanel extends EditablePanel //implements Comparable<WPanel>
                     JMenuItem item = new JMenuItem("Конвертация");
                     item.addActionListener( new TextConvertListener() );
                     menu.add(item);
+
+                    // todo сюда же для картинки добавляем менюшки
                 } catch (Exception e) {
                     Log.l.error ( "Add text popup menu error.", e );
                 }

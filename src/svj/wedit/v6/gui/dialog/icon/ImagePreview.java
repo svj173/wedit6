@@ -101,7 +101,11 @@ public class ImagePreview extends JComponent implements PropertyChangeListener
             {
                 // Уменьшить картинку
                 Image image = tmpIcon.getImage ();
-                thumbnail = new ImageIcon ( image.getScaledInstance ( 90, -1, Image.SCALE_DEFAULT ) );
+                int k = tmpIcon.getIconWidth() / 90;
+                int height = tmpIcon.getIconHeight() / k;
+                //thumbnail = new ImageIcon ( image.getScaledInstance ( 90, height, Image.SCALE_DEFAULT ) );
+                setPreferredSize ( new Dimension ( 90, height ) );
+                thumbnail = new ImageIcon ( image.getScaledInstance ( 90, height, Image.SCALE_REPLICATE ) );
             }
             else
             {

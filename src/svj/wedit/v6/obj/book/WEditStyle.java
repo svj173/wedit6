@@ -75,7 +75,7 @@ public class WEditStyle  extends SimpleAttributeSet implements Comparable<WEditS
      *
      * <br/> - здесь параметр  resolver нам - лишний, игнорируем его
      * <br/>
-     * @return
+     * @return  XML образ обьекта
      */
     public String toXml()
     {
@@ -100,6 +100,7 @@ public class WEditStyle  extends SimpleAttributeSet implements Comparable<WEditS
             objKey  = getAttribute ( objName );
             if ( objKey != null )
             {
+                // игнорируем resolver
                 if ( ! objName.toString().equals ( "resolver" ) )
                 {
                     result.append ( ';' );
