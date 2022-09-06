@@ -94,7 +94,7 @@
                  poi/commons-collections4-4.4.jar
                  spell/jortho.jar
                 " />
-                <attribute name="Implementation-Version" value="${version}-b${build.number}"/>
+                <attribute name="Implementation-Version" value="${version}-b${build.number} / ${TODAY}"/>
 
                 <section name="common">
                     <attribute name="Specification-Title" value="${project}" />

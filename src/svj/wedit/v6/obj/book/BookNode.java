@@ -140,7 +140,7 @@ public class BookNode  extends WTreeObj implements Comparable<BookNode>, IId
 
             // annotation
             str = getAnnotation();
-            Log.file.info ( "-- BookNode = %s; annotation = [%s]", getName(), str );
+            //Log.file.info ( "-- BookNode = %s; annotation = [%s]", getName(), str );
             if ( (str != null) && ( ! str.isEmpty() ) )   outTag ( ic, "annotation", str, out );
 
             // text

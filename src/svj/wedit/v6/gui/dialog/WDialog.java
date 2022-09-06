@@ -12,6 +12,7 @@ import svj.wedit.v6.tools.GuiTools;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -190,6 +191,20 @@ public abstract class WDialog<T,M>   extends JDialog implements CloseHandler
         internalButtonPanel.add ( jButtonOk );
         jButtonOk.addKeyListener ( keyAdapter );
 
+        /*
+        // Акция на нажатие кнопки Энтер - почему -то не сработало в диалоге Сохранения книг
+        Action close = new AbstractAction("CLOSE")
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                Log.l.info("[B] Start action");
+                doOk();
+            }
+        };
+        jButtonOk.getInputMap().put(KeyStroke.getKeyStroke("ENTER"), "CLOSE");
+        jButtonOk.getActionMap().put("CLOSE", close);
+        */
+
         jButtonCancel.setText("Отменить");
         jButtonCancel.addActionListener ( new ActionListener() {
             @Override
@@ -227,6 +242,7 @@ public abstract class WDialog<T,M>   extends JDialog implements CloseHandler
     @Override
     public void doClose ( int closeType )
     {
+        //Log.l.info("[B] closeType = %d", closeType);
         switch ( closeType )
         {
             case JOptionPane.YES_OPTION:

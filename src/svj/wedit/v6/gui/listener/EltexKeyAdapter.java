@@ -2,9 +2,9 @@ package svj.wedit.v6.gui.listener;
 
 
 import svj.wedit.v6.handler.CloseHandler;
-import svj.wedit.v6.logger.Log;
 
 import javax.swing.*;
+
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
@@ -31,16 +31,17 @@ public class EltexKeyAdapter    extends KeyAdapter
         @Override
     public void keyPressed ( KeyEvent event )
     {
+        //Log.l.info ( "[B] event = %s", event );
         int keyCode = event.getKeyCode ();
 
         switch ( keyCode )
         {
             case KeyEvent.VK_ESCAPE:
-                Log.l.debug ( "press ESC" );
+                //Log.l.debug ( "press ESC" );
                 dialog.doClose ( JOptionPane.CANCEL_OPTION );
                 break;
             case KeyEvent.VK_ENTER:
-                Log.l.debug ( "press ENTER" );
+                //Log.l.debug ( "press ENTER" );
                 dialog.doClose ( JOptionPane.OK_OPTION );
                 break;
         }

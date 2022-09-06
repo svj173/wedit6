@@ -100,7 +100,7 @@ public class DialogTools
         try
         {
             dialog.init ( htmlText );
-            dialog.setDefaultButton(buttonType);
+            //dialog.setDefaultButton(buttonType);
         } catch ( WEditException e )         {
             Log.l.error ( "err", e );
         }

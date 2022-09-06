@@ -4,15 +4,11 @@ package svj.wedit.v6.gui.dialog;
 import svj.wedit.v6.Par;
 import svj.wedit.v6.WCons;
 import svj.wedit.v6.exception.WEditException;
-import svj.wedit.v6.logger.Log;
 import svj.wedit.v6.tools.Convert;
 
 import javax.swing.*;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
 
 
 /**
@@ -119,8 +115,13 @@ public class ShowHtmlDialog extends WDialog<String,Void>
         addToCenter ( panel );
 
         // оставляем только одну кнопку - с надписью - Закрыть
-        disableOkButton();
-        setCancelButtonText ( "Закрыть" );
+        //disableOkButton();
+        //setCancelButtonText ( "Закрыть" );
+
+        disableCancelButton();
+        setOkButtonText ( "Закрыть" );
+
+
         //setCancelButtonText(Msg.getMessage("system.gui.dialog.button.close"));
 
         // Привзяываем к этой кнопке акцию по-умолчанию (по нажатию Enter)
@@ -135,6 +136,7 @@ public class ShowHtmlDialog extends WDialog<String,Void>
         */
     }
 
+    /*
     public void setDefaultButton (int typeButton) {
 
         // Вешаем на диалог - слушатель клавиатуры для Enter - когда диалог в фокусе.
@@ -170,6 +172,7 @@ public class ShowHtmlDialog extends WDialog<String,Void>
                 break;
         }
     }
+    */
 
     protected void createDialogSize ()
     {
@@ -198,116 +201,13 @@ public class ShowHtmlDialog extends WDialog<String,Void>
         pack();
 	}
 
-    /*
-	@Override
-    protected void createDialogSize ()
-    {
-        int  width, height;
-        width  = (int) (Par.GM.getFrame().getSize().width / 1.2);
-        height = (int) (Par.GM.getFrame().getSize().height / 1.2);
-        setPreferredSize ( new Dimension(width,height) );
-        setSize ( width, height );
-        pack();
-    }
-    */
-
     public void setError ( Object... errText )
     {
         textPane.setText ( Convert.concatObj ( errText ) );
         textPane.setCaretPosition(0);
     }
 
-    /**
-     * Показать диалог со справкой с учётом файлов языковых ресурсов
-     * 
-     * @param httpPath
-     * @throws WEditException 
-     */
-    /*
-    @Override
-    public void init ( String httpPath ) throws WEditException
-    {
-        URL url;
-        String langPath = httpPath;
-        String langPrefix;
 
-        try
-        {
-            if (httpPath.contains(GCons.LangReplace)){
-                langPrefix = Msg.getCurrent ().toString();
-                langPath = httpPath.replace( GCons.LangReplace, langPrefix );
-            }
-            
-            url = new URL ( Par.EMS_SERVER_URL, langPath );
-            textPane.setPage ( url );
-            textPane.setCaretPosition(0);
-            topPanel.setVisible(false);
-        } catch ( Exception e )     {
-            throw new WEditException ( e, "Wrong path: '", httpPath, "' :\n", e );
-
-        }
-    }
-    */
-
-    /**
-     * Инициализация диалога с указанием пути к справочному (инф) файлу,
-     * а также передача параметров в верхнее информационное окно
-     * 
-     * @param httpPath путь к файлу справки/информации
-     * @param adds дополнительные строки в "верхний" элемент (версии и прочее)
-     * @throws WEditException 
-     */
-    /*
-    public void init (String httpPath, String... adds) throws WEditException {
-        URL url;
-        String langPath = httpPath;
-        String langPrefix;
-        Logger.getInstance().debug("httpPath='%s', ads='%s'", httpPath, adds);
-        try {
-            if (httpPath.contains(GCons.LangReplace)) {
-                langPrefix = Msg.getCurrent().toString();
-                langPath = httpPath.replace(GCons.LangReplace, langPrefix);
-            }
-            Logger.getInstance().debug("langPath='%s', ads='%s'", langPath);
-            url = new URL(Par.EMS_SERVER_URL, langPath);
-            textPane.setContentType("text/html");
-            textPane.setPage(url);
-            textPane.repaint();
-
-            // фрагмент кода, если захочется заполнить html "по настоящему" самому
-             HTMLDocument doc = new HTMLDocument();
-             HTMLEditorKit kit = new HTMLEditorKit();
-             smallPane.setDocument(doc);
-             smallPane.setEditorKit(kit);
-             kit.insertHTML(doc, doc.getLength(), "<label> This label will be inserted inside the body  directly </label>", 0, 0, null);
-             kit.insertHTML(doc, doc.getLength(), "<br/>", 0, 0, null);
-             kit.insertHTML(doc, doc.getLength(), "server version", 0, 0, null);            
-
-            StyledDocument document = new DefaultStyledDocument();
-            SimpleAttributeSet attributes = new SimpleAttributeSet();
-            attributes.addAttribute(StyleConstants.CharacterConstants.Bold, Boolean.TRUE);
-            attributes.addAttribute(StyleConstants.CharacterConstants.Foreground, Color.lightGray);
-            smallPane.setBackground(Color.decode("#FFFFCE"));
-            try {
-
-                for (int i = 0; i < adds.length; i++) {
-                    if (adds[i] != null) {
-                        document.insertString(document.getLength(), adds[i], attributes);
-                    }
-                }
-            } catch (BadLocationException badLocationException) {
-                Logger.getInstance().error("HTML error: ", badLocationException);
-            }
-            smallPane.setDocument(document);
-            smallPane.setCaretPosition(0);
-            topPanel.setVisible(true);
-            smallPane.repaint();
-            textPane.repaint();
-        } catch (Exception e) {
-            throw new WEditException(e, "Wrong path: '", httpPath, "' :\n", e);
-        }
-    }
-    */
     /**
      * Показать диалог инициализированный html-буфером
      * 

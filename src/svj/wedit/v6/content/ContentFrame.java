@@ -96,7 +96,7 @@ public class ContentFrame    extends JFrame   implements WComponent
 
     public ContentFrame () throws HeadlessException, WEditException
     {
-        // Title - WEdit6. номер версии + номер билда.
+        // Title - WEdit6. номер версии + номер билда. + дата билда
         //super ( "Editor. " + Par.VERSION_DATE + "/" + Par.VERSION_NUMBER );
         super ( "WEdit6. " + ContentFrame.class.getPackage().getImplementationVersion() );
 
