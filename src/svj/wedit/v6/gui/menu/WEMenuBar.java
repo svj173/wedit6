@@ -275,6 +275,9 @@ public class WEMenuBar extends JMenuBar
         menu    = getMenu ( FunctionId.CHANGE_MENU_ICON_SIZE );
         if ( menu != null )  result.add ( menu );
 
+        menu    = getMenu ( FunctionId.CHANGE_TEXT_SIZE );
+        if ( menu != null )  result.add ( menu );
+
         menu    = getMenu ( FunctionId.MEMORY_CHECK );
         if ( menu != null )  result.add ( menu );
 

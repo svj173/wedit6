@@ -6,9 +6,7 @@ import svj.wedit.v6.WCons;
 import svj.wedit.v6.exception.WEditException;
 import svj.wedit.v6.logger.Log;
 import svj.wedit.v6.obj.WType;
-import svj.wedit.v6.obj.book.BookNode;
-import svj.wedit.v6.obj.book.BookStructure;
-import svj.wedit.v6.obj.book.WEditStyle;
+import svj.wedit.v6.obj.book.*;
 import svj.wedit.v6.obj.book.element.StyleName;
 import svj.wedit.v6.obj.book.element.StyleType;
 import svj.wedit.v6.obj.book.element.WBookElement;
@@ -105,19 +103,19 @@ public class BookStructureTools
         result = new BookStructure();
 
         // - без имени стиля - т.е. если у куска текста нет описанного стиля - применяем этот.
-        style       = StyleTools.createStyle ( StyleType.TEXT, null, Color.BLACK, 10, "arial", false, false, 10, StyleConstants.ALIGN_JUSTIFIED );
+        style       = StyleTools.createStyle ( StyleType.TEXT, null, Color.BLACK, BookPar.TEXT_FONT_SIZE, "arial", false, false, 10, StyleConstants.ALIGN_JUSTIFIED );
         result.setTextStyle ( style );
 
-        style = StyleTools.createStyle ( StyleType.ANNOTATION, StyleName.ANNOTATION, WCons.PINK_1, 10, "arial", false, true, 5, StyleConstants.ALIGN_CENTER );
+        style = StyleTools.createStyle ( StyleType.ANNOTATION, StyleName.ANNOTATION, WCons.PINK_1, BookPar.TEXT_FONT_SIZE, "arial", false, true, 5, StyleConstants.ALIGN_CENTER );
         result.setAnnotationStyle ( style );
 
-        style      = StyleTools.createStyle ( StyleType.TEXT, StyleName.LABEL, WCons.GREEN_3, 10, "arial", false, false, 5, StyleConstants.ALIGN_LEFT );
+        style      = StyleTools.createStyle ( StyleType.TEXT, StyleName.LABEL, WCons.GREEN_3, BookPar.TEXT_FONT_SIZE, "arial", false, false, 5, StyleConstants.ALIGN_LEFT );
         result.setLabelStyle ( style );
 
-        // Элементы
+        // Элементы - Книга, Часть, Глава, Подглава, Эпизод
         setDefaultElements ( result );
 
-        // Types
+        // Types - work, hidden...
         setDefaultTypes ( result );
 
         return result;

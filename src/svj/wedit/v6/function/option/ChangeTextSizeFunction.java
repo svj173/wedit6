@@ -1,13 +1,14 @@
-package svj.wedit.v6.function.option.changeIconSize;
+package svj.wedit.v6.function.option;
 
 
 import svj.wedit.v6.Par;
-import svj.wedit.v6.dialog.ChangeIconSizeDialog;
 import svj.wedit.v6.exception.WEditException;
 import svj.wedit.v6.function.FunctionId;
 import svj.wedit.v6.function.params.SimpleParameter;
+import svj.wedit.v6.gui.dialog.IntegerValueDialog;
 import svj.wedit.v6.gui.menu.WEMenuItem;
 import svj.wedit.v6.logger.Log;
+import svj.wedit.v6.obj.book.BookPar;
 import svj.wedit.v6.obj.function.Function;
 
 import javax.swing.*;
@@ -16,26 +17,26 @@ import java.awt.event.ActionEvent;
 
 
 /**
- * Смена иконок ToolBar всего фрейма  - по размерам.
+ * Смена дефолтных размеров фонта текста - текст, аннотация, цветнйо текст.
  * <BR/>
  * <BR/> User: svj
- * <BR/> Date: 16.08.2011 21:06:20
+ * <BR/> Date: 09.09.2022 10:06:20
  */
-public class ChangeToolBarIconSizeFunction extends Function implements IIconSize
+public class ChangeTextSizeFunction extends Function
 {
     private WEMenuItem  menuItem;
-    private String PARAM_NAME = "iconSize";
+    private String PARAM_NAME = "textSize";
 
-    public ChangeToolBarIconSizeFunction ()
+    public ChangeTextSizeFunction()
     {
-        setId ( FunctionId.CHANGE_TOOL_BAR_ICON_SIZE );
-        setName ( "Размер иконок tool-bar" );
+        setId ( FunctionId.CHANGE_TEXT_SIZE );
+        setName ( "Размер текста" );
     }
 
     @Override
     public void handle ( ActionEvent event ) throws WEditException
     {
-        ChangeIconSizeDialog dialog;
+        IntegerValueDialog dialog;
 
         Log.l.debug ("Start");
 
@@ -43,16 +44,15 @@ public class ChangeToolBarIconSizeFunction extends Function implements IIconSize
         {
             // Меняем размер иконки
             // Выводим диалог
-            dialog  = new ChangeIconSizeDialog ( this );
+            dialog  = new IntegerValueDialog( "Изменить дефолтный размер текста", BookPar.TEXT_FONT_SIZE);
             dialog.showDialog ();
 
             if ( dialog.isOK() )
             {
                 // Сохраняем выбранное значение
                 Integer value = dialog.getResult();
-                getIconSizeParam().setValue ( value.toString () );
 
-                Par.TOOLBAR_ICON_SIZE = value;
+                BookPar.TEXT_FONT_SIZE = value;
 
                 // Обновляем меню
                 createMenu();
@@ -63,33 +63,32 @@ public class ChangeToolBarIconSizeFunction extends Function implements IIconSize
 
         }  catch ( Exception e )        {
             Log.l.error ( "err", e );
-            throw new WEditException ( e, "Ошибка смены размера иконок ToolBar '", event.getActionCommand(), "':\n", e );
+            throw new WEditException ( e, "Ошибка смены размера текста '", event.getActionCommand(), "':\n", e );
         }
     }
 
     @Override
     public void start () throws WEditException
     {
-        Par.TOOLBAR_ICON_SIZE = Integer.parseInt ( getIconSize () );
+        BookPar.TEXT_FONT_SIZE = Integer.parseInt ( getTextSize() );
         Par.GM.getFrame().getToolbar().rewrite();
 
         Log.l.debug ( "Finish" );
     }
 
-    @Override
-    public String getIconSize ()
+    public String getTextSize ()
     {
-        return getIconSizeParam ().getValue ();
+        return getTextSizeParam().getValue ();
     }
 
-    public SimpleParameter getIconSizeParam ()
+    public SimpleParameter getTextSizeParam ()
     {
         SimpleParameter sp;
 
         sp  = (SimpleParameter) getParameter ( PARAM_NAME );
         if ( sp == null )
         {
-            sp  = new SimpleParameter ( PARAM_NAME, Par.TOOLBAR_ICON_SIZE ); // дефолтное значение
+            sp  = new SimpleParameter ( PARAM_NAME, BookPar.TEXT_FONT_SIZE ); // дефолтное значение
             sp.setHasEmpty ( false );
             setParameter ( PARAM_NAME, sp );
         }
@@ -109,7 +108,7 @@ public class ChangeToolBarIconSizeFunction extends Function implements IIconSize
 
     private void createMenu ()
     {
-        menuItem.setText ( getName() + ": " + getIconSizeParam().getValue());
+        menuItem.setText ( getName() + ": " + getTextSizeParam().getValue());
     }
 
     @Override
@@ -130,7 +129,7 @@ public class ChangeToolBarIconSizeFunction extends Function implements IIconSize
     @Override
     public String getToolTipText ()
     {
-        return null;
+        return "Смена размеров для текста, аннотации, цветного текста.";
     }
 
 }

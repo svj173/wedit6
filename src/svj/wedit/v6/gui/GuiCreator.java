@@ -24,6 +24,7 @@ import svj.wedit.v6.function.book.text.*;
 import svj.wedit.v6.function.book.tree.GroupEditNodeTypeFunction;
 import svj.wedit.v6.function.book.undo.RedoFunction;
 import svj.wedit.v6.function.book.undo.UndoFunction;
+import svj.wedit.v6.function.option.ChangeTextSizeFunction;
 import svj.wedit.v6.function.option.DecoratorFunction;
 import svj.wedit.v6.function.option.changeIconSize.ChangeMenuIconSizeFunction;
 import svj.wedit.v6.function.option.changeIconSize.ChangePanelIconSizeFunction;
@@ -271,6 +272,7 @@ public class GuiCreator {
         fm.add ( new ChangeToolBarIconSizeFunction()   );
         fm.add ( new ChangePanelIconSizeFunction()     );
         fm.add ( new ChangeMenuIconSizeFunction()      );
+        fm.add ( new ChangeTextSizeFunction()          );
 
         // ---------------- Text -----------------------
         fm.add ( new OpenTextFunction()        );

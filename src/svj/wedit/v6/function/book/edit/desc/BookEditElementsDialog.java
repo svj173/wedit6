@@ -17,9 +17,7 @@ import svj.wedit.v6.gui.widget.IntegerFieldWidget;
 import svj.wedit.v6.gui.widget.font.FontWidget;
 import svj.wedit.v6.logger.Log;
 import svj.wedit.v6.obj.WType;
-import svj.wedit.v6.obj.book.BookContent;
-import svj.wedit.v6.obj.book.BookStructure;
-import svj.wedit.v6.obj.book.WEditStyle;
+import svj.wedit.v6.obj.book.*;
 import svj.wedit.v6.obj.book.element.StyleName;
 import svj.wedit.v6.obj.book.element.StyleType;
 import svj.wedit.v6.obj.book.element.WBookElement;
@@ -129,6 +127,29 @@ public class BookEditElementsDialog extends WDialog<BookStructure, BookStructure
                     Log.l.error ( "Error", e );
                     DialogTools.showError ( e.toString(), "Ошибка установки 'по-умолчанию'." );
                 }
+            }
+        });
+
+        addButtonFirst ( button );
+
+        button       = new JButton();
+        button.setText ( "Установить дефолтный размер текста (" + BookPar.TEXT_FONT_SIZE + ")" );
+        button.setToolTipText ( "Принять размер текста" );
+        button.addActionListener ( new ActionListener() {
+            @Override
+            public void actionPerformed ( ActionEvent evt) {
+                    Font font, fontNew;
+                    font = textFontWidget.getFont();
+                    fontNew = new Font(font.getName(), font.getStyle(), BookPar.TEXT_FONT_SIZE);
+                    textFontWidget.setValue(fontNew);
+
+                    font = annFontWidget.getFont();
+                    fontNew = new Font(font.getName(), font.getStyle(), BookPar.TEXT_FONT_SIZE);
+                    annFontWidget.setValue(fontNew);
+
+                    font = labelFontWidget.getFont();
+                    fontNew = new Font(font.getName(), font.getStyle(), BookPar.TEXT_FONT_SIZE);
+                    labelFontWidget.setValue(fontNew);
             }
         });
 
