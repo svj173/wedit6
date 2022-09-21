@@ -1102,14 +1102,13 @@ public class FileTools
     }
 
     public static void saveIcon(ImageIcon icon, String fileName, String imgType) throws WEditException {
-        //ImageIO.write(Image img, String type, File file)
-        //ImageIO.write(icon, imgType, new File(fileName));
 
         try {
             Image img = icon.getImage();
 
+            // type - -1) TYPE_INT_ARGB 2) TYPE_3BYTE_BGR  3) TYPE_INT_RGB
             BufferedImage bi = new BufferedImage(
-                    img.getWidth(null),img.getHeight(null),BufferedImage.TYPE_INT_ARGB);
+                    img.getWidth(null),img.getHeight(null),BufferedImage.TYPE_3BYTE_BGR);
 
             Graphics2D g2 = bi.createGraphics();
             g2.drawImage(img, 0, 0, null);
@@ -1120,6 +1119,24 @@ public class FileTools
             Log.file.error(errMsg, e);
             throw new WEditException(e, errMsg);
         }
+    }
+
+    /**
+     * Т.к. в OpenJDK нет поддержки формата JPG, то его надо обрабатывать отдельно через тип  TYPE_INT_RGB
+     * @param bi   Исходный образ
+     * @return     Преобразованный образ
+     */
+    private static BufferedImage ensureOpaque(BufferedImage bi) {
+        if (bi.getTransparency() == BufferedImage.OPAQUE)
+            return bi;
+        
+        int w = bi.getWidth();
+        int h = bi.getHeight();
+        int[] pixels = new int[w * h];
+        bi.getRGB(0, 0, w, h, pixels, 0, w);
+        BufferedImage bi2 = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+        bi2.setRGB(0, 0, w, h, pixels, 0, w);
+        return bi2;
     }
     
 }

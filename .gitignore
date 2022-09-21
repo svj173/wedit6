@@ -6,6 +6,8 @@ WEdit_6.iws
 
 ant/build.number
 
+**/build.number
+
 docs
 out
 
