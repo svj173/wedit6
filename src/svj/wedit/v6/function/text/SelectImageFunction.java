@@ -180,7 +180,8 @@ public class SelectImageFunction extends Function
             //throw new WEditException ( null, "icon = ", icon, "\npathDir = ", pathDir, "\npos = ", pos, "\nbookContent = ", bookContent );
 
             // занести иконку в текст -  здесь передать расположение иконки и прочее
-            BookTools.insertImg ( doc, pos, icon, smallFileName );
+            // - передаем короткок имя файла картинки
+            BookTools.insertImg ( doc, pos, icon, bigIconName );
 
         }
 

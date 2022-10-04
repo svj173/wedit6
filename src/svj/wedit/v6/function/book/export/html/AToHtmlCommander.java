@@ -197,7 +197,7 @@ public abstract class AToHtmlCommander  extends FileWriteFunction implements Tre
             // Скинуть рекурсивно
             for ( BookNode node : selectNodes )
             {
-                node2html ( cp, node, fos, 0 );
+                node2html ( bookContent, cp, node, fos, 0 );
             }
 
             // Заключительная строка
@@ -231,7 +231,7 @@ public abstract class AToHtmlCommander  extends FileWriteFunction implements Tre
      * @param fos               Результирующий файл
      * @param level             Уровень вложенности анализа
      */
-    private void node2html ( ConvertParameter cp, BookNode nodeObject, FileOutputStream fos, int level )
+    private void node2html ( BookContent bookContent, ConvertParameter cp, BookNode nodeObject, FileOutputStream fos, int level )
             throws WEditException
     {
         BookNode                bo;
@@ -347,8 +347,10 @@ public abstract class AToHtmlCommander  extends FileWriteFunction implements Tre
                     if ( textObj instanceof ImgTextObject )
                     {
                         // ---------------- IMAGE -------------------
+                        String imgFileName = FileTools.createImageFileName(bookContent, textObj.getText());
+
                         // Скопировать картинку в директорию расположения html-файла
-                        FileTools.copyFileToDir ( textObj.getText(), cp.getRealFileName() );
+                        FileTools.copyFileToDir ( imgFileName, cp.getRealFileName() );
                         // Разместить в тексте тег ссылки на картинку (по идее в обьекте может быть и подпись для картинки).
                         writeStr ( fos, "<center><IMG src='"+ textObj.getText()+ "' /></center>\n" );
                         // Иначе текст следующего заголовка пойдет прямо от иконки.
@@ -378,7 +380,7 @@ public abstract class AToHtmlCommander  extends FileWriteFunction implements Tre
                 for ( WTreeObj obj : childs )
                 {
                     bo  = ( BookNode ) obj;
-                    node2html ( cp, bo, fos, level + 1 );
+                    node2html ( bookContent, cp, bo, fos, level + 1 );
                 }
             }
 

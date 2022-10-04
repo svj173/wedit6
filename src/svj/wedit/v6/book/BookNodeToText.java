@@ -8,15 +8,15 @@ import svj.wedit.v6.logger.Log;
 import svj.wedit.v6.obj.book.*;
 import svj.wedit.v6.obj.book.element.StyleName;
 import svj.wedit.v6.obj.book.element.StyleType;
-import svj.wedit.v6.tools.BookStructureTools;
-import svj.wedit.v6.tools.BookTools;
-import svj.wedit.v6.tools.GuiTools;
+import svj.wedit.v6.tools.*;
 
 import javax.swing.*;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
+
+import java.io.File;
 
 
 /**
@@ -167,7 +167,11 @@ public class BookNodeToText
                 if ( textObj instanceof ImgTextObject )
                 {
                     // ---------------- IMAGE -------------------
-                    icon    = GuiTools.createImageByFile ( textObj.getText() );
+                    // занесение картинки в текстовый гуи-редактор.
+                    // - здесь заносим ее маленький вариант
+                    String imgFileName = FileTools.createSmallImageFileName(bookContent, textObj.getText());
+
+                    icon    = GuiTools.createImageByFile ( imgFileName );
                     BookTools.insertImg ( doc, doc.getLength(), icon, textObj.getText() );
                     hasText = true;  // Иначе следующий заголовок пойдет прямо от иконки.
                 }

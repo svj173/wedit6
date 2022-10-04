@@ -1091,6 +1091,34 @@ public class FileTools
         return filePath.toString();
     }
 
+    public static String createImageFileName(BookContent bookContent, String filename) {
+        // Сформировать директорию книги
+        File bookFile = new File(bookContent.getFileName());
+        // - создать имя директории для картинок книг
+        String bookImgDir = bookFile.getParent() + "/image";
+        File bookImgDirFile = new File(bookImgDir);
+        FileTools.createFolder(bookImgDirFile);
+
+        // Сформирвоать полное имя файла картинки - /home/svj/Serg/SvjStores/zs/zs-6/image/Barracuda_01.jpg
+        String targetFileName = bookImgDirFile + File.separator + filename;
+        return targetFileName;
+    }
+
+    public static String createSmallImageFileName(BookContent bookContent, String filename) {
+        // Сформировать директорию книги
+        File bookFile = new File(bookContent.getFileName());
+        // - создать имя директории для картинок книг
+        String bookImgDir = bookFile.getParent() + "/image_small";
+        File bookImgDirFile = new File(bookImgDir);
+        FileTools.createFolder(bookImgDirFile);
+
+        // Сформирвоать полное имя файла картинки - /home/svj/Serg/SvjStores/zs/zs-6/image/Barracuda_01.jpg
+        String targetFileName = bookImgDirFile + File.separator + filename;
+        return targetFileName;
+    }
+
+
+
     public static void moveFile (String src, String dest) throws WEditException {
         try {
             Files.move(Paths.get(src), Paths.get(dest));

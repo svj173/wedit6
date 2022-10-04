@@ -559,7 +559,8 @@ public abstract class AbstractConvertFunction  extends FileWriteFunction
                     if ( textObj instanceof ImgTextObject )
                     {
                         // ---------------- IMAGE -------------------
-                        processImage ( textObj.getText(), cp ); // Имя файла
+                        String imgFileName = FileTools.createImageFileName(bookContent, textObj.getText());
+                        processImage ( imgFileName, cp ); // Имя файла
                         // Сбрасываем флаг
                         previosIsTitle = false;
                     }

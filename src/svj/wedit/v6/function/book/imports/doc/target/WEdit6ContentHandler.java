@@ -135,9 +135,7 @@ public class WEdit6ContentHandler implements IBookContentCreator<BookContent>
     // какой-то обьект. например, картинка. Надо скинуть себе.
     public void handleEmbeddedResource ( byte[] content, String filename, Object o, String mimeType, boolean b )
     {
-        String bookImgDir, targetFileName;
-        File   bookFile, bookImgDirFile;
-        //Image  image;
+        String targetFileName;
 
         if ( content != null )
         {
@@ -148,22 +146,17 @@ public class WEdit6ContentHandler implements IBookContentCreator<BookContent>
             try
             {
                 // - создать директорию картинок данной книги
-                // Сформировать директорию книги
-                bookFile        = new File ( bookContent.getFileName() );
-                // - создать имя директории для картинок книг
-                bookImgDir      = Convert.concatObj ( bookFile.getParent(), "/image" );
-                bookImgDirFile  = new File ( bookImgDir );
-                FileTools.createFolder ( bookImgDirFile );
-
-                // Сформирвоать полное имя файла картинки - /home/svj/Serg/SvjStores/zs/zs-6/image/Barracuda_01.jpg
-                targetFileName  = bookImgDirFile + File.separator + filename;
+                targetFileName = FileTools.createImageFileName(bookContent, filename);
 
                 // Сохраняем в файле
                 //image           = Toolkit.getDefaultToolkit ().createImage(content);
                 FileTools.save ( targetFileName, content );
 
                 // создать обьект
-                currentNode.addText ( new ImgTextObject ( targetFileName ) );
+                //currentNode.addText ( new ImgTextObject ( targetFileName ) );
+                // - в обьекте и в XML храним только короткое имя - чтобы не терялись картинки при использовании
+                // редактора на другом компе в другой директории
+                currentNode.addText ( new ImgTextObject ( filename ) );
 
             } catch ( Exception e )       {
                 Log.file.error ( Convert.concatObj ( "Save picture. Error: filename = ", filename, "; mimeType = ", mimeType, "; image content size = ", content.length, "; targetFileName = ", targetFileName ), e );
