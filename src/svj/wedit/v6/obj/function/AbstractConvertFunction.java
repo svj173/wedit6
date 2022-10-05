@@ -314,9 +314,11 @@ public abstract class AbstractConvertFunction  extends FileWriteFunction
 
         try
         {
-            fileName    = cp.getRealFileName();
-            fos         = new FileOutputStream ( fileName );
-            setFos ( fos );
+            // Каждый окнвертер сам создает FOS. Например, Конвертер HTML создает директорию, куда конвертит файлы и кратинки
+            //fileName    = cp.getRealFileName();
+            //fos         = new FileOutputStream ( fileName );
+            //setFos ( fos );
+            setFos ( cp.getRealFileName() );
 
             Log.l.info ( "TXT: Create TXT file. fileName = %s", fileName );
 
@@ -559,8 +561,10 @@ public abstract class AbstractConvertFunction  extends FileWriteFunction
                     if ( textObj instanceof ImgTextObject )
                     {
                         // ---------------- IMAGE -------------------
-                        String imgFileName = FileTools.createImageFileName(bookContent, textObj.getText());
-                        processImage ( imgFileName, cp ); // Имя файла
+                        // - формируем путь до маленькой иконки этого Изображения
+                        String imgFileName = FileTools.createSmallImageFileName(bookContent, textObj.getText());
+                        // передаем только имя файла изображения. каждый конвертер сам знает что с ним делать.
+                        processImage ( textObj.getText(), cp ); // Имя файла
                         // Сбрасываем флаг
                         previosIsTitle = false;
                     }

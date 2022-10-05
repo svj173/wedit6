@@ -3,8 +3,6 @@ package svj.wedit.v6.function.book.export;
 
 import org.apache.poi.util.Units;
 import org.apache.poi.xwpf.usermodel.*;
-import org.openxmlformats.schemas.drawingml.x2006.chart.CTStyle;
-import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTStyles;
 import svj.wedit.v6.WCons;
 import svj.wedit.v6.exception.WEditException;
 import svj.wedit.v6.function.FunctionId;
@@ -21,7 +19,7 @@ import javax.swing.*;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.Collection;
+import java.util.*;
 
 /**
  * Конвертер в формат DOC по условиям для публикации на сайте Литрес.
@@ -144,6 +142,7 @@ public class ConvertToDocForLitres extends AbstractConvertFunction
         ImageIcon       image;
         InputStream     ios;
         int             emuWidth, emuHeight;
+        String fullImgFileName = null;
 
         p   = doc.createParagraph();
         r   = p.createRun();
@@ -168,17 +167,20 @@ public class ConvertToDocForLitres extends AbstractConvertFunction
         // заносим в абзац саму картинку
         try
         {
+            // сформировать полный путь до маленького файла
+            fullImgFileName = FileTools.createSmallImageFileName(bookContent, imgFileName);
+
             // узнать размеры
-            image       = FileTools.createImageFromFileName ( imgFileName, "Стела." );
+            image       = FileTools.createImageFromFileName ( fullImgFileName, "Стела." );
             //Log.l.info ( "[IMAGE] image = %s", image );
-            ios         = new FileInputStream (imgFileName);
+            ios         = new FileInputStream (fullImgFileName);
             emuWidth    = Units.toEMU (image.getIconWidth());         // 200x200 pixels
             emuHeight   = Units.toEMU ( image.getIconHeight() );
             //Log.l.info ( "[IMAGE] emuWidth = %d; emuHeight = %d", emuWidth, emuHeight );
             r.addPicture ( ios, format, imgFileName, emuWidth, emuHeight );
 
         } catch ( Exception e )        {
-            Log.l.error ( "Set image error. imgFileName = "+imgFileName, e );
+            Log.l.error ( "Set image error. fullImgFileName = "+fullImgFileName, e );
             p   = doc.createParagraph();
             r   = p.createRun();
             r.setText ( "Error for Image file '"+imgFileName+"' : "+e.getMessage() );

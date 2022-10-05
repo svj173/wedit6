@@ -15,18 +15,15 @@ import svj.wedit.v6.tools.Convert;
 import svj.wedit.v6.tools.FileTools;
 import svj.wedit.v6.tools.StyleTools;
 
-import javax.swing.text.AttributeSet;
-import javax.swing.text.MutableAttributeSet;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
+import javax.swing.text.*;
 import javax.swing.text.html.CSS;
 import javax.swing.text.html.HTML;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Enumeration;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.util.*;
 
 import static svj.wedit.v6.obj.book.element.StyleType.COLOR_TEXT;
 
@@ -34,6 +31,8 @@ import static svj.wedit.v6.obj.book.element.StyleType.COLOR_TEXT;
  * Абстракция конверетера в HTML - Общие методы.   -- NEW
  * <BR/>
  * <BR/> Перевести на общий механизм AbstractConvertFunction - как extends
+ * <BR/>
+ * <BR/> Должен конвретится в собственную директорию - по имени файла книги
  * <BR/>
  * <BR/> User: svj
  * <BR/> Date: 08.12.2016 14:07
@@ -48,6 +47,8 @@ public abstract class AToHtml2Commander extends AbstractConvertFunction
     private final BooleanParameter tornOffHtmlTitle;
     /* Текст для красной строки. */
     private final SimpleParameter redLineParam;
+
+    protected String TARGET_HTML_DIR = Par.MODULE_HOME;
 
     //protected abstract BookNode[] getSelectedNodes ( BookNode bookNode )   throws WEditException;
     //protected abstract TreeObj[] getNodesToConvert ( BookContent bookContent );
@@ -66,6 +67,33 @@ public abstract class AToHtml2Commander extends AbstractConvertFunction
         redLineParam.setRuName ( "Красная строка" );
     }
 
+    /**
+     * FOS - это файл fileName.html
+     * Он должен располагаться в сосбтвеннйо директории - /target/fileName/fileName.html
+     * В этйо же директории и поддиректории - images, images_small
+     * @param fullFileName   Первоначалый путь результирующего файла - /target/fileName.html
+     *                       /home/svj/Serg/stories/release_books/html/test004.html
+     * @throws FileNotFoundException
+     */
+    @Override
+    public void setFos ( String fullFileName ) throws FileNotFoundException {
+        // /home/svj/Serg/stories/release_books/html/test004.html/test004.html
+        String targetFile;
+        File file = new File(fullFileName);
+        String fileName = file.getName();    // это просто имя, но с расширением
+        /*
+        if (file.isFile()) {
+            targetFile = file.getParent();
+        } else {
+            targetFile = fullFileName;
+        }
+        */
+        //TARGET_HTML_DIR = targetFile + File.separator + fileName;
+        TARGET_HTML_DIR = fullFileName;
+        targetFile = TARGET_HTML_DIR + File.separator + fileName;
+        FileTools.createFolder(new File(TARGET_HTML_DIR));
+        setFos (new FileOutputStream( targetFile ));
+    }
 
     /** Взять локальные (индивидуальные) параметры конвертации. */
     protected Collection<FunctionParameter> getOtherConvertParams ()
@@ -79,15 +107,38 @@ public abstract class AToHtml2Commander extends AbstractConvertFunction
         return result;
     }
 
+    /**
+     * Все картинки расположены в директории images. Файл index.html - на этом же уровне.
+     * <br/> Все пути до файлов и ссылки - относительные, чтобы эту директорию можно копировать в любое место.
+     * <br/>
+     * @param imgFileName  Имя файла изображения (только имя).
+     * @param cp           Параметр функции, содержащий в себе директорию расположения html-файла
+     */
     protected void processImage ( String imgFileName, ConvertParameter cp )
     {
-        String msg;
+        String msg, htmlImageDir, htmlImageSmallDir;
 
-        // Скопировать картинку в директорию расположения html-файла
         try
         {
-            FileTools.copyFileToDir ( imgFileName, cp.getRealFileName() );
-            msg = "<center><IMG src='"+ imgFileName+ "' /></center>\n";
+            // cp.getRealFileName() - полное имя файла конвертации - т.е. вместе с путем, куда конкретно файл конвертируется
+            // ---- Скопировать маленькую и полную картинки в директорию расположения html-файла - images
+            // 1) сформировать путь до обеих изображений. если таикх директорий нет -создать
+            htmlImageDir = FileTools.createDir(TARGET_HTML_DIR, "images");
+            htmlImageSmallDir = FileTools.createDir(TARGET_HTML_DIR, "images_small");
+            // 2) копируем
+            // - мал
+            String fullImgSmallFileName = FileTools.createSmallImageFileName(bookContent, imgFileName);
+            FileTools.copyFileToDir ( fullImgSmallFileName, htmlImageSmallDir );
+            // - большое
+            String fullImgFileName = FileTools.createImageFileName(bookContent, imgFileName);
+            FileTools.copyFileToDir ( fullImgFileName, htmlImageDir );
+
+            // - здесь должны быть относительные пути
+            msg = "<a href='images/" + imgFileName + "' target='_blank'>"
+                    + "<IMG src='images_small/" + imgFileName+ "' alt='" + imgFileName + "'/></a>\n";
+
+            // /home/svj/Serg/stories/release_books/html/test004.html/test004.html/test004.html.html (Нет такого файла или каталога);
+            // Error : java.io.FileNotFoundException:
 
         } catch ( Exception e )        {
             Log.f.error ( "imgFileName = "+imgFileName+"; ConvertParameter = "+cp, e );
@@ -307,9 +358,11 @@ public abstract class AToHtml2Commander extends AbstractConvertFunction
         if ( tornOnHeader )
         {
             // <meta charset="имя кодировки">
-            writeStr ( "<HTML>\n<HEAD>\n<META charset=\""+Par.CODE_BOOK+"\">\n<TITLE>"
+            writeStr ( "<HTML>\n<HEAD>\n<META http-equiv=\"Content-Type\" content=\"text/html; charset="+Par.CODE_BOOK+"\">\n<TITLE>"
                                + getBookContent().getName() + "</TITLE>\n</HEAD>\n\n<BODY>\n\n" );
         }
+
+        // <meta http-equiv="Content-Type" content="text/html; charset=имя кодировки">
 
         // Имя файла и дата - как коментарий
         writeStr ( "\n<!--\nfile : " + cp.getFileName() + "\ndate : " + new Date() + "\n-->\n" );

@@ -542,8 +542,11 @@ public class BookTools
         fullPath1   = bookNode.getFullPath();
         fullPath2   = node.getFullPath();
 
-        if ( fullPath1.startsWith ( fullPath2 ) )
-            throw new WEditException ( true, "Глава '",bookNode.getName(),"',\n уже открыта в составе\n '", node.getName(), "'."); // true - чтобы не скидывать в errors.txt
+        if ( fullPath1.startsWith ( fullPath2 ) ) {
+            Log.l.error("Глава уже открыта. fullPath1 = " + fullPath1 + "; fullPath2 = " + fullPath2);
+            throw new WEditException(true, "Глава '", bookNode.getName(), "',\n уже открыта в составе\n '", node.getName(), "'.");
+            // true - чтобы не скидывать в errors.txt
+        }
 
         if ( fullPath2.startsWith ( fullPath1 ) )
             throw new WEditException ( true, "Части главы '",bookNode.getName(),"',\n уже открыты в составе\n '", node.getName(), "'.");
@@ -560,8 +563,10 @@ public class BookTools
         fullPath1   = bookNode.getFullPath();
         fullPath2   = node.getFullPath ();
 
-        if ( fullPath1.startsWith ( fullPath2 ) )
-            throw new WEditException ( true, "Глава '",bookNode.getName(),"',\n уже открыта в составе\n '", node.getName(), "'.");
+        if ( fullPath1.startsWith ( fullPath2 ) ) {
+            Log.l.error("Глава уже открыта. fullPath1 = " + fullPath1 + "; fullPath2 = " + fullPath2);
+            throw new WEditException(true, "Глава '", bookNode.getName(), "',\n уже открыта в составе\n '", node.getName(), "'.");
+        }
     }
 
     /**

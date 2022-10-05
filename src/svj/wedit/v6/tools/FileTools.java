@@ -115,7 +115,7 @@ public class FileTools
      * @param targetDir Результирующая директория. Только как абс путь.
      * @throws WEditException Ошибки копирования.
      */
-    public static void copyFileToDir ( String srcFile, String targetDir ) throws WEditException
+    public static String copyFileToDir ( String srcFile, String targetDir ) throws WEditException
     {
         String  absFileName;
         File    file;
@@ -124,7 +124,7 @@ public class FileTools
         file        = new File ( targetDir );
         if ( file.isFile () )  file = file.getParentFile();
 
-        copyFile ( new File(absFileName), file.getAbsolutePath() );
+        return copyFile ( new File(absFileName), file.getAbsolutePath() );
     }
 
     public static String copyFile ( File srcFile, String targetDir ) throws WEditException
@@ -1166,5 +1166,11 @@ public class FileTools
         bi2.setRGB(0, 0, w, h, pixels, 0, w);
         return bi2;
     }
-    
+
+    public static String createDir(String dir, String name) {
+        String result = dir + File.separator + name;
+        createFolder(new File(result));
+        return result;
+    }
+
 }

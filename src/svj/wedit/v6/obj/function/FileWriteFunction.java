@@ -3,8 +3,8 @@ package svj.wedit.v6.obj.function;
 
 import svj.wedit.v6.WCons;
 import svj.wedit.v6.logger.Log;
-import svj.wedit.v6.tools.Convert;
 
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
 /**
@@ -16,8 +16,11 @@ public abstract class FileWriteFunction extends SimpleBookFunction
 {
     private FileOutputStream fos = null;
 
-    public void setFos ( FileOutputStream fos )
-    {
+    public void setFos ( String fullFileName ) throws FileNotFoundException {
+        fos         = new FileOutputStream ( fullFileName );
+    }
+
+    public void setFos ( FileOutputStream fos )  {
         this.fos = fos;
     }
 

@@ -13,11 +13,13 @@ import svj.wedit.v6.logger.Log;
 import svj.wedit.v6.obj.book.*;
 import svj.wedit.v6.obj.function.AbstractConvertFunction;
 import svj.wedit.v6.tools.BookStructureTools;
+import svj.wedit.v6.tools.FileTools;
 import svj.wedit.v6.tools.GuiTools;
 
 import javax.swing.text.AttributeSet;
 import javax.swing.text.StyleConstants;
-import java.util.Collection;
+
+import java.util.*;
 
 /**
  * Преобразовать книгу в файл формата RTF.
@@ -138,6 +140,7 @@ public class ConvertToRtfFunction extends AbstractConvertFunction // SimpleBookF
     {
         Paragraph paragraph;
         com.lowagie.text.Image image;
+        String fullImgFileName = null;
 
         // todo - Только если установлен флаг - Применять картинки.
 
@@ -150,8 +153,10 @@ public class ConvertToRtfFunction extends AbstractConvertFunction // SimpleBookF
             // перевод строки
             //paragraph.add ( Chunk.NEWLINE );
 
+            fullImgFileName = FileTools.createSmallImageFileName(bookContent, imgFileName);
+
             // заносим в абзац саму картинку
-            image = Image.getInstance ( imgFileName );
+            image = Image.getInstance ( fullImgFileName );
             paragraph.add ( image );
 
             paragraph.add ( Chunk.NEWLINE );
@@ -160,7 +165,7 @@ public class ConvertToRtfFunction extends AbstractConvertFunction // SimpleBookF
 
         } catch ( Exception e )        {
             Log.file.error ( "err", e );
-            throw new RuntimeException ( "Ошибка занесения изображения '"+ imgFileName+ "' : \n"+ e, e );
+            throw new RuntimeException ( "Ошибка занесения изображения '"+ fullImgFileName+ "' : \n"+ e, e );
         }
     }
 
