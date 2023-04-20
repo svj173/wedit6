@@ -32,12 +32,13 @@ public abstract class FunctionParamsStaxParser   extends WEditStaxParser
         paramsParser.put ( ParameterType.SIMPLE,                new SimpleParamParser()     );   // простой параметр. дальше идет один тег - value
         paramsParser.put ( ParameterType.BOOLEAN,               new BooleanParamParser()    );   // простой параметр. дальше идет один тег - value
         paramsParser.put ( ParameterType.LIST_ITEM,             new ListParamParser()       );
+        paramsParser.put ( ParameterType.STRING_LIST,           new StringListParamParser() );
         paramsParser.put ( ParameterType.CONVERT,               new ConvertParamParser()    );
         paramsParser.put ( ParameterType.CONVERT_BOOKMARKS,     new ConvertBookmarksParser());
         paramsParser.put ( ParameterType.ELEMENT_CONVERT,       new ElementConvertParser()  );
         paramsParser.put ( ParameterType.MULTI_STRING,          new MultiStringParser()     );
         paramsParser.put ( ParameterType.MULTI_LIST,            new MultiListParser()       );
-        paramsParser.put ( ParameterType.COMBO_BOX,             new ComboBoxParser()       );
+        paramsParser.put ( ParameterType.COMBO_BOX,             new ComboBoxParser()        );
     }
 
 

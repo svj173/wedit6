@@ -6,25 +6,21 @@ import com.lowagie.text.rtf.RtfWriter2;
 import svj.wedit.v6.Par;
 import svj.wedit.v6.exception.WEditException;
 import svj.wedit.v6.function.FunctionId;
-import svj.wedit.v6.function.params.ParameterCategory;
-import svj.wedit.v6.function.params.SimpleParameter;
+import svj.wedit.v6.function.params.*;
 import svj.wedit.v6.logger.Log;
 import svj.wedit.v6.obj.TreeObj;
-import svj.wedit.v6.obj.book.BookContent;
-import svj.wedit.v6.obj.book.BookNode;
-import svj.wedit.v6.obj.book.BookStructure;
-import svj.wedit.v6.obj.book.TextObject;
+import svj.wedit.v6.obj.book.*;
 import svj.wedit.v6.obj.function.SimpleBookFunction;
 import svj.wedit.v6.tools.*;
 
 import javax.swing.text.AttributeSet;
 import javax.swing.text.StyleConstants;
+
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.util.Collection;
-import java.util.Enumeration;
+import java.util.*;
 
 /**
  * Преобразовать выделенные элементы книги в файл формата RTF.
@@ -86,7 +82,7 @@ public class SaveAsRTFSelectFunction extends SimpleBookFunction
         Document            document;
         HeaderFooter        header;
         BookContent         bookContent;
-        SimpleParameter     sp;
+        StringListParameter param;
         String              fileName;
 
         // Взять выделенный элемент - но только верхнего уровня.
@@ -95,34 +91,54 @@ public class SaveAsRTFSelectFunction extends SimpleBookFunction
 
         try
         {
-            // Если стоит флаг - Были изменения - Сохранять автоматом, т.к. в файл идут данные из обьектов.
             // - Взять текущую книгу
             bookContent     = Par.GM.getFrame().getCurrentBookContentPanel().getObject();
+
             // Если были изменения в текстах
             // - скинуть тексты из редакторов в обьекты -
-            // Здесь требуется TextPanel - из нее берется документ.
-            // - скинуть в файл - ? - зачем
-            //FileTools.saveBook ( bookContent );
-            // Пока просто ругаемся.
-            //throw new WEditException ( "Есть измененные тексты!\n Необходимо предварительно их сохранить,\n т.к. в RTF файл данные берутся из обьекта Книги." );
             BookTools.text2node ( bookContent );
 
             // Берем параметр который хранит имя файловой директории, в которую последний раз конвертировали тексты.
             // -- Лучше и имя файла (И так заносим имя. Значит файловый диалог его обрезает).
-            sp  = (SimpleParameter) getParameterFromBook ( PARAM_NAME );
-            if ( sp == null )
+            FunctionParameter fp  = getParameterFromBook ( PARAM_NAME );
+            if ( fp == null )
             {
-                sp  = new SimpleParameter ( PARAM_NAME, null );
-                sp.setHasEmpty ( false );
-                setParameterToBook ( PARAM_NAME, sp );
+                param  = new StringListParameter ( PARAM_NAME );
+                param.setHasEmpty ( false );
+                setParameterToBook ( PARAM_NAME, param );
+            } else if (fp instanceof StringListParameter) {
+                param = (StringListParameter) fp;
+            } else if (fp instanceof SimpleParameter) {
+                param  = new StringListParameter ( PARAM_NAME );
+                param.setHasEmpty ( false );
+                setParameterToBook ( PARAM_NAME, param );
+                SimpleParameter sp  = (SimpleParameter) fp;
+                param.addItem(sp.getValue());
+            } else  {
+                param  = new StringListParameter ( PARAM_NAME );
+                param.setHasEmpty ( false );
+                setParameterToBook ( PARAM_NAME, param );
             }
 
             // Взять из параметра директорию, куда сохраняли в последний раз.
-            fileName    = sp.getValue ();
-            if ( fileName == null )  fileName = Par.USER_HOME_DIR;
+
+            fileName = null;
+            // выяснить существующую директорию на этом компе
+            for (String dirName : param.getList()) {
+                file    = new File ( dirName );
+                if (file.exists()) {
+                    fileName = dirName;
+                    break;
+                }
+            }
+
+            if (fileName == null ) {
+                fileName = Par.USER_HOME_DIR;
+            }
 
             // Запросить имя сохраняемого файла
             file    = new File ( fileName );
+
             file    = FileTools.selectFileName ( Par.GM.getFrame(), file );
             if ( file == null ) return; // Не стоит сообщать что была Oтмена преобразования.
 
@@ -165,10 +181,11 @@ public class SaveAsRTFSelectFunction extends SimpleBookFunction
             document.close();
 
             // Сохранить новое значение параметра
-            Log.file.debug ( "-- Parameter before = %s", sp );
-            sp.setValue ( file.toString() );
+            Log.file.debug ( "-- Parameter before = %s", param );
+            param.addItem ( file.toString() );
+
             bookContent.setEdit ( true );  // иначе новое значение параметра не сохранится в файле книги.
-            Log.file.debug ( "-- Parameter after = %s", sp );
+            Log.file.debug ( "-- Parameter after = %s", param );
 
             DialogTools.showMessage ( "Преобразование", "Создан файл : " + file );
 
