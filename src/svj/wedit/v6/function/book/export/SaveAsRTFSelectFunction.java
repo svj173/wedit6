@@ -146,7 +146,7 @@ public class SaveAsRTFSelectFunction extends SimpleBookFunction
 
             fos     = new FileOutputStream ( file );
 
-            // Создать исходный RTF документ
+            // Создать исходный RTF документ - с привязкой к потоку куда он будет выдан - у нас - в файл fos
             document = new Document ( PageSize.A4, 50, 50, 50, 50 );
             RtfWriter2.getInstance ( document, fos );
 
@@ -157,7 +157,7 @@ public class SaveAsRTFSelectFunction extends SimpleBookFunction
             document.addAuthor ( "Sergey Afanasiev" );
             document.addSubject ( "s_afa@yahoo.com" );
             // Footer
-            header = createHeader ( null );
+            header = createHeader ( bookContent.getBookNode() );
             document.setHeader ( header );
             //document.setFooter ( footer );
 
@@ -171,6 +171,10 @@ public class SaveAsRTFSelectFunction extends SimpleBookFunction
             textFont.setSize ( 8 );
             attributeFont   = GuiTools.createRtfFont ( bookStructure.getAnnotationStyle() );
             attributeFont.setSize ( 8 );
+
+            // Занести Титл книги согласно стиля.
+            Paragraph paragraph   = createParagraph ( bookContent.getBookNode() );
+            document.add ( paragraph );
 
             // Скинуть рекурсивно
             for ( TreeObj treeObj : selectNodes )
@@ -329,26 +333,36 @@ public class SaveAsRTFSelectFunction extends SimpleBookFunction
 
 
     /**
-     * Создать колонтитл - с текстом справа и слева от номера страницы.
+     * Создать колонтитл - с текстом справа и слева от номера страницы - Название Книги и пр.
      * <br/> Вынести в общую функцию конвертации в RTF.
      * <br/>
      * @param rootBookNode
-     * @return
      */
-    public HeaderFooter createHeader ( BookNode rootBookNode )
+    private HeaderFooter createHeader(BookNode rootBookNode)
     {
         HeaderFooter    header;
+        String          leftMsg, rightMsg;
+
+        leftMsg = rootBookNode.getName() + "        - ";
+
+        // для уравновешивания, чтобы номер страницы располагался строго по середине
+        // дефисы на концах - т.к. к строкам применяется trim
+        rightMsg = StringTools.addSpaceLast ( " - ", ' ', leftMsg.length() - 3 ) + "-";
+
         /*
         String          leftMsg, rightMsg, str, sep, fileName, author, email;
         File file;
 
         file    = Par.BookFile;
         sep     = ";  ";
+        // для вытаскивания общих атрибутов из книги
         book    = (BookNodeObject) gm.getContent().getContentPanel().getRootNode().getUserObject ();
 
+        // - версия
         str     = BookTools.getAttrIntContent ( book, WCons.VERSION, null );
         if ( str == null )    str   = "";
         else                  str   = "V:" + str;
+
         // Создать левую половинку: имя файла, версия, дата печати
         if ( file == null )
             fileName    = "-";
@@ -365,7 +379,10 @@ public class SaveAsRTFSelectFunction extends SimpleBookFunction
 
         header = new HeaderFooter ( new Phrase (leftMsg), new Phrase (rightMsg) );
         */
-        header = new HeaderFooter ( null, null );
+        
+
+        header = new HeaderFooter ( new Phrase (leftMsg), new Phrase (rightMsg) );
+        //header = new HeaderFooter ( null, null );
         header.setAlignment ( Element.ALIGN_CENTER );
         //footer.setAlignment ( Element.ALIGN_CENTER );
         return header;
