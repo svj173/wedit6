@@ -498,7 +498,7 @@ public abstract class AbstractConvertFunction  extends FileWriteFunction
                         break;
                     case ONLY_TITLE_WITH_NUMBER:
                         // выводить только тип заголовка (например, глава) с нумерацией. Например: "Глава 1."
-                        title = elementParam.getName() + " " + getNumber(nodeLevel) + ".";
+                        title = elementParam.getName() + " " + getNumber(nodeLevel);
                         break;
                     case TITLE_WITH_NUMBER_AND_NAME:
                         // выводить тип заголовка (например, глава) с нумерацией и с названием титла. Например: "Глава 1. Введение"
