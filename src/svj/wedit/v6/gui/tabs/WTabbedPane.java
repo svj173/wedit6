@@ -2,6 +2,7 @@ package svj.wedit.v6.gui.tabs;
 
 
 import sun.swing.SwingUtilities2;
+//import com.sun.java.swing.SwingUtilities2;
 import svj.wedit.v6.logger.Log;
 
 import javax.accessibility.*;

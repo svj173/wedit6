@@ -165,7 +165,7 @@
           <fileset dir="${programmPath}/img"/>
           <fileset dir="${programmPath}/lib"/>
           <fileset dir="${programmPath}/log"/>
-          <fileset dir="${programmPath}/msg"/>
+          <!--fileset dir="${programmPath}/msg"/-->
             <!-- dir pconf_user NOT deleted !!! -->
         </delete>
 
@@ -175,7 +175,7 @@
         <mkdir dir="${programmPath}/log" />
         <mkdir dir="${programmPath}/conf" />
         <mkdir dir="${programmPath}/img" />
-        <mkdir dir="${programmPath}/msg" />
+        <!--mkdir dir="${programmPath}/msg" /-->
         <mkdir dir="${programmPath}/doc" />
 
         <echo message="Copy files." />
@@ -202,9 +202,9 @@
         <copy todir="${programmPath}/img">
             <fileset file="../img/**" />
         </copy>
-        <copy todir="${programmPath}/msg">
+        <!--copy todir="${programmPath}/msg">
             <fileset file="../msg/**" />
-        </copy>
+        </copy-->
         <copy todir="${programmPath}/doc">
             <fileset file="../doc/guid/*.xml" />
         </copy>
@@ -227,7 +227,7 @@
           <fileset dir="${deploy.common.path}/img"/>
           <fileset dir="${deploy.common.path}/lib"/>
           <!--fileset dir="${deploy.path}/log"/-->
-          <fileset dir="${deploy.common.path}/msg"/>
+          <!--fileset dir="${deploy.common.path}/msg"/-->
             <!-- dir pconf_user NOT deleted !!! -->
         </delete>
 
@@ -237,7 +237,7 @@
         <!--mkdir dir="${deploy.path}/log" /-->
         <mkdir dir="${deploy.common.path}/conf" />
         <mkdir dir="${deploy.common.path}/img" />
-        <mkdir dir="${deploy.common.path}/msg" />
+        <!--mkdir dir="${deploy.common.path}/msg" /-->
         <mkdir dir="${deploy.common.path}/doc" />
         <mkdir dir="/var/log/wedit6" />
 
@@ -259,9 +259,9 @@
         <copy todir="${deploy.common.path}/img">
             <fileset file="../img/**" />
         </copy>
-        <copy todir="${deploy.common.path}/msg">
+        <!--copy todir="${deploy.common.path}/msg">
             <fileset file="../msg/**" />
-        </copy>
+        </copy-->
         <copy todir="${deploy.common.path}/doc">
             <fileset file="../doc/guid/*.xml" />
         </copy>

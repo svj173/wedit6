@@ -3,7 +3,7 @@ package svj.wedit.v6.undo;
 
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.text.AbstractDocument;
-import javax.swing.text.AbstractDocument.DefaultDocumentEvent;
+//import javax.swing.text.AbstractDocument.DefaultDocumentEvent;
 import javax.swing.text.Document;
 import javax.swing.text.StyledDocument;
 import javax.swing.undo.CannotUndoException;
@@ -56,35 +56,36 @@ public class CompoundUndoMan extends UndoManager
 
         //  Start a new compound edit
 
-        AbstractDocument.DefaultDocumentEvent docEvt = ( DefaultDocumentEvent ) e.getEdit();
+        UndoableEdit uEdit = e.getEdit();
+        if (uEdit instanceof AbstractDocument.DefaultDocumentEvent) {
+            AbstractDocument.DefaultDocumentEvent docEvt = (AbstractDocument.DefaultDocumentEvent) uEdit;
 
-        if ( compoundEdit == null )
-        {
-            compoundEdit = startCompoundEdit ( e.getEdit () );
-            startCombine = false;
-            return;
+            if (compoundEdit == null) {
+                compoundEdit = startCompoundEdit(e.getEdit());
+                startCombine = false;
+                return;
+            }
+
+            //int editLine = ( ( SyntaxDocument ) docEvt.getDocument () ).getLineNumberAt ( docEvt.getOffset () );
+            //editLine = ( ( StyledDocument ) docEvt.getDocument() ).getLineNumberAt ( docEvt.getOffset () );
+            pos = docEvt.getOffset();
+            editLine = getLineNumberAt(docEvt.getDocument(), pos);
+
+            //  Check for an incremental edit or backspace.
+            //  The Change in Caret position and Document length should both be
+            //  either 1 or -1.
+            if ((startCombine || Math.abs(docEvt.getLength()) == 1) && editLine == lastLine) {
+                compoundEdit.addEdit(e.getEdit());
+                startCombine = false;
+                return;
+            }
+
+            //  Not incremental edit, end previous edit and start a new one
+            lastLine = editLine;
+
+            compoundEdit.end();
+            compoundEdit = startCompoundEdit(e.getEdit());
         }
-
-        //int editLine = ( ( SyntaxDocument ) docEvt.getDocument () ).getLineNumberAt ( docEvt.getOffset () );
-        //editLine = ( ( StyledDocument ) docEvt.getDocument() ).getLineNumberAt ( docEvt.getOffset () );
-        pos         = docEvt.getOffset ();
-        editLine    = getLineNumberAt ( docEvt.getDocument(), pos );
-
-        //  Check for an incremental edit or backspace.
-        //  The Change in Caret position and Document length should both be
-        //  either 1 or -1.
-        if ( ( startCombine || Math.abs ( docEvt.getLength () ) == 1 ) && editLine == lastLine )
-        {
-            compoundEdit.addEdit ( e.getEdit () );
-            startCombine = false;
-            return;
-        }
-
-        //  Not incremental edit, end previous edit and start a new one
-        lastLine = editLine;
-
-        compoundEdit.end ();
-        compoundEdit = startCompoundEdit ( e.getEdit() );
     }
 
     private int getLineNumberAt ( Document document, int pos )
@@ -106,7 +107,7 @@ public class CompoundUndoMan extends UndoManager
     private CompoundEdit startCompoundEdit ( UndoableEdit anEdit )
     {
         //  Track Caret and Document information of this compound edit
-        AbstractDocument.DefaultDocumentEvent docEvt = ( DefaultDocumentEvent ) anEdit;
+        //AbstractDocument.DefaultDocumentEvent docEvt = ( DefaultDocumentEvent ) anEdit;
 
         //  The compound edit is used to store incremental edits
 
