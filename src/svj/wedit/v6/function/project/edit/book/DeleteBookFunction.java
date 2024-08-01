@@ -81,49 +81,58 @@ public class DeleteBookFunction extends AbstractSaveProjectFunction
         inum    = DialogTools.showConfirmDialog ( Par.GM.getFrame(), msg, "Удалить", "Отменить" );
         if ( inum == JOptionPane.YES_OPTION )
         {
-            // Удалить из сектора проекта
-            b               = section.deleteBook ( bookTitle );
-            if ( ! b )
-                throw new MessageException ( "Не удалось удалить Книгу из Раздела\n '", section.getName(), "'." );
+            try {
+                // Удалить из сектора проекта
+                b               = section.deleteBook ( bookTitle );
+                if ( ! b )
+                    throw new MessageException ( "Не удалось удалить Книгу из Раздела\n '", section.getName(), "'." );
 
-            // Взять текущий проект
-            project         = currentProjectPanel.getObject();
+                // Взять текущий проект
+                project         = currentProjectPanel.getObject();
 
-            // Сформировать имя файла книги
-            dirBookName     = FileTools.createNodeFilePath ( project, selectNode ); // только диреткория - по ближайшей секции
-            bookFileName    = Convert.concatObj ( dirBookName, '/', bookTitle.getFileName() );
-            Log.l.debug ( "file for delete = ", bookFileName );
+                // Сформировать имя файла книги
+                dirBookName     = FileTools.createNodeFilePath ( project, selectNode ); // только диреткория - по ближайшей секции
+                Log.l.info ( "[BOOK] bookTitle.getFileName() = ", bookTitle.getFileName() );
+                Log.l.info ( "[BOOK] dirBookName = ", dirBookName );
+                bookFileName    = Convert.concatObj ( dirBookName, '/', bookTitle.getFileName() );
+                Log.l.info ( "[BOOK] file for delete = ", bookFileName );
 
-            // Удалить файл книги
-            if ( ! FileTools.deleteFile ( bookFileName ) )
-                throw new MessageException ( "Не удалось удалить файл Книги\n '", bookFileName, "'." );
+                // Удалить файл книги
+                if ( ! FileTools.deleteFile ( bookFileName ) )
+                    throw new MessageException ( "Не удалось удалить файл Книги\n '", bookFileName, "'." );
 
-            // Сохранить изменения проекта - в файле project.xml
-            saveProjectFile ( project );
+                // Сохранить изменения проекта - в файле project.xml
+                saveProjectFile ( project );
 
-            BookContent bookContent;
-            bookContent = bookTitle.getBookContent();
-            if ( bookContent != null )
-            {
-                // Эта книга открыта и используестя в Редакторе - закрыть все применяемые табики - Закрыть табик книги. Закрыть и удалить таб-панель текстов книги.
-                // - Закрываем все тексты, связанные с этой книгой. -- лучше всего оперировать ИД и закрывать все что связано с этим ИД.
-                Par.GM.getFrame().closeTextsPanel ( bookContent.getId() );
-                // todo Закрыть табик книги. -- прогоняем по всем таб-книгам и сравниваем на ИД?
-                // Удалить табс-панель с табиками открытых книг Сборника - удаляем из массива панелей.
-                Par.GM.getFrame().deleteBook ( bookContent.getId (), false );
-                /*
-                tabsTextPanel   = Par.GM.getFrame().getBooksPanel().getTabsPanel ( bookContent.getId() );
-                tabsTextPanel.removeTab ( bookContent.getId() );
-                Par.GM.getFrame().getBooksPanel().deleteTabsPanel ( bookContent.getId() );    // tabsId ?
-                // принимаем gui-изменения
-                Par.GM.getFrame().getBooksPanel().revalidate ();
-                // Закрыть все таб-панели данной табс-панели книги
-                //tabsBooksPanel.removeAll();
-                */
+                BookContent bookContent;
+                bookContent = bookTitle.getBookContent();
+                if ( bookContent != null )
+                {
+                    // Эта книга открыта и используестя в Редакторе - закрыть все применяемые табики - Закрыть табик книги. Закрыть и удалить таб-панель текстов книги.
+                    // - Закрываем все тексты, связанные с этой книгой. -- лучше всего оперировать ИД и закрывать все что связано с этим ИД.
+                    Par.GM.getFrame().closeTextsPanel ( bookContent.getId() );
+                    // todo Закрыть табик книги. -- прогоняем по всем таб-книгам и сравниваем на ИД?
+                    // Удалить табс-панель с табиками открытых книг Сборника - удаляем из массива панелей.
+                    Par.GM.getFrame().deleteBook ( bookContent.getId(), false );
+                    /*
+                    tabsTextPanel   = Par.GM.getFrame().getBooksPanel().getTabsPanel ( bookContent.getId() );
+                    tabsTextPanel.removeTab ( bookContent.getId() );
+                    Par.GM.getFrame().getBooksPanel().deleteTabsPanel ( bookContent.getId() );    // tabsId ?
+                    // принимаем gui-изменения
+                    Par.GM.getFrame().getBooksPanel().revalidate ();
+                    // Закрыть все таб-панели данной табс-панели книги
+                    //tabsBooksPanel.removeAll();
+                    */
+                }
+
+                // Удалить из дерева - в самом конце, когда все действия прошли успешно (создание директории, перезапись project.xml и т.д.)
+                currentProjectPanel.removeNode ( selectNode );
+            } catch (WEditException we) {
+                Log.l.error("Error:" + we.getMessage());
+                throw we;
+            } catch (Exception e) {
+                Log.l.error("Error:", e);
             }
-
-            // Удалить из дерева - в самом конце, когда все действия прошли успешно (создание директории, перезапись project.xml и т.д.)
-            currentProjectPanel.removeNode ( selectNode );
         }
 
         Log.l.debug ( "Finish" );

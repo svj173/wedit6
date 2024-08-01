@@ -50,7 +50,12 @@
         <mkdir dir="${jar}" />
         <mkdir dir="${docdir}" />
         <echo message="ANT  : ${ant.version}" />
+        <echo message="ANT_HOME  : ${ant.home}" />
         <echo message="JAVA : ${ant.java.version}" />
+        <echo message="JAVACMD : ${JAVACMD}" />
+        <echo message="java.home : ${java.home}" />
+        <echo message="java.cmd : ${java.cmd}" />
+        <echo message="JAVA_HOME : ${JAVA_HOME}" />
     </target>
 
 
