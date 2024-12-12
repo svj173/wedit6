@@ -12,9 +12,13 @@ WordEditor for story writers.
                                                 
 компиляция и создание Редактора из исходников:
 
+-- старое
 ant -buildfile wedit6.xml deploy.linux.locale
-
 ant -Djava.home=/usr/lib/jvm/jdk1.8.0_241 -buildfile wedit6.xml deploy.linux.locale
+
+-- новое
+./mvnw clean package
+
 
 Внешний вид
 

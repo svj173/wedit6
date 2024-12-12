@@ -31,11 +31,11 @@
         </dependency-->
 
         <!-- Swing -->
-        <dependency>
+        <!--dependency>
             <groupId>de.mirkosertic.bytecoder</groupId>
             <artifactId>java.desktop</artifactId>
             <version>2021-11-02</version>
-        </dependency>
+        </dependency-->
 
         <dependency>
             <groupId>com.lowagie</groupId>
