@@ -113,6 +113,10 @@
                 <configuration>
                     <source>21</source>
                     <target>21</target>
+                    <fork>true</fork>
+                    <compilerArgs>
+                        <arg>-XDignore.symbol.file</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
             <plugin>

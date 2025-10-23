@@ -28,6 +28,13 @@ import java.util.Vector;
 //public class WTabbedPane extends JComponent  implements Serializable, Accessible, SwingConstants
 public class WTabbedPane extends JTabbedPane
 {
+    //requires java.desktop;
+    /*
+    module swing {
+        requires java.desktop;
+    }
+    */
+
 
    /**
     * The tab layout policy for wrapping tabs in multiple runs when all
@@ -102,6 +109,7 @@ public class WTabbedPane extends JTabbedPane
     public WTabbedPane (int tabPlacement) {
         this(tabPlacement, WRAP_TAB_LAYOUT);
     }
+
 
     /**
      * Creates an empty <code>TabbedPane</code> with the specified tab placement
