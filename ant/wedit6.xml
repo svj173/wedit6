@@ -28,6 +28,7 @@ ant -Djava.home=/usr/lib/jvm/java-8-openjdk-amd64 -buildfile wedit6.xml deploy.l
         <!--pathelement location="./"/-->
         <!--pathelement path="%classpath%"/-->
         <!--pathelement path="${classes}"/-->
+        <pathelement path="/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/rt.jar"/>
         <fileset dir="${lib}" includes="**/*.jar, **/*.zip" excludes="*.txt"/>
     </path>
 
@@ -67,6 +68,7 @@ ant -Djava.home=/usr/lib/jvm/java-8-openjdk-amd64 -buildfile wedit6.xml deploy.l
                destdir="${classes}"
                debug="on"
                optimize="off"
+               includeantruntime="false"
                deprecation="false">
             <!--
                            compiler="jikes"

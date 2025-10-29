@@ -87,12 +87,25 @@ public class TreeObjTools
         //Logger.getInstance().debug ( "-- TreeObjTools.getObjectInNodeById: b = " + b );
         if ( b ) return object;
 
+        /*
+        // Заменил на код ниже - проблемы с компиляцией антом
         childs = object.children();
         while ( childs.hasMoreElements() )
         {
             obj     = childs.nextElement();
             findObj = getObjectInNodeById ( obj, id );
             if ( findObj != null ) return findObj;
+        }
+        */
+        //
+        Enumeration childNodes = object.children();
+        while ( childNodes.hasMoreElements() )
+        {
+            Object objectNode     = childNodes.nextElement();
+            if (objectNode instanceof TreeObj) {
+                findObj = getObjectInNodeById((TreeObj)objectNode, id);
+                if (findObj != null) return findObj;
+            }
         }
 
         return null;
@@ -111,12 +124,23 @@ public class TreeObjTools
         //Logger.getInstance().debug ( "-- TreeObjTools.getObjectInNodeById: b = " + b );
         if ( b ) result.add ( object );
 
+        /*
         childs = object.children();
         while ( childs.hasMoreElements() )
         {
             obj     = childs.nextElement();
             getObjectsInNodeBySubtype ( obj, subtype, result );
             //if ( findObj != null ) result.add ( findObj );
+        }
+        */
+        //
+        Enumeration childNodes = object.children();
+        while ( childNodes.hasMoreElements() )
+        {
+            Object objectNode     = childNodes.nextElement();
+            if (objectNode instanceof TreeObj) {
+                getObjectsInNodeBySubtype ( (TreeObj)objectNode, subtype, result );
+            }
         }
     }
 

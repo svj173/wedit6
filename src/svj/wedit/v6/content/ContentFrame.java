@@ -564,12 +564,16 @@ public class ContentFrame    extends JFrame   implements WComponent
             // Если content == null, значит эту книуг еще не открывали.
         }
 
-        childs = object.children();
-        while ( childs.hasMoreElements() )
+        //childs = (Enumeration<TreeObj>) object.children(); // TreeNode
+        Enumeration childNodes = object.children();
+
+        while ( childNodes.hasMoreElements() )
         {
-            obj     = childs.nextElement();
-            findObj = getBootTitleByBookId ( obj, bookId );
-            if ( findObj != null ) return findObj;
+            Object objectNode     = childNodes.nextElement();
+            if (objectNode instanceof TreeObj) {
+                findObj = getBootTitleByBookId((TreeObj)objectNode, bookId);
+                if (findObj != null) return findObj;
+            }
         }
 
         return null;

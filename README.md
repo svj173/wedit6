@@ -19,3 +19,10 @@ ant -Djava.home=/usr/lib/jvm/jdk1.8.0_241 -buildfile wedit6.xml deploy.linux.loc
 Внешний вид
 
 ![](/home/svj/projects/SVJ/GitHub/wedit6/doc/img/title.png)
+
+Change
+
+2025-октябрь
+Отпочковал ветку 1.8 - для создания проекта в java-1.8 - из-за swing.
+Отладил компиляцию через ant - он не все видел, что видела Idea.
+

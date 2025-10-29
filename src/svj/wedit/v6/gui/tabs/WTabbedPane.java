@@ -2,7 +2,6 @@ package svj.wedit.v6.gui.tabs;
 
 
 import sun.swing.SwingUtilities2;
-//import com.sun.java.swing.SwingUtilities2;
 import svj.wedit.v6.logger.Log;
 
 import javax.accessibility.*;
@@ -11,15 +10,12 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.plaf.TabbedPaneUI;
 import javax.swing.plaf.UIResource;
+
 import java.awt.*;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.util.Locale;
-import java.util.Vector;
+import java.io.*;
+import java.util.*;
 
 
 // НЕ получилось переписать под себя - чтобы управлять иконкой в заголовке (было редактирвоание, не было, крестик - закрыть табик).
@@ -46,7 +42,6 @@ public class WTabbedPane extends JTabbedPane
 
     /**
      * @see #getUIClassID
-     * @see #readObject
      */
     private static final String uiClassID = "TabbedPaneUI";
 
