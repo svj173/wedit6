@@ -38,19 +38,24 @@ import java.util.Enumeration;
  <bookContent name="Дневник">
  	<id>/home/svj/Serg/Stories/SvjStores/dnevniki/dnevniki.book</id>
 
- 
+ Расписать алгоритм
+ 1) Выводится диалог
+ - Определяется - кто (сектор или книга) и куда (только сектор)
+ - Если книга открыта или открыты книги выбранного сектора (и подсекторов) - закрыть в гуи, с сохранением изменений.
+ 2) Выбранный обьект клонируется
+ 3) Этот обьект удаляется из его парента
+ 4) Добавляется в новый парент
+ 5) У него изменяются все пути книг
+
  * <BR/>
  * <BR/>  Сделать:
  * <BR/> +1) ID - генерить уникальный.
  * <BR/> +2) Имя файла - заносить в bookContent при парсинге файла.
  * <BR/> +3) BookTitle - также генерить уникальную ИД книги, которая будет заноситься в BookContent
  * <BR/>
- * <BR/>  НЕ используем - заменили на CUT-PASTE - т.к. можно переносить в другие Сборники и пр.
- * CutProjectNodeFunction
- *
+ * <BR/> CutProjectNodeFunction - НЕ используем - это CUT-PASTE, поэтому можно переносить в другие Сборники и пр.
  * <BR/> Минус - можно выкусить книгу и забыть.
  * <BR/>
- * <BR/> Эту функцию НЕ исп.
  * <BR/>
  * <BR/> User: svj
  * <BR/> Date: 28.12.2015 15:51
@@ -69,64 +74,25 @@ public class MoveBookFunction  extends AbstractSaveProjectFunction
     @Override
     public void handle ( ActionEvent event ) throws WEditException
     {
-        TreePanel<Project>  projectTreePanel;
+        MoveBookManager manager;
         TreePanel<Project>  targetTreePanel;
+
+        manager = new MoveBookManager();
 
         // Сформировать таргет-дерево - показывать только папки.
         // Папки, в которые нельзя копировать (где содержится исходная книга) - не показывать.
 
-        projectTreePanel    = Par.GM.getFrame().getCurrentProjectPanel();
-        if ( projectTreePanel != null )
+
+        if ( manager.dialogIsOk(getName()) )
         {
-            SimpleDialog dialog;
-            TreeObj      root, currentBook, targetTree, targetSection;
+            TreeObj root, currentBook, targetTree, targetSection;
             String srcFile, targetFile;
-            JPanel panel;
-            JLabel label;
 
-            // Взять текущую книгу или Раздел
-            currentBook = projectTreePanel.getCurrentObj();
-            Log.l.info ( "MoveBook: currentBook = %s", currentBook );
-            if ( currentBook == null )  throw new MessageException ( "Не выбрана книга для переноса." );
+            // todo закрыть открытые текст-книги исходников (и в подсекциях тоже)
+            manager.closeSourceBooks();
 
-            // Выясняем, если переносим книгу, то не открыта ли она. - даже если на экране Тексты другой книги!!!
-            // А если переносим Раздел, то есть ли открытые книги данного раздела? - Ругаемся.
-            // Проверяем по ИД книги
-            //BookTools.checkOpenText ();       -- Лишнее.
+            targetTreePanel = manager.getTargetTreePanel();
 
-
-            // Переносим разделы и книги.
-
-            root    = projectTreePanel.getRoot();
-            //if ( root == null )  throw new MessageException ( "Не выбрана книга для переноса." );
-            //Log.l.info ( "Project tree = %s", DumpTools.printTreeSimple ( root ) );
-
-            // Сформировать дерево из одних только Секций - без Книг
-            //targetTree = createTree ( (WTreeObj) root.getWTreeObj() );
-            targetTree = root.clone();
-
-            //DialogTools.showHtml ( "Tree", "<html><pre>"+DumpTools.printTreeSimple ( root ) + "</pre><br/><br/></html>" );
-
-            // Создать таргет-панель с деревом
-            targetTreePanel = new TreePanel<Project> ( targetTree, projectTreePanel.getObject() );
-            targetTreePanel.addRenderer ( TreeObjType.SECTION, new SectionCellRenderer() );
-            dialog = new SimpleDialog ( getName() );
-            dialog.addToCenter ( targetTreePanel );
-
-            // Напоминалки
-            panel = new JPanel();
-            dialog.addToEast ( panel );
-            label = new JLabel ( "<html><font color=red>&nbsp;&nbsp;&nbsp;Напоминаем, что если вы переносите книгу, <br/>то она не должна быть открыта. <br/>А если переносите Раздел, то не <br/>должно быть открытых книг из этого Раздела. <br/>Иначе эти книги просто пропадут!</font></html>" );
-            panel.add ( label );
-
-            // todo В Диалоге выводить и книги - чтоыб можно было добавлять после указанной книги.
-            // todo - отказаться от этого и делать через cut-paste
-
-            dialog.pack();
-            dialog.showDialog();
-
-            if ( dialog.isOK() )
-            {
                 // Нажата Принять.
                 // - Берем таргет-секцию. (куда переносим)
                 targetSection   = targetTreePanel.getCurrentObj();
@@ -136,6 +102,10 @@ public class MoveBookFunction  extends AbstractSaveProjectFunction
                 // -1) При переносе книги - в дереве старое исчезает, а новое не появляется.
                 // -2) Не проверял перенос Разделов
 
+            // Взять текущую книгу или Раздел
+            TreePanel<Project> projectTreePanel = manager.getProjectTreePanel();
+            currentBook = projectTreePanel.getCurrentObj();
+
                 // Формируем полные пути файлов.
                 srcFile     = createSrcFileName ( currentBook, projectTreePanel );
                 targetFile  = createTargetFileName ( targetSection, projectTreePanel, currentBook );
@@ -143,7 +113,7 @@ public class MoveBookFunction  extends AbstractSaveProjectFunction
 
                 // Переносим книгу currentBook в  targetSection
                 // - Переносим файл (имя.book или Раздел) в новую директорию  - физически.
-                if ( moveFile ( srcFile, targetFile ) )
+                if ( manager.moveFile ( srcFile, targetFile ) )
                 {
                     // Файл успешно перемещен
 
@@ -201,7 +171,7 @@ public class MoveBookFunction  extends AbstractSaveProjectFunction
                     projectTreePanel.getTreeModel().insertNodeInto ( newNode, targetSection, 0 );
                     projectTreePanel.setRepaintTreeMode ( TreePanel.RepaintTree.ALL_WITH_ACTION );
 
-                    // todo А если книга открыта и есть отрытые страницы - как с ними? Особенно если в перенос в другой Сборник.
+                    // todo А если книга открыта и есть отрытые страницы - как с ними? Особенно если перенос в другой Сборник.
                     // - Здесь надо также менять и BookStructure.fileName
                 }
                 else
@@ -210,7 +180,6 @@ public class MoveBookFunction  extends AbstractSaveProjectFunction
                     throw new WEditException ( "Ошибка переноса файлов.\n  srcFile : " + srcFile + "\n  targetFile = " + targetFile );
                 }
             }
-        }
     }
 
     private void changeFileName ()
@@ -288,34 +257,6 @@ public class MoveBookFunction  extends AbstractSaveProjectFunction
         }
 
         return result;
-    }
-
-    private boolean moveFile ( String srcFile, String targetFile ) throws WEditException
-    {
-        String      srcFileName, targetFileDir;
-        WTreeObj    srcObj, trgObj;         // BookNode, BookTitle, Section
-
-        Log.l.info ( "-- srcFile = %s;\n targetFile = %s", srcFile, targetFile );
-
-        /*
-        // Взять полные пути файлов
-        // - Исходный файл
-        srcObj = (WTreeObj) currentBook.getWTreeObj();
-        // - Если это BookTitle - то имеем только fileName=b1.book. Необходимо получить и его Сектор
-        // Если это Сектор - то имеем локальное имя файла сектора и парент-сектора.
-
-        // - Результирующая директория
-        trgObj = (WTreeObj) targetSection.getWTreeObj();
-        Log.l.info ( "-- currentBook = %s;\n targetSection = %s", srcObj, trgObj );
-        */
-
-        // Перенести файл на новое место
-        File fileSrc, fileTrg;
-        fileSrc = new File ( srcFile );
-        fileTrg = new File ( targetFile );
-        return fileSrc.renameTo ( fileTrg );
-
-        //throw new WEditException ( "Не реализована!\nsrc = "+ srcFile +"\ntarget = " + targetFile );
     }
 
     private TreeObj createTree ( WTreeObj wTreeObj )
