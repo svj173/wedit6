@@ -92,10 +92,11 @@ public class DeleteBookFunction extends AbstractSaveProjectFunction
 
                 // Сформировать имя файла книги
                 dirBookName     = FileTools.createNodeFilePath ( project, selectNode ); // только диреткория - по ближайшей секции
-                Log.l.info ( "[BOOK] bookTitle.getFileName() = ", bookTitle.getFileName() );
-                Log.l.info ( "[BOOK] dirBookName = ", dirBookName );
-                bookFileName    = Convert.concatObj ( dirBookName, '/', bookTitle.getFileName() );
-                Log.l.info ( "[BOOK] file for delete = ", bookFileName );
+                Log.l.info ( "[BOOK] bookTitle.getFileName() = %s", bookTitle.getFileName() );
+                Log.l.info ( "[BOOK] dirBookName = %s", dirBookName );
+                //bookFileName    = Convert.concatObj ( dirBookName, '/', bookTitle.getFileName() );
+                bookFileName    = dirBookName.toString();
+                Log.l.info ( "[BOOK] file for delete = %s", bookFileName );
 
                 // Удалить файл книги
                 if ( ! FileTools.deleteFile ( bookFileName ) )
@@ -128,7 +129,7 @@ public class DeleteBookFunction extends AbstractSaveProjectFunction
                 // Удалить из дерева - в самом конце, когда все действия прошли успешно (создание директории, перезапись project.xml и т.д.)
                 currentProjectPanel.removeNode ( selectNode );
             } catch (WEditException we) {
-                Log.l.error("Error:" + we.getMessage());
+                Log.l.error("Error: " + we.getMessage());
                 throw we;
             } catch (Exception e) {
                 Log.l.error("Error:", e);

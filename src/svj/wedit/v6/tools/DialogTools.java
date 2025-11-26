@@ -157,7 +157,7 @@ public class DialogTools
     public static void showError ( Component parentFrame, Object msg, String title )
     {
         Object object;
-        Log.l.info("[M] msg = %s");   // ловим ошибку с длинным текстом который почемуто не обрезается.
+        Log.l.info("[M] msg = %s", msg);   // ловим ошибку с длинным текстом который почемуто не обрезается.
         // Анализ на очень длинные строки.
         if ( msg instanceof String )
         {
