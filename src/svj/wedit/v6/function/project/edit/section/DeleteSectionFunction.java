@@ -10,9 +10,7 @@ import svj.wedit.v6.logger.Log;
 import svj.wedit.v6.obj.Project;
 import svj.wedit.v6.obj.Section;
 import svj.wedit.v6.obj.TreeObj;
-import svj.wedit.v6.tools.Convert;
-import svj.wedit.v6.tools.DialogTools;
-import svj.wedit.v6.tools.FileTools;
+import svj.wedit.v6.tools.*;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -53,7 +51,7 @@ public class DeleteSectionFunction  extends AbstractSaveProjectFunction
 
             selectNode  = currentProjectPanel.getCurrentObj();
             section     = (Section) selectNode.getWTreeObj();
-            Log.l.debug ( "section for delete = ", section );
+            Log.l.debug ( "section for delete = %s", section );
 
 
             // Взять уровень выбранного элемента. Проверить - может уже последний?
@@ -62,6 +60,7 @@ public class DeleteSectionFunction  extends AbstractSaveProjectFunction
             if ( level == 0 )  throw new WEditException ( "Нельзя удалить корневой элемент" );
 
             // todo Проверка, может книги для удаления открыты в панелях книг или текстах?
+            //BookTools.checkOpenText(section);
 
             // Диалог - Запросить имя нового обьекта
             msg     = Convert.concatObj ( getName(), " '",section.getName(),"'\nсо всеми подразделами и книжками ?" );
@@ -87,6 +86,7 @@ public class DeleteSectionFunction  extends AbstractSaveProjectFunction
                 currentProjectPanel.removeNode ( selectNode );
 
                 // todo Закрыть открытые табики удаляемого раздела
+                //BookTools.closeOpenText(section);
             }
         } catch ( WEditException we )       {
             throw we;
