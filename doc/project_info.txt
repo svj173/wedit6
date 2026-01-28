@@ -1,0 +1,11 @@
+Инфа о программе
+
+
+WEdit6 - есть ошибки. разобраться.
+- проект привязать в ява-8 ? - привязана
+
+1) Деплой
+
+ant -buildfile wedit6.xml deploy.linux.common
+
+ant -Djava.home=/usr/lib/jvm/java-8-openjdk-amd64 -buildfile wedit6.xml deploy.linux.locale

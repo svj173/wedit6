@@ -141,6 +141,7 @@ public class ConvertToFB2 extends AbstractConvertFunction {
     private void writeEpigraph(int level) {
         // Это заголовок книги - выводим Эпиграф если есть
         // todo Автор в файле есть но в гуи-книге почему-то не отображается. Разобраться. (test_002.fb2)
+        //  -- это автор эпиграфа а не книги
 
         if (bookContent.getEpigraphText() != null) {
             String sp = StringTools.createFirst(level, ' ');
@@ -383,8 +384,34 @@ public class ConvertToFB2 extends AbstractConvertFunction {
         writeStr("<description>" + END_LINE);
 
         writeStr("<title-info>" + END_LINE);
+        printTitleInfo();
+        writeStr("<src-lang>ru</src-lang>" + END_LINE);
+        writeStr("</title-info>" + END_LINE);
 
-        // жанр книги - можно перечеслить несколько
+        writeStr("<src-title-info>" + END_LINE);
+        printTitleInfo();
+        writeStr("</src-title-info>" + END_LINE);
+
+        writeStr("<custom-info info-type=\"\">");
+        writeStr(getBookContent().getName());
+        writeStr("</custom-info>"  + END_LINE);
+
+        writeStr("</description>" + END_LINE);
+
+        writeStr("<body>" + END_LINE);
+        //writeStr("<body>");
+
+        // Вывести эпиграф книги - если он есть
+        writeEpigraph(0);
+
+        // Устанавливаем рабочие параметры в исходное состояние.
+        // А то если два раза подряд сконвертировать, то во втором файле будет ошибка.
+        oldLevel = -1;
+        startLevel = 1000;
+    }
+
+    private void printTitleInfo() {
+        // жанр книги - можно перечеслить несколько. в виде: <genre>children</genre> <genre>child_sf</genre>
         /*
 children                Детское
 child_tale              Сказки
@@ -395,6 +422,8 @@ child_det               Детские Остросюжетные
 child_adv               Детские Приключения
          */
         //writeStr("<genre>literature_su_classics</genre><genre>mystery</genre>");
+
+        // Складываем в буфер - т.к. в блоке src-title-info эта информация снова повторится
         writeStr("<genre>child_sf</genre>" + END_LINE);       // antique = Старинная Литература: Прочее
 
         Author author = Par.GM.getAuthor();
@@ -413,11 +442,13 @@ child_adv               Детские Приключения
         writeStr(getBookContent().getName());
         writeStr("</book-title>"  + END_LINE);
 
+        /*
         if (getBookContent().getAnnotation() != null ){
             writeStr("<annotation>" + END_LINE + "<p>");
             writeStr(getBookContent().getAnnotation());
             writeStr("</p>" + END_LINE + "</annotation>" + END_LINE);
         }
+        */
 
         // date - дата написания - только год
         String dateStr = getBookContent().getBookAttrs().get("last_change_date");
@@ -428,21 +459,6 @@ child_adv               Детские Приключения
         }
 
         writeStr("<lang>ru</lang>" + END_LINE);
-
-        writeStr("</title-info>" + END_LINE);
-
-        writeStr("</description>" + END_LINE);
-
-        writeStr("<body>" + END_LINE);
-        //writeStr("<body>");
-
-        // Вывести эпиграф книги - если он есть
-        writeEpigraph(0);
-
-        // Устанавливаем рабочие параметры в исходное состояние.
-        // А то если два раза подряд сконвертировать, то во втором файле будет ошибка.
-        oldLevel = -1;
-        startLevel = 1000;
     }
 
     /**
