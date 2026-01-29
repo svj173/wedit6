@@ -62,6 +62,10 @@ public class Section    extends WTreeObj implements Comparable<Section>
         fileName    = dirName;
         sections    = new ArrayList<Section>();
         bookTitles  = new ArrayList<BookTitle>();
+        // для автоматической сортировки
+        //sections    = new TreeSet<Section>();
+        //bookTitles  = new TreeSet<BookTitle>();
+
 
         this.project = project;
 
