@@ -135,12 +135,14 @@ public class PasteProjectNodeInFunction extends PasteBookFunction
         if ( node instanceof BookTitle)
         {
             // Вставить Книгу в основное дерево
-            selectSection.addBook ( 0, (BookTitle) node );
+            //selectSection.addBook ( 0, (BookTitle) node );
+            selectSection.addBook ( (BookTitle) node );
         }
         else if ( node instanceof Section)
         {
             // Вставить Секцию в основное дерево
-           selectSection.addSection ( 0, (Section) node );
+           //selectSection.addSection ( 0, (Section) node );
+           selectSection.addSection ( (Section) node );
         }
         // Вставить в ГУИ-дерево Сборника
         currentProjectContentPanel.insertNode ( newNode, selectNode, 0 );

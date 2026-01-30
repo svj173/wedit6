@@ -17,8 +17,10 @@ import java.io.File;
 
 
 /**
- * Добавить новый обьект дерева после отмеченного обьекта (равноуровневый).
+ * Добавить новую Секцию после отмеченного обьекта (равноуровневый).
  * <BR/> Создает директорию, перезаписывает проект в project.xml  - т.е. без возможности отката.
+ * <BR/> Добавляем просто к списку, а не после указанного места. Так как массив разделов - это просто каталог
+ * и его лучше сортировать по именам.
  * <BR/>
  * <BR/> User: svj
  * <BR/> Date: 09.08.2011 14:12:24
@@ -85,7 +87,8 @@ public class AddSectionAfterFunction extends AbstractSaveProjectFunction
             // Добавить в сектора проекта - после отмеченного
             //selectNode.
             parentSection   = (Section) parentNode.getWTreeObj();
-            parentSection.addSection ( inum+1, section );
+            //parentSection.addSection ( inum+1, section );
+            parentSection.addSection ( section );
             section.setParent ( parentSection );
 
             // Сохранить новый Раздел - новая файловая директория

@@ -39,10 +39,10 @@ public class Section    extends WTreeObj implements Comparable<Section>
     private String   fileName;
 
     /* Вложенные в данную секцию подсекции. */
-    private final List<Section>         sections;     // List - т.к. нужен get
+    private final Collection<Section>         sections;     // List - т.к. нужен get
 
     /* Список книг, входящих в данную секцию. */
-    private final List<BookTitle> bookTitles;
+    private final Collection<BookTitle> bookTitles;
 
     // Сборник, к которому принадлежит эта Секция.
     // не final, т.к. при переносе между Сборниками он может меняться.
@@ -60,11 +60,12 @@ public class Section    extends WTreeObj implements Comparable<Section>
         setName ( name );
 
         fileName    = dirName;
-        sections    = new ArrayList<Section>();
-        bookTitles  = new ArrayList<BookTitle>();
+        // для возможности вставлть в конкретное место
+        //sections    = new ArrayList<Section>();
+        //bookTitles  = new ArrayList<BookTitle>();
         // для автоматической сортировки
-        //sections    = new TreeSet<Section>();
-        //bookTitles  = new TreeSet<BookTitle>();
+        sections    = new TreeSet<Section>();
+        bookTitles  = new TreeSet<BookTitle>();
 
 
         this.project = project;
@@ -219,10 +220,12 @@ public class Section    extends WTreeObj implements Comparable<Section>
         sections.add ( section );
     }
 
+    /*
     public void addSection ( int number, Section section )
     {
         sections.add ( number, section );
     }
+    */
 
     public void addBook ( BookTitle bookTitle )
     {
@@ -230,10 +233,12 @@ public class Section    extends WTreeObj implements Comparable<Section>
         bookTitle.setParent ( this );
     }
 
+    /*
     public void addBook (int position, BookTitle bookTitle) {
         bookTitles.add ( position, bookTitle );
         bookTitle.setParent ( this );
     }
+    */
 
     public boolean deleteBook ( BookTitle bookTitle )
     {
@@ -244,19 +249,18 @@ public class Section    extends WTreeObj implements Comparable<Section>
     {
         if ( wTreeObj == null )  return true;
 
-        if ( wTreeObj instanceof BookTitle )
+        if (wTreeObj instanceof BookTitle bookTitle)
         {
-            BookTitle bookTitle = (BookTitle)  wTreeObj;
             return deleteBook ( bookTitle );
         }
-        else if ( wTreeObj instanceof Section )
+        else if (wTreeObj instanceof Section section)
         {
-            Section section = ( Section ) wTreeObj;
             return deleteSection ( section );
         }
         return false;
     }
 
+    /*
     public Section getFirstSection ()
     {
         if ( sections.isEmpty() )
@@ -264,7 +268,7 @@ public class Section    extends WTreeObj implements Comparable<Section>
         else
             return sections.get(0);
     }
-
+*/
     
     @Override
     public int compareTo ( Section book )
@@ -273,11 +277,14 @@ public class Section    extends WTreeObj implements Comparable<Section>
 
         if ( book == null )  return 1;
 
+        // Сравнение по названиям
         iName   = Utils.compareToWithNull ( getName(), book.getName() );
         if ( iName == 0 )
         {
+            // Если названия совпадают, сравниваем по размерам подсекций
             iSect   = Utils.compareToWithNull ( getSections().size(), book.getSections().size() );
             if ( iSect == 0 )
+                // Если кол-во подсекций совпадает - сравниваем по кол-ву книг
                 return Utils.compareToWithNull ( getBooks().size(), book.getBooks().size() );
             else
                 return iSect;

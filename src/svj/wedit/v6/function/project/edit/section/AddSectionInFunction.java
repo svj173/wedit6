@@ -86,7 +86,8 @@ public class AddSectionInFunction extends AbstractSaveProjectFunction
             // Добавить в сектора проекта - внутрь отмеченного
             //selectNode.
             parentSection   = (Section) selectNode.getWTreeObj();
-            parentSection.addSection ( inum, section );
+            //parentSection.addSection ( inum, section );
+            parentSection.addSection ( section );
             section.setParent ( parentSection );
 
             // Сохранить новый Раздел - новая файловая директория

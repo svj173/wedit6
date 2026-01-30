@@ -108,11 +108,13 @@ public class PasteProjectNodeAfterFunction extends PasteBookFunction
 
             if ( node instanceof BookTitle) {
                 // Вставить Книгу в основное дерево - после отмеченного
-                parentNode.addBook ( inum, (BookTitle) node );
+                //parentNode.addBook ( inum, (BookTitle) node );
+                parentNode.addBook ( (BookTitle) node );
             }
             else if ( node instanceof Section) {
                 // Вставить Секцию в основное дерево
-                parentNode.addSection ( inum, (Section) node );
+                //parentNode.addSection ( inum, (Section) node );
+                parentNode.addSection ( (Section) node );
             }
 
             // Добавить в дерево после отмеченного - в самом конце, когда все действия прошли успешно
