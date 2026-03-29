@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="windows-1251"?>
 
 <!--
-Запуск руками:
+Запуск руками (в директории ant):
  ant -buildfile wedit6.xml deploy.linux.common
 
 ant -Djava.home=/usr/lib/jvm/java-8-openjdk-amd64 -buildfile wedit6.xml deploy.linux.locale
@@ -22,7 +22,7 @@ ant -Djava.home=/usr/lib/jvm/java-8-openjdk-amd64 -buildfile wedit6.xml deploy.l
 
 
     <!-- Создать рабочую директорию и скопировать туда библ jar, стартовые скрипты -->
-    <property name="programmPath" value="/home/svj/programm/my/wedit6" />
+    <property name="programmPath" value="/home/svj/Programm/my/wedit6" />
     
     <path id="project.class.path">
         <!--pathelement location="./"/-->

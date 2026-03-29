@@ -152,6 +152,17 @@ public class WEMenuBar extends JMenuBar
         return result;
     }
 
+    private WEMenu createBookmarkMenu () {
+        WEMenu result;
+        JComponent menu;
+
+        result = new WEMenu("Закладки");
+        menu    = getMenu ( FunctionId.BOOKMARK );
+        if ( menu != null )  result.add ( menu );
+
+        return result;
+    }
+
     /* Верхнее меню - "Книга". */
     private WEMenu createBookMenu ()
     {
@@ -227,8 +238,8 @@ public class WEMenuBar extends JMenuBar
         result.addSeparator();
 
         // Закладки
-        menu    = getMenu ( FunctionId.BOOKMARK );
-        if ( menu != null )  result.add ( menu );
+        //menu    = getMenu ( FunctionId.BOOKMARK );
+        //if ( menu != null )  result.add ( menu );
 
         result.addSeparator();
 
