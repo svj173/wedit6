@@ -6,6 +6,8 @@ WEdit_6.iws
 
 ./ant/build.number
 
+./ant/build.properties
+
 **/build.number
 
 docs

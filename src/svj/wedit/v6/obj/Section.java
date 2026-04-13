@@ -249,13 +249,13 @@ public class Section    extends WTreeObj implements Comparable<Section>
     {
         if ( wTreeObj == null )  return true;
 
-        if (wTreeObj instanceof BookTitle bookTitle)
+        if (wTreeObj instanceof BookTitle)
         {
-            return deleteBook ( bookTitle );
+            return deleteBook ( (BookTitle) wTreeObj );
         }
-        else if (wTreeObj instanceof Section section)
+        else if (wTreeObj instanceof Section)
         {
-            return deleteSection ( section );
+            return deleteSection ( (Section) wTreeObj );
         }
         return false;
     }

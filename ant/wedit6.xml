@@ -9,6 +9,9 @@ ant -Djava.home=/usr/lib/jvm/java-8-openjdk-amd64 -buildfile wedit6.xml deploy.l
 -->
 <project name="WEdit_6" basedir="." default="compile">
 
+    <!-- Загрузка внешнего файла -->
+    <property file="build.properties"/>
+
     <property name="project" value="wedit" />
     <property name="deploy" value="../../deploy" />
     <property name="version" value="6.0" />
@@ -22,13 +25,14 @@ ant -Djava.home=/usr/lib/jvm/java-8-openjdk-amd64 -buildfile wedit6.xml deploy.l
 
 
     <!-- Создать рабочую директорию и скопировать туда библ jar, стартовые скрипты -->
-    <property name="programmPath" value="/home/svj/Programm/my/wedit6" />
+    <!--property name="programmPath" value="/home/svj/Programm/my/wedit6" /-->
     
     <path id="project.class.path">
         <!--pathelement location="./"/-->
         <!--pathelement path="%classpath%"/-->
         <!--pathelement path="${classes}"/-->
-        <pathelement path="/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/rt.jar"/>
+        <!--pathelement path="/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/rt.jar"/-->
+        <pathelement path="${java8.rt.jar}"/>
         <fileset dir="${lib}" includes="**/*.jar, **/*.zip" excludes="*.txt"/>
     </path>
 
