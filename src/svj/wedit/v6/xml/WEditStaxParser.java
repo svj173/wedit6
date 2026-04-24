@@ -32,8 +32,9 @@ public class WEditStaxParser
 
         try
         {
+            //Log.file.info ("getText: eventReader = %s", eventReader );
             event = eventReader.nextEvent();
-            //Log.file.debug ("getText: event = ", event );
+            //Log.file.debug ("getText: event = %s", event );
 
             if ( event.isCharacters() )
             {
