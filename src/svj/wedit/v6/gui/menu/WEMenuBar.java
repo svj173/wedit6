@@ -214,6 +214,9 @@ public class WEMenuBar extends JMenuBar
         menu    = getMenu ( FunctionId.EDIT_BOOK_PARAMS );
         if ( menu != null )  result.add ( menu );
 
+        menu    = getMenu ( FunctionId.BOOK_STATISTIC );
+        if ( menu != null )  result.add ( menu );
+
         result.addSeparator();
 
         menu    = getMenu ( FunctionId.DELETE_ELEMENT );
@@ -422,18 +425,18 @@ public class WEMenuBar extends JMenuBar
         return result;
     }
 
-    private JComponent getMenu ( FunctionId projectId )
+    private JComponent getMenu ( FunctionId functionId )
     {
         JComponent  menu;
         Function    f;
 
-        f       = Par.GM.getFm().get ( projectId );
+        f       = Par.GM.getFm().get ( functionId );
         if ( f != null )
             menu    = f.getMenuObject("menu");
         else
         {
             menu = null;
-            Log.l.error ( "---------------- Отсутствует функция '%s'.", projectId );
+            Log.l.error ( "---------------- Отсутствует функция '%s'.", functionId );
         }
 
         return menu;
