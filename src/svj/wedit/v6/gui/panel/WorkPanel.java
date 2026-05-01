@@ -35,6 +35,7 @@ public class WorkPanel<T extends EditablePanel> extends RewritePanel
     /* Иконки над рабочей панелью. */
     private final IconsPanel iconPanel;
     private final CardPanel<TabsPanel<T>> cardPanel;
+
     /* Титл парента. Отображается сверху над панелью дерева или текста. Для дерева Сборников здесь отображается не парент (которого нет) а текущий Сборник. */
     private final JTextField titleField;
 
@@ -64,6 +65,10 @@ public class WorkPanel<T extends EditablePanel> extends RewritePanel
 
         titleField  = new JTextField ("");
         titleField.setBackground ( WCons.LIGHT_YELLOW );
+        Font font = titleField.getFont();
+        Font newFont = font.deriveFont(Font.BOLD);
+        titleField.setFont ( newFont );
+        titleField.setHorizontalAlignment(JTextField.CENTER);
         titleField.setEditable ( false );
 
         JPanel panel;
