@@ -51,17 +51,25 @@ public class BookStatisticFunction extends SimpleFunction {
         // пробегаем по всем текстам - исключаем заголовки и аннотации.
         processNode ( bookContent.getBookNode(), statInfo, WORK_SIZE );
 
+        long size = bookContent.getFileSize();
+        Long workSize = statInfo.get(WORK_SIZE);
+        Long hiddenSize = statInfo.get(HIDDEN_SIZE);
+
         StringBuilder sb = new StringBuilder(512);
 
         // Сообщение о завершении работы.
         sb.append ( "Книга : " );
         sb.append ( bookContent.getName() );
+        sb.append ( "\n   Файл: " );
+        sb.append ( bookContent.getFileName() );
         sb.append ( "\n   Чистый текст: " );
-        sb.append ( statInfo.get(WORK_SIZE) );
+        sb.append ( workSize );
         sb.append ( "\n   Скрытый текст: " );
-        sb.append ( statInfo.get(HIDDEN_SIZE) );
-        sb.append ( "\n   Общий размер: НЕ доделано и не отлажено!!!" );
+        sb.append ( hiddenSize );
+        sb.append ( "\n   Общий размер: " );
+        sb.append ( size );
         sb.append ( "\n   Остаток: \n" );
+        sb.append ( size - workSize - hiddenSize );
 
         DialogTools.showMessage ( "Статистика", sb.toString () );
     }

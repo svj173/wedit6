@@ -114,7 +114,8 @@ public class WorkPanel<T extends EditablePanel> extends RewritePanel
                         Editable eb = treePanel.getObject();
                         if ( eb instanceof BookContent) {
                             BookContent bookContent = (BookContent) eb;
-                            titleField.setText ( bookContent.getName() );
+                            titleField.setText ( bookContent.getName() + " (" +
+                                    bookContent.getFileName() + ")");
                         }
                     } else {
                         // так небывает
